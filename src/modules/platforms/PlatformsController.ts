@@ -1,0 +1,114 @@
+import { Request, Response } from "express";
+import HttpService from "../../core/services/HttpService"
+import { BadRequestError, NotFoundError } from "../../core/errors/errors";
+import PlatformsService from "./PlatformsService";
+import { PlatformData } from "./platforms.interface";
+
+export default class PlatformsController { 
+  private httpService: HttpService;
+  private platformsService: PlatformsService;  
+  private block = "platforms.controller"; 
+  
+
+  constructor(httpService: HttpService, platformsService: PlatformsService) {
+    this.httpService = httpService;
+    this.platformsService = platformsService;
+  }
+
+  async createRequest(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.createRequest`;
+    try {
+      const requiredFields = ["agentId", "platform", "token"];
+      this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+      const { agentId, platform, token } = req.body;
+
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let secret = '';
+      for (let i = 0; i < 13; i++) {
+          secret += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+
+      const encryptedId = this.httpService.encryptionService.encryptData(agentId)
+      const webhookUrl = `https://${process.env.WEBHOOK_URL}/${platform}/${encryptedId}/webhook`;
+
+      const platformData = {
+        ...req.body,
+        webhookUrl: webhookUrl,
+        webhookSecret: secret
+      };
+
+      await this.platformsService.create(platformData);
+
+      res.status(200).json({ message: "Platform added." });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async resourceRequest(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.resourceRequest`;
+    try {
+      const platformId = req.params.platformId;
+
+      this.httpService.requestValidation.validateUuid(platformId, "platformId", block);
+
+      const resource = await this.platformsService.resource("platform_id", platformId);
+      if (!resource) {
+        throw new NotFoundError(undefined, {
+          block: `${block}.notFound`,
+        });
+      }
+
+      res.status(200).json({ data: resource })
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateRequest(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.updateRequest`;
+    try { 
+      const platformId = req.params.platformId;
+
+      this.httpService.requestValidation.validateUuid(platformId, "platformId", block);
+
+      const resource = await this.platformsService.resource("platform_id", platformId);
+      if (!resource) {
+        throw new NotFoundError(undefined, {
+          block: `${block}.notFound`,
+        });
+      }
+
+      const allowedChanges = ["token", "platform"];
+
+      const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<PlatformData>(allowedChanges, req.body, block);
+
+      await this.platformsService.update(platformId, filteredChanges);
+
+      res.status(200).json({ message: "updated" });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteRequest(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.deleteRequest`;
+    try {
+      const platformId = req.params.platformId;
+
+      this.httpService.requestValidation.validateUuid(platformId, "platformId", block);
+
+      const resource = await this.platformsService.resource("platform_id", platformId);
+      if (!resource) {
+        throw new NotFoundError(undefined, {
+          block: `${block}.notFound`,
+        });
+      }
+
+      await this.platformsService.delete(platformId);
+      res.status(200).json({ message: "Platform deleted"})
+    } catch (error) {
+      throw error;
+    }
+  }
+}

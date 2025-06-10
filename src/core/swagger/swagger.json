@@ -1,0 +1,794 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Soulxae",
+    "description": "Endpoints",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://soulxae.up.railway.app/"
+    }
+  ],
+  "paths": {
+    "/agents/secure/create": {
+      "post": {
+        "tags": [
+          "Agents"
+        ],
+        "description": "create agent",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createAgent"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agents/secure/resource/{agentId}": {
+      "get": {
+        "tags": [
+          "Agents"
+        ],
+        "description": "get agent by id",
+        "parameters": [
+          {
+            "name": "agentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/agents/secure/collection/{workspaceId}": {
+      "get": {
+        "tags": [
+          "Agents"
+        ],
+        "description": "get agents by workspace",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/agents/secure/{agentId}": {
+      "put": {
+        "tags": [
+          "Agents"
+        ],
+        "description": "update agent",
+        "parameters": [
+          {
+            "name": "agentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Agents"
+        ],
+        "description": "delete agent",
+        "parameters": [
+          {
+            "name": "agentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/platforms/secure/create": {
+      "post": {
+        "tags": [
+          "Platforms"
+        ],
+        "description": "Update platforms",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createPlatform"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/platforms/secure/resource/{platformId}": {
+      "get": {
+        "tags": [
+          "Platforms"
+        ],
+        "description": "get platform by id",
+        "parameters": [
+          {
+            "name": "platformId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/platforms/secure/{platformId}": {
+      "put": {
+        "tags": [
+          "Platforms"
+        ],
+        "description": "Update platform",
+        "parameters": [
+          {
+            "name": "platformId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updatePlatform"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Platforms"
+        ],
+        "description": "delete platform by id",
+        "parameters": [
+          {
+            "name": "platformId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users/secure/resource": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Get current user",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users/secure/account": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "description": "update user account details, if updating password the users current password must be provided",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateUser"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/secure/delete": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Delete current user",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users/verified/create": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "create user user. must enter the code from thier email",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createUser"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/verified/account/{userId}": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "description": "update user account details with verification code. user must enter the code from thier email",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/verifiedUpdateUser"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "user login",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/login"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/account-recovery": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Send account recovery will return a token, email contains a code that the user needs to input for the next request",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accountRecovery"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/verify-email": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "verify user email, token recieved must be used for create user request. for update email verification add query /users/verify-email?update=true",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/verifyEmail"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workspaces/secure/create": {
+      "post": {
+        "tags": [
+          "Workspaces"
+        ],
+        "description": "create workspaces",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createWorkspace"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workspaces/secure/resource/{workspaceId}": {
+      "get": {
+        "tags": [
+          "Workspaces"
+        ],
+        "description": "get workspace by id",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/workspaces/secure/collection": {
+      "get": {
+        "tags": [
+          "Workspaces"
+        ],
+        "description": "get workspace by user",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/workspaces/secure/{workspaceId}": {
+      "put": {
+        "tags": [
+          "Workspaces"
+        ],
+        "description": "update workspace",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateWorkspace"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Workspaces"
+        ],
+        "description": "delete workspace by id",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "description": "Enter JWT token with **Bearer** prefix. Example: \"Bearer {token}\""
+      }
+    },
+    "schemas": {
+      "createUser": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "email"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          },
+          "code": {
+            "type": "string",
+            "example": "code from users email"
+          }
+        }
+      },
+      "updateUser": {
+        "type": "object",
+        "properties": {
+          "subscription": {
+            "type": "string",
+            "example": "new sub"
+          },
+          "password": {
+            "type": "string",
+            "example": "new passoword"
+          },
+          "oldPassword": {
+            "type": "string",
+            "example": "old password"
+          }
+        }
+      },
+      "verifiedUpdateUser": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "new email"
+          },
+          "password": {
+            "type": "string",
+            "example": " new password"
+          },
+          "code": {
+            "type": "string",
+            "example": "code from users email"
+          }
+        }
+      },
+      "login": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "email"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
+        }
+      },
+      "accountRecovery": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "email"
+          }
+        }
+      },
+      "verifyEmail": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "new email"
+          }
+        }
+      },
+      "createWorkspace": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "name"
+          }
+        }
+      },
+      "updateWorkspace": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "new name"
+          }
+        }
+      },
+      "createAgent": {
+        "type": "object",
+        "properties": {
+          "apiKey": {
+            "type": "string",
+            "example": "required"
+          },
+          "description": {
+            "type": "string",
+            "example": "required"
+          },
+          "name": {
+            "type": "string",
+            "example": "required"
+          },
+          "provider": {
+            "type": "string",
+            "example": "only voiceflow is supported atm"
+          },
+          "workspaceId": {
+            "type": "string",
+            "example": "required"
+          }
+        }
+      },
+      "updateAgent": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "new name"
+          },
+          "description": {
+            "type": "string",
+            "example": "new description"
+          },
+          "apiKey": {
+            "type": "string",
+            "example": "new api key"
+          }
+        }
+      },
+      "createPlatform": {
+        "type": "object",
+        "properties": {
+          "agentId": {
+            "type": "string",
+            "example": "required"
+          },
+          "platform": {
+            "type": "string",
+            "example": "whatsapp, messenger, ect.."
+          },
+          "token": {
+            "type": "string",
+            "example": "system user token form meta"
+          }
+        }
+      },
+      "updatePlatform": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "new token"
+          },
+          "platform": {
+            "type": "string",
+            "example": "new platform"
+          }
+        }
+      }
+    }
+  }
+}
