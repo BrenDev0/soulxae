@@ -12,7 +12,6 @@ export const initializeAgentsRouter = (customController?: AgentsController) => {
     secureRouter.use(middlewareService.auth.bind(middlewareService));
 
     // protected Routes //
-
     secureRouter.post("/create",
          /*
         #swagger.tags = ['Agents']

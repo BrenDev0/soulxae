@@ -17,14 +17,26 @@ const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_json_1 = __importDefault(require("./core/swagger/swagger.json"));
 const configureContainer_1 = require("./core/dependencies/configureContainer");
 const Container_1 = __importDefault(require("./core/dependencies/Container"));
+const agents_routes_1 = require("./modules/agents/agents.routes");
+const platforms_routes_1 = require("./modules/platforms/platforms.routes");
+const users_routes_1 = require("./modules/users/users.routes");
+const workspaces_routes_1 = require("./modules/workspaces/workspaces.routes");
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, createApp_1.default)();
     yield (0, configureContainer_1.configureContainer)();
     const middlewareService = Container_1.default.resolve("MiddlewareService");
     // routers //
+    const agentsRouter = (0, agents_routes_1.initializeAgentsRouter)();
+    const platformsRouter = (0, platforms_routes_1.initializePlatformsRouter)();
+    const usersRouter = (0, users_routes_1.initializeUsersRouter)();
+    const workspacesRouter = (0, workspaces_routes_1.initializeWorkspacesRouter)();
     // Routes //
     process.env.NODE_ENV === "production" && app.use(middlewareService.verifyHMAC);
     process.env.NODE_ENV !== 'production' && app.use('/docs/endpoints', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
+    app.use("/agents", agentsRouter);
+    app.use("/platforms", platformsRouter);
+    app.use("/users", usersRouter);
+    app.use("/workspaces", workspacesRouter);
     app.use((req, res) => {
         res.status(404).json({ message: "Route not found." });
     });
