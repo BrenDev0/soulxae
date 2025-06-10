@@ -60,7 +60,8 @@ const doc = {
         description: "required",
         name: "required",
         provider: "only voiceflow is supported atm",
-        workspaceId: "required"
+        workspaceId: "required",
+        agentType: "bot, or human"
       },
       updateAgent:{
         name: "new name",
@@ -69,7 +70,7 @@ const doc = {
       },
       createPlatform: {
         agentId: "required",
-        platform: "whatsapp, messenger, ect..",
+        platform: "whatsapp, messenger, instagram, direct(for human agents)",
         token: "system user token form meta"
       },
       updatePlatform: {

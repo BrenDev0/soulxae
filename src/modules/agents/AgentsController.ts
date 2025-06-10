@@ -11,21 +11,22 @@ export default class AgentsController {
   private httpService: HttpService;
   private agentsService: AgentsService;  
   private block = "agents.controller"; 
-  
+  private readonly allowedAgentTypes =  ["bot", "human"]
 
   constructor(httpService: HttpService, agentsService: AgentsService) {
     this.httpService = httpService;
     this.agentsService = agentsService;
+
   }
 
   async createRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.createRequest`;
     try {
       const user = req.user;
-      const requiredFields = ["apiKey", "description", "name", "provider", "workspaceId"];
+      const requiredFields = ["apiKey", "description", "name", "provider", "workspaceId", "agentType"];
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
       
-      const{ workspaceId } = req.body;
+      const{ workspaceId, agentType } = req.body;
       this.httpService.requestValidation.validateUuid(workspaceId, "workspaceId", block);
 
       const workspaceService = Container.resolve<WorkspaceService>("WorkspacesService");
@@ -43,6 +44,13 @@ export default class AgentsController {
           workspaceUserId: resource.userId,
           userId: user.user_id
         })
+      }
+
+      if (!this.allowedAgentTypes.includes(agentType)) {
+        throw new BadRequestError("Invalid agent type", {
+          allowedAgentTypes: this.allowedAgentTypes,
+          type: agentType
+        }) 
       }
 
       await this.agentsService.create(req.body);
@@ -113,9 +121,16 @@ export default class AgentsController {
         });
       }
 
-      const allowedChanges = ["name", "description", "apiKey", "provider"];
+      const allowedChanges = ["name", "description", "apiKey", "provider", "agentType"];
 
       const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<AgentData>(allowedChanges, req.body, block);
+
+       if (filteredChanges.agentType && !this.allowedAgentTypes.includes(filteredChanges.agentType)) {
+        throw new BadRequestError("Invalid agent type", {
+          allowedAgentTypes: this.allowedAgentTypes,
+          type: filteredChanges.agentType
+        })
+      }
 
       await this.agentsService.update(agentId, filteredChanges);
 

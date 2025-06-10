@@ -3,6 +3,7 @@ import BaseRepository from "../../core/repository/BaseRepository";
 import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
 import EncryptionService from '../../core/services/EncryptionService';
+import { agent } from 'supertest';
 
 export default class PlatformService {
     private repository: BaseRepository<Platform>;
@@ -32,6 +33,19 @@ export default class PlatformService {
             return this.mapFromDb(result);
         } catch (error) {
             handleServiceError(error as Error, this.block, "resource", {whereCol, identifier})
+            throw error;
+        }
+    }
+
+    async collection(agentId: string): Promise<Omit<PlatformData, "token">[]> {
+        try {
+            const result = await this.repository.select("agent_id", agentId);
+
+            const data = result.map((platform) => this.mapFromDb(platform));
+
+            return data;
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "collection", {agentId})
             throw error;
         }
     }

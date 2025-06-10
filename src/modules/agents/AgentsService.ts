@@ -72,6 +72,7 @@ export default class AgentService {
     mapToDb(agent: AgentData): Agent {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
+            agent_type: agent.agentType.toLowerCase(),
            workspace_id: agent.workspaceId,
            provider: agent.provider,
            api_key: agent.apiKey && encryptionService.encryptData(agent.apiKey),
@@ -84,6 +85,7 @@ export default class AgentService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             agentId: agent.agent_id,
+            agentType: agent.agent_type.toLowerCase(),
             workspaceId: agent.workspace_id,
             provider: agent.provider,
             apiKey: encryptionService.decryptData(agent.api_key),

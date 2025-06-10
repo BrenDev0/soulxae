@@ -8,7 +8,7 @@ export default class PlatformsController {
   private httpService: HttpService;
   private platformsService: PlatformsService;  
   private block = "platforms.controller"; 
-  
+  private readonly allowedPlatforms =  ["whatsapp", "messenger", "instagram", "direct"]
 
   constructor(httpService: HttpService, platformsService: PlatformsService) {
     this.httpService = httpService;
@@ -21,6 +21,20 @@ export default class PlatformsController {
       const requiredFields = ["agentId", "platform", "token"];
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
       const { agentId, platform, token } = req.body;
+      
+      if (!this.allowedPlatforms.includes(platform)) {
+        throw new BadRequestError("Invalid platform type", {
+          allowedPlatforms: this.allowedPlatforms,
+          platform: platform
+        }) 
+      }
+
+      const agentsPlatforms = await this.platformsService.collection(agentId)
+      const platformExists = agentsPlatforms.some((i:Record<string, any>) => i.platform == platform)
+
+      if(platformExists) {
+          throw new BadRequestError("Platform in use, update or delete agents current platforms") 
+      }
 
       const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
       let secret = '';
@@ -65,6 +79,21 @@ export default class PlatformsController {
     }
   }
 
+  async collectionRequest(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.resourceRequest`;
+    try {
+      const agentId = req.params.agentId;
+
+      this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
+
+      const data = await this.platformsService.collection(agentId);
+
+      res.status(200).json({ data: data })
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async updateRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.updateRequest`;
     try { 
@@ -82,6 +111,13 @@ export default class PlatformsController {
       const allowedChanges = ["token", "platform"];
 
       const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<PlatformData>(allowedChanges, req.body, block);
+
+      if (filteredChanges.platform && !this.allowedPlatforms.includes(filteredChanges.platform)) {
+        throw new BadRequestError("Invalid platform type", {
+          allowedPlatforms: this.allowedPlatforms,
+          platform: filteredChanges.platform
+        }) 
+      }
 
       await this.platformsService.update(platformId, filteredChanges);
 

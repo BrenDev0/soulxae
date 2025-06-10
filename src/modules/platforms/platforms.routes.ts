@@ -41,6 +41,16 @@ export const initializePlatformsRouter = (customController?: PlatformsController
         controller.resourceRequest.bind(controller)
     )
 
+    secureRouter.get("/collection/:agentId",
+        /*
+        #swagger.tags = ['Platforms']
+        #swagger.path =  '/platforms/secure/collection/{agentId}'
+        #swagger.security = [{ "bearerAuth": [] }] 
+        #swagger.description = 'get agents platforms'
+        */
+        controller.collectionRequest.bind(controller)
+    )
+
     secureRouter.put("/:platformId", 
         /*
         #swagger.tags = ['Platforms']
