@@ -54,8 +54,6 @@ class WebhooksService {
             try {
                 const agentId = this.httpService.encryptionService.decryptData(req.params.id);
                 const messagesService = Container_1.default.resolve("MessagesService");
-                const conversationsService = Container_1.default.resolve("ConversationsService");
-                const clientsService = Container_1.default.resolve("ClientsService");
                 let platformsService;
                 const messagingProduct = (_c = (_b = (_a = req.body.entry[0]) === null || _a === void 0 ? void 0 : _a.changes[0]) === null || _b === void 0 ? void 0 : _b.value) === null || _c === void 0 ? void 0 : _c.messaging_product;
                 console.log(req.body.entry[0], "entry::::");
@@ -70,30 +68,49 @@ class WebhooksService {
                         break;
                 }
                 if (!platformsService) {
-                    throw new errors_1.BadRequestError("Unsuported product");
+                    throw new errors_1.BadRequestError("Unsupported product");
                 }
                 ;
                 const clientMetaData = platformsService.getClientInfo(req);
-                let conversationid;
-                let clientId;
-                const client = yield clientsService.resource("contact_identifier", clientMetaData.display_phone_number);
-                if (!client) {
-                    const newClient = yield clientsService.create({
-                        agentId: agentId,
-                        name: null,
-                        contactIdentifier: clientMetaData.display_phone_number
-                    });
-                    if (!newClient.client_id) {
-                        throw new errors_1.DatabaseError("Error creating client");
-                    }
-                    clientId = newClient.client_id;
-                }
-                console.log("Meta Data::::", clientMetaData);
+                const clientId = yield this.handleClient(agentId, clientMetaData);
+                const conversationId = yield this.handleConversaton(agentId, clientId, messagingProduct);
                 return;
             }
             catch (error) {
                 throw error;
             }
+        });
+    }
+    handleClient(agentId, client) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const clientsService = Container_1.default.resolve("ClientsService");
+            const resource = yield clientsService.resource("contact_identifier", client.display_phone_number);
+            if (!resource) {
+                const newClient = yield clientsService.create({
+                    agentId: agentId,
+                    name: null,
+                    contactIdentifier: client.display_phone_number
+                });
+                return newClient.client_id;
+            }
+            return resource.clientId;
+        });
+    }
+    handleConversaton(agentId, clientId, platform) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const conversationService = Container_1.default.resolve("ConversationsService");
+            const resource = yield conversationService.findByParticipantIds(agentId, clientId);
+            if (!resource) {
+                const newConversation = yield conversationService.create({
+                    agentId: agentId,
+                    clientId: clientId,
+                    handoff: false,
+                    title: null,
+                    platform: platform
+                });
+                return newConversation.conversation_id;
+            }
+            return resource.conversationId;
         });
     }
 }

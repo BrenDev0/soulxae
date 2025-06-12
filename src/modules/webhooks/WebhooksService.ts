@@ -7,6 +7,8 @@ import MessagesService from "../messages/MessagesService";
 import ConversationsService from "../conversations/ConversationsService";
 import ClientsService from "../clients/ClientsService";
 import WhatsappService from "../whatsapp/WhatsappService";
+import { WhatsappMetaData } from "../whatsapp/whatsapp.interface";
+import { cli } from "winston/lib/winston/config";
 
 export default class WebhooksService {
     private httpService: HttpService;
@@ -45,15 +47,13 @@ export default class WebhooksService {
         }
     }
 
-     async incomingMessage(req: Request): Promise<void> {
+    async incomingMessage(req: Request): Promise<void> {
         try {
             const agentId = this.httpService.encryptionService.decryptData(req.params.id);
             const messagesService = Container.resolve<MessagesService>("MessagesService");
-            const conversationsService = Container.resolve<ConversationsService>("ConversationsService");
-            const clientsService = Container.resolve<ClientsService>("ClientsService");
+    
             let platformsService;
 
-            
             const messagingProduct = req.body.entry[0]?.changes[0]?.value?.messaging_product;
             console.log(req.body.entry[0], "entry::::")
             console.log("Changes::::", req.body.entry[0]?.changes[0])
@@ -69,31 +69,53 @@ export default class WebhooksService {
             }
 
             if(!platformsService) {
-                throw new BadRequestError("Unsuported product");
+                throw new BadRequestError("Unsupported product");
             };
 
             const clientMetaData = platformsService.getClientInfo(req);
-            let conversationid: string;
-            let clientId: string;
-            const client = await clientsService.resource("contact_identifier", clientMetaData.display_phone_number);
-            if(!client) {
-                const newClient = await clientsService.create({
-                    agentId: agentId,
-                    name: null,
-                    contactIdentifier: clientMetaData.display_phone_number
-                })
+            const clientId = await this.handleClient(agentId, clientMetaData);
+            const conversationId = await this.handleConversaton(agentId, clientId, messagingProduct);
 
-                if(!newClient.client_id) {
-                    throw new DatabaseError("Error creating client");
-                }
-
-                clientId = newClient.client_id
-            } 
-
-           console.log("Meta Data::::", clientMetaData);
+          
            return;
         } catch (error) {
             throw error;
         }
+    }
+
+    async handleClient(agentId: string, client: WhatsappMetaData): Promise<string> {
+        const clientsService = Container.resolve<ClientsService>("ClientsService");
+        
+        const resource = await clientsService.resource("contact_identifier", client.display_phone_number);
+        if(!resource) {
+            const newClient = await clientsService.create({
+                agentId: agentId,
+                name: null,
+                contactIdentifier: client.display_phone_number
+            })
+
+            return newClient.client_id!
+        } 
+
+        return resource.clientId!
+    }
+
+    async handleConversaton(agentId: string, clientId: string, platform: string): Promise<string> {
+        const conversationService = Container.resolve<ConversationsService>("ConversationsService");
+
+        const resource = await conversationService.findByParticipantIds(agentId, clientId);
+        if(!resource) {
+            const newConversation = await conversationService.create({
+                 agentId: agentId,
+                clientId: clientId,
+                handoff: false,
+                title: null,
+                platform: platform
+            })
+
+            return newConversation.conversation_id!
+        }
+
+        return resource.conversationId!
     }
 }
