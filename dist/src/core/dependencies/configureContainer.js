@@ -28,6 +28,11 @@ const RedisService_1 = __importDefault(require("../services/RedisService"));
 const workspaces_dependencies_1 = require("../../modules/workspaces/workspaces.dependencies");
 const agents_dependencies_1 = require("../../modules/agents/agents.dependencies");
 const platforms_dependencies_1 = require("../../modules/platforms/platforms.dependencies");
+const conversations_dependencies_1 = require("../../modules/conversations/conversations.dependencies");
+const clients_dependencies_1 = require("../../modules/clients/clients.dependencies");
+const sessions_dependencies_1 = require("../../modules/sessions/sessions.dependencies");
+const whatsapp_dependencies_1 = require("../../modules/whatsapp/whatsapp.dependencies");
+const messages_dependencies_1 = require("../../modules/messages/messages.dependencies");
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -57,14 +62,24 @@ function configureContainer(testPool, testRedis) {
         const connectionUrl = testRedis !== null && testRedis !== void 0 ? testRedis : (process.env.REDIS_URL || "");
         const redisClient = yield new RedisService_1.default(connectionUrl).createClient();
         Container_1.default.register("RedisClient", redisClient);
+        // sessions //
+        (0, sessions_dependencies_1.configureSessionsDependencies)(redisClient);
+        // agents //
+        (0, agents_dependencies_1.configureAgentsDependencies)(pool);
+        // clients // 
+        (0, clients_dependencies_1.configureClientsDependencies)(pool);
+        // conversations //
+        (0, conversations_dependencies_1.configureConversationsDependencies)(pool);
+        // messages //
+        (0, messages_dependencies_1.configureMessagesDependencies)(pool);
         // platforms //
         (0, platforms_dependencies_1.configurePlatformsDependencies)(pool);
         // users //
         (0, users_dependencies_1.configureUsersDependencies)(pool);
+        // whatsapp //
+        (0, whatsapp_dependencies_1.configureWhatsappDependencies)();
         // workspaces //
         (0, workspaces_dependencies_1.configureWorkspacesDependencies)(pool);
-        // agents //
-        (0, agents_dependencies_1.configureAgentsDependencies)(pool);
         // middleware --- must configure users above this block //
         const usersService = Container_1.default.resolve("UsersService");
         const middlewareService = new MiddlewareService_1.default(webtokenService, usersService, errorHandler);

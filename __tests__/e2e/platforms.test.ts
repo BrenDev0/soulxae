@@ -47,19 +47,20 @@ describe("USERS ROUTES", () => {
 
 
     describe('POST /platforms/secure/create', () => {
-//   it('should return 200 and message when platform is created', async () => {
-//     const res = await request(app)
-//       .post('/platforms/secure/create')
-//       .set('Authorization', token)
-//       .send({
-//         agentId: '4825f3f1-78c9-4eab-94f4-019f6bf05f7e',
-//         platform: 'whatsapp',
-//         token: '123456789'
-//       });
+  it('should return 200 and message when platform is created', async () => {
+    const res = await request(app)
+      .post('/platforms/secure/create')
+      .set('Authorization', token)
+      .send({
+        agentId: '7a367831-5458-47be-ae3d-3b5788c56af8',
+        platform: 'messenger',
+        token: '123456789',
+        identifier: "1234567889"
+      });
 
-//     expect(res.status).toBe(200);
-//     expect(res.body.message).toBe('Platform added.');
-//   });
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe('Platform added.');
+  });
 
   it('should return 400 if required fields are missing', async () => {
     const res = await request(app)

@@ -49,21 +49,22 @@ describe("USERS ROUTES", () => {
 
     
 describe('POST /agents/secure/create', () => {
-//   it('should return 200 and add a new agent', async () => {
-//     const res = await request(app)
-//       .post('/agents/secure/create')
-//       .set('Authorization', token)
-//       .send({
-//         apiKey: 'test-api-key',
-//         description: 'test-description',
-//         name: 'Test Agent',
-//         provider: 'openai',
-//         workspaceId: '6c797893-3145-4c55-836a-df6449ba54f2' 
-//       });
+  it('should return 200 and add a new agent', async () => {
+    const res = await request(app)
+      .post('/agents/secure/create')
+      .set('Authorization', token)
+      .send({
+        apiKey: 'test-api-key',
+        description: 'test-description',
+        name: 'Test Agent',
+        provider: 'openai',
+        workspaceId: '6c797893-3145-4c55-836a-df6449ba54f2',
+        agentType: "human"
+      });
 
-//     expect(res.status).toBe(200);
-//     expect(res.body.message).toBe('Agent added.');
-//   });
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe('Agent added.');
+  });
 
   it('should return 400 for missing required fields', async () => {
     const res = await request(app)

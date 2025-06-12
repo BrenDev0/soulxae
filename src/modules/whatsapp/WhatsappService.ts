@@ -1,328 +1,117 @@
-// import { InteractiveObject, MessageObject } from '../interface/app';
-// import axios from 'axios';
-// import Redis from './Redis';
-// import ConversationsService from '../services/ConversationsService';
-// import { Message } from '../interface/models/conversations';
+import { ImageObject, InteractiveObject, MessageObject } from '../whatsapp/whatsapp.interface'
+import { Content } from '../messages/messages.interface';
+import axios from 'axios';
+import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
 
 
-// class Whatsapp {
-//   private state: any;
-//   private redis: Redis;
-//   private redisKey: string;
-//   private conversationsService: ConversationsService;
-  
-    
-//   constructor(conversationsService: ConversationsService, redisKey: string) {
-//     this.state = null;
-//     this.redis = new Redis();
-//     this.redisKey = redisKey;
-//     this.conversationsService = conversationsService;
-//   }
+export default class WhatsappService {
+ 
+    async handleMessage(message: Content, fromId: string, to: string, token: string): Promise<void> {
+        try {
+            let messageObject: MessageObject;
 
-//   async init() {
-//     try {
-//       if(this.state === null) {
-//         const state = await this.redis.get(this.redisKey);
-//         this.state = JSON.parse(state)
-//       }
+            if(message.buttons) {
+                messageObject = this.buttonsMessage(message, to);
+            } else if(message.header) {
+                messageObject = this.imageMessage(message, to);
+            } else {
+                messageObject = this.textMessage(message, to)
+            }
 
-//       return;
-//     } catch (error) {
-//       console.log(error);
-//       throw error;
-//     }
-//   }
+            if(!messageObject) {
+                throw new BadRequestError();
+            }
 
-//   async send(messageObject: any) {
-//     try {
-//       if(this.state === null) {
-//         await this.init();
-//       }
-//       await axios.post(
-//           `https://graph.facebook.com/${process.env.WHATSAPP_VID}/${this.state.agent.agentid}/messages`,
-//           messageObject,
-//           {
-//             headers: {
-//               Authorization: `Bearer ${this.state.agent.token}`,
-//             },
-//           }
-//         );
-//         console.log("message sent");
-//         return;
-//     } catch (error) {
-//       throw error;
-//     }
-//   }
+            await this.send(messageObject, fromId, token)
+            
+        } catch (error) {
+            throw error
+        }
+    }
 
-//   async simpleMessage(message: any) {
-//     try {
-//       await this.init();
-//       const agentReply: Message = {
-//         conversation_id: this.state.conversation.conversation_id,
-//         sender: this.state.agent.name,
-//         content: {
-//           header: "",
-//           body: message.text,
-//           footer: "",
-//           buttons: []
-//         },
-//         type: "agent"
-//       }
+    async send(messageObject: MessageObject, fromId: string, token: string) {
+        try {
+        await axios.post(
+            `https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`,
+            messageObject,
+            {
+                headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            }
+            );
+            console.log("message sent");
+            return;
+        } catch (error) {
+        throw new ExternalAPIError(undefined, {
+            service: "whatsapp",
+            originalError: (error as Error).message
+        })
+        }
+    }
 
-//       const messageData = {
-//         messaging_product: "whatsapp",
-//         recipient_type: "individual",
-//         to: this.state.client.contact_identifier,
-//         type: "text",
-//         text: {
-//           preview_url: true,
-//           body: message.text
-//         }
-//       } 
-//       await this.send(messageData);
+    textMessage(message: Content, to: string): MessageObject  {
+        const messageObject: MessageObject = {
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to: to,
+            type: "text",
+            text: {
+                preview_url: true,
+                body: message.body
+            }
+        } 
+        
+        return messageObject;
+    }
 
-//       await this.conversationsService.createMessage(agentReply);
-//       return;
-//     } catch (error) {
-//       console.log(error);
-//       throw error;
-//     }
-//   }
+    buttonsMessage(message: Content, to: string): MessageObject {
+        const interactiveObject: InteractiveObject = {
+            type: "button",
+            body: {
+                text: message.body,
+            },
+            action: {
+                buttons: message.buttons,
+            },
+        };
 
-//   async waButtonsMessage(data: any[]) {
-//     await this.init();
-//     const messageBody = data[0];
-//     const buttons = data[1];
+        if(message.header) {
+            interactiveObject.header = message.header;
+        }
 
-//     let interactiveObject: InteractiveObject = {
-//       type: "",
-//       body: {},
-//       action: {
-//         buttons: []
-//       },
-//     };
+        if(message.footer) {
+            interactiveObject.footer = { text: message.footer };
+        }
 
-//     let messageObject: MessageObject = {
-//       messaging_product: "whatsapp",
-//       recipient_type: "individual",
-//       to: this.state.client.contact_identifier,
-//       type: "",
-//     };
+        const messageObject: MessageObject = {
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to,
+            type: "interactive",
+            interactive: interactiveObject,
+        };
 
-//     messageObject.type = "interactive";
-//     interactiveObject.type = "button";
-//     interactiveObject.body = {
-//       text: messageBody
-//     };
-  
-//     if(buttons.length === 1 && buttons[0].request.payload.actions) {
-//       if(!this.state[buttons[0].name.toUpperCase()]) {
-//         this.state[buttons[0].name.toUpperCase()] = buttons[0].request
-//       }
-//       interactiveObject.type = "cta_url"
-//       interactiveObject.action = {
-//         name: "cta_url",
-//         parameters: {
-//           display_text: buttons[0].name,
-//           url: buttons[0].request.payload.actions[0].payload.url
-//         }
-//       }
-//     } else {
-//         for(let i = 0; i < buttons.length; i++) {
-//           if(!this.state[buttons[i].name.toUpperCase()]) {
-//             this.state[buttons[i].name.toUpperCase()] = buttons[i].request
-//           }
-//           //console.log(message.buttons[i].request.payload.actions) web url fro buttons
-//           interactiveObject.action.buttons.push(
-//             {
-//               type: "reply",
-//               reply: {
-//                 id: i,
-//                 title: buttons[i].name
-//               }
-//             }
-//           )
-//         } 
-//     }
-    
-//     messageObject.interactive = interactiveObject;
+        return messageObject;
+    }
 
-//     const messageData: Message = {
-//       conversation_id: this.state.conversation.conversation_id,
-//       sender: this.state.agent.name,
-//       content: {
-//         header: "",
-//         body: interactiveObject.body.text,
-//         footer: "",
-//         buttons: interactiveObject.action.buttons,
-//       },
-//        type: "agent"
-//     }  
+    imageMessage(message: Content, to: string): MessageObject {
+        let imageObjcet: ImageObject =  {
+            link: message.header.image!
+        }
 
-//     await this.conversationsService.createMessage(messageData);
+        if(message.body) {
+            imageObjcet.caption = message.body;
+        }
 
-//     await this.redis.set(this.redisKey, JSON.stringify(this.state));
+        const messageObject: MessageObject = {
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to: to,
+            type: "image",
+            image: imageObjcet
+        };
 
-//     await this.send(messageObject);
-//     return;
-//   }
-    
-//   async waCardMessage(card: any) {
-//     if(this.state === null) {
-//       await this.init();
-//     }
-
-//     let messageObject: MessageObject = {
-//       messaging_product: "whatsapp",
-//       recipient_type: "individual",
-//       to: this.state.client.contact_identifier,
-//       type: "",
-//     };
-
-//     messageObject.type = "interactive";
-//     let interactiveObject: InteractiveObject = {
-//       type: "type",
-//       body: {},
-//       action: {
-//         buttons: []
-//       }
-//     };
-//     if(card.header.length > 0 && card.footer.length >0){
-//       interactiveObject = {
-//         type: "button",
-//         header: {
-//           type: "image",
-//           image: {
-//             link: card.header
-//           }
-//         },
-//         body: {
-//           text: card.body
-//         },
-//         footer: {
-//           text: card.footer
-//         },
-//         action: {
-//           buttons: []
-//         }
-//       }
-//     } else if(card.header.length > 0 && card.footer.length < 1) {
-//       interactiveObject = {
-//         type: "button",
-//         header: {
-//           type: "image",
-//           image: {
-//             link: card.header
-//           }
-//         },
-//         body: {
-//           text: card.body
-//         },
-//         action: {
-//           buttons: []
-//         }
-//       }
-//     } else if(card.header.length < 1 && card.footer.length > 0) {
-//       interactiveObject = {
-//         type: "button",
-//         body: {
-//           text: card.body
-//         },
-//         footer: {
-//           text: card.footer
-//         },
-//         action: {
-//           buttons: []
-//         }
-//       }
-//     }
-    
-//     if(card.buttons.length === 1 && card.buttons[0].request.payload.actions) {
-//       if(!this.state[card.buttons[0].name.toUpperCase()]) {
-//         this.state[card.buttons[0].name.toUpperCase()] = card.buttons[0].request
-//       }
-//       interactiveObject.type = "cta_url"
-//       interactiveObject.action = {
-//         name: "cta_url",
-//         parameters: {
-//           display_text: card.buttons[0].name,
-//           url: card.buttons[0].request.payload.actions[0].payload.url
-//         }
-//       }
-//     } else {
-//       for(let i = 0; i < card.buttons.length; i++) {
-//         if(!this.state[card.buttons[i].name.toUpperCase()]) {
-//           this.state[card.buttons[i].name.toUpperCase()] = card.buttons[i].request;
-//         }
-//         //console.log(message.buttons[i].request.payload.actions) web url fro buttons
-//         interactiveObject.action.buttons.push(
-//           {
-//             type: "reply",
-//             reply: {
-//               id: i,
-//               title: card.buttons[i].name
-//             }
-//           }
-//         )
-//       } 
-//     } 
-
-//     messageObject.interactive = interactiveObject;
-
-//     const messageData: Message = {
-//       conversation_id: this.state.conversation.conversation_id,
-//       sender: this.state.agent.name,
-//       content: {
-//         header: interactiveObject.header && interactiveObject.header.image ? interactiveObject.header.image.link : "",
-//         body: interactiveObject.body.text,
-//         footer: interactiveObject.footer ? interactiveObject.footer.text : "",
-//         buttons: interactiveObject.action.buttons
-//       },
-//        type: "agent"
-//     }
-//     await this.conversationsService.createMessage(messageData);
-
-//     await this.redis.set(this.redisKey, JSON.stringify(this.state));
-
-//     await this.send(messageObject);
-//     return;
-//   }
-    
-//   async waImageMessage(image: any) {
-//     if(this.state === null) {
-//       await this.init();
-//     }
-
-//     let messageObject: MessageObject = {
-//       messaging_product: "whatsapp",
-//       recipient_type: "individual",
-//       to: this.state.client.contact_identifier,
-//       type: "image",
-//       image: {
-//           link: image.link
-//         }
-//     };
-
-
-//     const messageData: Message = {
-//       conversation_id: this.state.conversation.conversation_id,
-//       sender: this.state.agent.name,
-//       content: {
-//         header: "",
-//         body: messageObject.image.link,
-//         footer: "",
-//         buttons: []
-//       }, 
-//       type: "agent"
-//     }
-
-//     await this.conversationsService.createMessage(messageData);
-
-//     await this.redis.set(this.redisKey, JSON.stringify(this.state));
-    
-//     await this.send(messageObject);
-//     return;
-//   }
-// }
-
-// export default Whatsapp;
+        return messageObject;
+    }
+}

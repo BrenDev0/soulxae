@@ -1,0 +1,115 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const axios_1 = __importDefault(require("axios"));
+const errors_1 = require("../../core/errors/errors");
+class WhatsappService {
+    handleMessage(message, fromId, to, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let messageObject;
+                if (message.buttons) {
+                    messageObject = this.buttonsMessage(message, to);
+                }
+                else if (message.header) {
+                    messageObject = this.imageMessage(message, to);
+                }
+                else {
+                    messageObject = this.textMessage(message, to);
+                }
+                if (!messageObject) {
+                    throw new errors_1.BadRequestError();
+                }
+                yield this.send(messageObject, fromId, token);
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    send(messageObject, fromId, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield axios_1.default.post(`https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`, messageObject, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                console.log("message sent");
+                return;
+            }
+            catch (error) {
+                throw new errors_1.ExternalAPIError(undefined, {
+                    service: "whatsapp",
+                    originalError: error.message
+                });
+            }
+        });
+    }
+    textMessage(message, to) {
+        const messageObject = {
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to: to,
+            type: "text",
+            text: {
+                preview_url: true,
+                body: message.body
+            }
+        };
+        return messageObject;
+    }
+    buttonsMessage(message, to) {
+        const interactiveObject = {
+            type: "button",
+            body: {
+                text: message.body,
+            },
+            action: {
+                buttons: message.buttons,
+            },
+        };
+        if (message.header) {
+            interactiveObject.header = message.header;
+        }
+        if (message.footer) {
+            interactiveObject.footer = { text: message.footer };
+        }
+        const messageObject = {
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to,
+            type: "interactive",
+            interactive: interactiveObject,
+        };
+        return messageObject;
+    }
+    imageMessage(message, to) {
+        let imageObjcet = {
+            link: message.header.image
+        };
+        if (message.body) {
+            imageObjcet.caption = message.body;
+        }
+        const messageObject = {
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to: to,
+            type: "image",
+            image: imageObjcet
+        };
+        return messageObject;
+    }
+}
+exports.default = WhatsappService;

@@ -130,7 +130,7 @@ class EmailService {
                 <p>Este código expirará en 15 minutos. Si no solicitaste este código, por favor ignora este correo.</p>
                 <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
                 <p>¡Esperamos verte pronto!</p>
-                <p>Saludos,<br>El equipo de CXplorers</p>
+                <p>Saludos,<br>El equipo de Soulxae</p>
             </div>
         </body>
         </html>
@@ -187,7 +187,7 @@ class EmailService {
                     <p>Este código expirará en 15 minutos. Si no solicitaste este código, por favor ignora este correo.</p>
                     <p>Si tienes alguna pregunta o problemas, no dudes en contactarnos.</p>
                     <p>¡Gracias por usar nuestra plataforma!</p>
-                    <p>Saludos,<br>El equipo de CXplorers</p>
+                    <p>Saludos,<br>El equipo de Soulxae</p>
                 </div>
             </body>
             </html>
@@ -195,7 +195,7 @@ class EmailService {
         return ({
             from: "postmaster@ginrealestate.mx",
             to: email,
-            subject: "Recupera tu cuenta de CXplorers con este enlace",
+            subject: "Recupera tu cuenta de Soulxae con este enlace",
             html: html
         });
     }
@@ -253,7 +253,7 @@ class EmailService {
                 <p>Este código expirará en 15 minutos. Si no solicitaste este código, por favor ignora este correo.</p>
                 <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
                 <p>¡Esperamos verte pronto!</p>
-                <p>Saludos,<br>El equipo de CXplorers</p>
+                <p>Saludos,<br>El equipo de Soulxae</p>
             </div>
         </body>
         </html>

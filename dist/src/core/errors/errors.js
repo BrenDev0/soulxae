@@ -3,8 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ValidationError = exports.NotFoundError = exports.InvalidIdError = exports.S3Error = exports.DatabaseError = exports.ENVVariableError = exports.BadRequestError = exports.AuthorizationError = exports.AuthenticationError = void 0;
+exports.ValidationError = exports.NotFoundError = exports.InvalidIdError = exports.S3Error = exports.DatabaseError = exports.ENVVariableError = exports.BadRequestError = exports.AuthorizationError = exports.AuthenticationError = exports.ExternalAPIError = void 0;
 const AppError_1 = __importDefault(require("./AppError"));
+class ExternalAPIError extends AppError_1.default {
+    constructor(message = 'External api error', context) {
+        super(message, 400, true, context);
+        this.name = 'ExternalAPIError';
+    }
+}
+exports.ExternalAPIError = ExternalAPIError;
 class AuthenticationError extends AppError_1.default {
     constructor(message = 'Authentication failed', context) {
         super(message, 401, true, context);

@@ -1,0 +1,77 @@
+import { Client, ClientData } from './clients.interface'
+import BaseRepository from "../../core/repository/BaseRepository";
+import { handleServiceError } from '../../core/errors/error.service';
+import Container from '../../core/dependencies/Container';
+import EncryptionService from '../../core/services/EncryptionService';
+
+export default class ClientService {
+    private repository: BaseRepository<Client>;
+    private block = "clients.service"
+    constructor(repository: BaseRepository<Client>) {
+        this.repository = repository
+    }
+
+    async create(clients: ClientData): Promise<Client> {
+        const mappedClient = this.mapToDb(clients);
+        try {
+            return this.repository.create(mappedClient);
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "create", mappedClient)
+            throw error;
+        }
+    }
+
+    async resource(clientId: string): Promise<ClientData | null> {
+        try {
+            const result = await this.repository.selectOne("client_id", clientId);
+            if(!result) {
+                return null
+            }
+            return this.mapFromDb(result)
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "resource", {clientId})
+            throw error;
+        }
+    }
+
+    async update(clientId: string, changes: ClientData): Promise<Client> {
+        const mappedChanges = this.mapToDb(changes);
+        const cleanedChanges = Object.fromEntries(
+            Object.entries(mappedChanges).filter(([_, value]) => value !== undefined)
+        );
+        try {
+            return await this.repository.update("clientId", clientId, cleanedChanges);
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "update", cleanedChanges)
+            throw error;
+        }
+    }
+
+    async delete(clientId: string): Promise<Client> {
+        try {
+            return await this.repository.delete("client_id", clientId) as Client;
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "delete", {clientId})
+            throw error;
+        }
+    }
+
+    mapToDb(client: ClientData): Client {
+        const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
+        return {
+            agent_id: client.agentId,
+            name: client.name && encryptionService.encryptData(client.name),
+            contact_identifier: client.contactIdentifier && encryptionService.encryptData(client.contactIdentifier)
+        }
+    }
+
+    mapFromDb(client: Client): ClientData {
+        const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
+        return {
+            clientId: client.client_id,
+            agentId: client.agent_id,
+            name: encryptionService.decryptData(client.name),
+            contactIdentifier: encryptionService.decryptData(client.contact_identifier)
+        }
+    }
+}

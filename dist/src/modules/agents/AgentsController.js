@@ -17,6 +17,7 @@ const Container_1 = __importDefault(require("../../core/dependencies/Container")
 class AgentsController {
     constructor(httpService, agentsService) {
         this.block = "agents.controller";
+        this.allowedAgentTypes = ["bot", "human"];
         this.httpService = httpService;
         this.agentsService = agentsService;
     }
@@ -25,9 +26,9 @@ class AgentsController {
             const block = `${this.block}.createRequest`;
             try {
                 const user = req.user;
-                const requiredFields = ["apiKey", "description", "name", "provider", "workspaceId"];
+                const requiredFields = ["apiKey", "description", "name", "provider", "workspaceId", "agentType"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-                const { workspaceId } = req.body;
+                const { workspaceId, agentType } = req.body;
                 this.httpService.requestValidation.validateUuid(workspaceId, "workspaceId", block);
                 const workspaceService = Container_1.default.resolve("WorkspacesService");
                 const resource = yield workspaceService.resource(workspaceId);
@@ -42,6 +43,12 @@ class AgentsController {
                         block: `${block}.userCheck`,
                         workspaceUserId: resource.userId,
                         userId: user.user_id
+                    });
+                }
+                if (!this.allowedAgentTypes.includes(agentType)) {
+                    throw new errors_1.BadRequestError("Invalid agent type", {
+                        allowedAgentTypes: this.allowedAgentTypes,
+                        type: agentType
                     });
                 }
                 yield this.agentsService.create(req.body);
@@ -62,6 +69,13 @@ class AgentsController {
                 const resource = yield this.agentsService.resource(agentId);
                 if (!resource) {
                     throw new errors_1.NotFoundError("Agent not found");
+                }
+                if (resource.userId !== user.user_id) {
+                    throw new errors_1.AuthorizationError(undefined, {
+                        block: `${block}.userCheck`,
+                        workspaceUserId: resource.userId,
+                        userId: user.user_id
+                    });
                 }
                 res.status(200).json({ data: resource });
             }
@@ -101,6 +115,7 @@ class AgentsController {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.updateRequest`;
             try {
+                const user = req.user;
                 const agentId = req.params.agentId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
                 const resource = yield this.agentsService.resource(agentId);
@@ -109,8 +124,21 @@ class AgentsController {
                         block: `${block}.notFound`,
                     });
                 }
-                const allowedChanges = ["name", "description", "apiKey", "provider"];
+                if (resource.userId !== user.user_id) {
+                    throw new errors_1.AuthorizationError(undefined, {
+                        block: `${block}.userCheck`,
+                        workspaceUserId: resource.userId,
+                        userId: user.user_id
+                    });
+                }
+                const allowedChanges = ["name", "description", "apiKey", "provider", "agentType"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
+                if (filteredChanges.agentType && !this.allowedAgentTypes.includes(filteredChanges.agentType)) {
+                    throw new errors_1.BadRequestError("Invalid agent type", {
+                        allowedAgentTypes: this.allowedAgentTypes,
+                        type: filteredChanges.agentType
+                    });
+                }
                 yield this.agentsService.update(agentId, filteredChanges);
                 res.status(200).json({ message: "updated" });
             }
@@ -123,12 +151,20 @@ class AgentsController {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.deleteRequest`;
             try {
+                const user = req.user;
                 const agentId = req.params.agentId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
                 const resource = yield this.agentsService.resource(agentId);
                 if (!resource) {
                     throw new errors_1.NotFoundError(undefined, {
                         block: `${block}.notFound`,
+                    });
+                }
+                if (resource.userId !== user.user_id) {
+                    throw new errors_1.AuthorizationError(undefined, {
+                        block: `${block}.userCheck`,
+                        workspaceUserId: resource.userId,
+                        userId: user.user_id
                     });
                 }
                 yield this.agentsService.delete(agentId);

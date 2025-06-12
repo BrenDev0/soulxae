@@ -18,11 +18,11 @@ export default class PlatformsController {
   async createRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.createRequest`;
     try {
-      const requiredFields = ["agentId", "platform", "token"];
+      const requiredFields = ["agentId", "platform", "token", "identifier"];
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
       const { agentId, platform, token } = req.body;
       
-      if (!this.allowedPlatforms.includes(platform)) {
+      if(!this.allowedPlatforms.includes(platform)) {
         throw new BadRequestError("Invalid platform type", {
           allowedPlatforms: this.allowedPlatforms,
           platform: platform

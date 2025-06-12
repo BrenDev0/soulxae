@@ -13,6 +13,7 @@ const errors_1 = require("../../core/errors/errors");
 class PlatformsController {
     constructor(httpService, platformsService) {
         this.block = "platforms.controller";
+        this.allowedPlatforms = ["whatsapp", "messenger", "instagram", "direct"];
         this.httpService = httpService;
         this.platformsService = platformsService;
     }
@@ -20,9 +21,20 @@ class PlatformsController {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.createRequest`;
             try {
-                const requiredFields = ["agentId", "platform", "token"];
+                const requiredFields = ["agentId", "platform", "token", "identifier"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const { agentId, platform, token } = req.body;
+                if (!this.allowedPlatforms.includes(platform)) {
+                    throw new errors_1.BadRequestError("Invalid platform type", {
+                        allowedPlatforms: this.allowedPlatforms,
+                        platform: platform
+                    });
+                }
+                const agentsPlatforms = yield this.platformsService.collection(agentId);
+                const platformExists = agentsPlatforms.some((i) => i.platform == platform);
+                if (platformExists) {
+                    throw new errors_1.BadRequestError("Platform in use, update or delete agents current platforms");
+                }
                 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                 let secret = '';
                 for (let i = 0; i < 13; i++) {
@@ -58,6 +70,20 @@ class PlatformsController {
             }
         });
     }
+    collectionRequest(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.resourceRequest`;
+            try {
+                const agentId = req.params.agentId;
+                this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
+                const data = yield this.platformsService.collection(agentId);
+                res.status(200).json({ data: data });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     updateRequest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.updateRequest`;
@@ -72,6 +98,12 @@ class PlatformsController {
                 }
                 const allowedChanges = ["token", "platform"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
+                if (filteredChanges.platform && !this.allowedPlatforms.includes(filteredChanges.platform)) {
+                    throw new errors_1.BadRequestError("Invalid platform type", {
+                        allowedPlatforms: this.allowedPlatforms,
+                        platform: filteredChanges.platform
+                    });
+                }
                 yield this.platformsService.update(platformId, filteredChanges);
                 res.status(200).json({ message: "updated" });
             }

@@ -1,13 +1,14 @@
-import { Conversation, ConversationData } from './conversations.interface'
+import { Conversation, ConversationForAPI, ConversationData, ConversationForAPIData } from './conversations.interface'
 import BaseRepository from "../../core/repository/BaseRepository";
 import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
 import EncryptionService from '../../core/services/EncryptionService';
+import ConversationsRepositoy from './ConversationsRepository';
 
-export default class ConversationService {
-    private repository: BaseRepository<Conversation>;
+export default class ConversationsService {
+    private repository: ConversationsRepositoy
     private block = "conversations.service"
-    constructor(repository: BaseRepository<Conversation>) {
+    constructor(repository: ConversationsRepositoy) {
         this.repository = repository
     }
 
@@ -28,6 +29,19 @@ export default class ConversationService {
                 return null
             }
             return this.mapFromDb(result)
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "resource", { conversationId })
+            throw error;
+        }
+    }
+
+    async getAPIData(conversationId: string): Promise<ConversationForAPIData | null> {
+         try {
+            const result = await this.repository.getAPIData(conversationId);
+            if(!result) {
+                return null
+            }
+            return this.mapForAPI(result)
         } catch (error) {
             handleServiceError(error as Error, this.block, "resource", { conversationId })
             throw error;
@@ -74,7 +88,24 @@ export default class ConversationService {
             platform: conversation.platform,
             clientId: conversation.client_id,
             title: conversation.title,
-            handoff: conversation.handoff
+            handoff: conversation.handoff,
+            platformIdentifier: conversation.platform_identifier && encryptionService.decryptData(conversation.platform_identifier),
+            clientIdentifier: conversation.client_identifier && encryptionService.decryptData(conversation.client_identifier) 
+        }
+    }
+
+    mapForAPI(conversation: ConversationForAPI): ConversationForAPIData {
+        const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
+        return {
+            conversationId: conversation.conversation_id!,
+            agentId: conversation.agent_id,
+            platform: conversation.platform,
+            clientId: conversation.client_id,
+            title: conversation.title,
+            handoff: conversation.handoff,
+            platformIdentifier: encryptionService.decryptData(conversation.platform_identifier),
+            clientIdentifier: encryptionService.decryptData(conversation.client_identifier),
+            token: encryptionService.decryptData(conversation.token)
         }
     }
 }

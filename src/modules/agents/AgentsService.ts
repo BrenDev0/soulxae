@@ -3,11 +3,12 @@ import BaseRepository from "../../core/repository/BaseRepository";
 import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
 import EncryptionService from '../../core/services/EncryptionService';
+import { AgentsRepository } from './AgentsRepository';
 
 export default class AgentService {
-    private repository: BaseRepository<Agent>;
+    private repository: AgentsRepository;
     private block = "agents.service"
-    constructor(repository: BaseRepository<Agent>) {
+    constructor(repository: AgentsRepository) {
         this.repository = repository
     }
 
@@ -23,7 +24,7 @@ export default class AgentService {
 
     async resource(agentId: string): Promise<AgentData | null> {
         try {
-            const result = await this.repository.selectOne("agent_id", agentId);
+            const result = await this.repository.resource(agentId);
             if(!result) {
                 return null
             }
@@ -36,7 +37,7 @@ export default class AgentService {
 
      async collection(workspaceId: string): Promise<AgentData[]> {
         try {
-            const result = await this.repository.select("workspace_id", workspaceId);
+            const result = await this.repository.collection(workspaceId);
 
             const data = result.map((agent) => this.mapFromDb(agent));
             
@@ -90,7 +91,8 @@ export default class AgentService {
             provider: agent.provider,
             apiKey: encryptionService.decryptData(agent.api_key),
             name: agent.name,
-            description: agent.description
+            description: agent.description,
+            userId: agent.user_id
         }
     }
 }

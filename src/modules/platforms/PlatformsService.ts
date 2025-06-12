@@ -3,12 +3,12 @@ import BaseRepository from "../../core/repository/BaseRepository";
 import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
 import EncryptionService from '../../core/services/EncryptionService';
-import { agent } from 'supertest';
+import PlatformsRepository from './PlatformsRepository';
 
-export default class PlatformService {
-    private repository: BaseRepository<Platform>;
+export default class PlatformsService {
+    private repository: PlatformsRepository;
     private block = "platforms.service"
-    constructor(repository: BaseRepository<Platform>) {
+    constructor(repository: PlatformsRepository) {
         this.repository = repository
     }
 
@@ -23,7 +23,6 @@ export default class PlatformService {
     }
 
 
-    // do not map
     async resource(whereCol: string, identifier: string): Promise<Omit<PlatformData, "token"> | null> {
         try {
             const result = await this.repository.selectOne(whereCol, identifier);
@@ -33,6 +32,19 @@ export default class PlatformService {
             return this.mapFromDb(result);
         } catch (error) {
             handleServiceError(error as Error, this.block, "resource", {whereCol, identifier})
+            throw error;
+        }
+    }
+
+    async getAgentPlatform(agentId: string, platform: string) {
+        try {
+            const result = await this.repository.getAgentPlatform(agentId, platform);
+            if(!result) {
+                return null
+            }
+            return this.mapFromDb(result);
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "getAgentPlatform", {agentId, platform})
             throw error;
         }
     }
@@ -79,7 +91,8 @@ export default class PlatformService {
            platform: platform.platform,
            webhook_url: platform.webhookUrl,
            webhook_secret: platform.webhookSecret && encryptionService.encryptData(platform.webhookSecret),
-           token: platform.token && encryptionService.encryptData(platform.token)
+           token: platform.token && encryptionService.encryptData(platform.token),
+           identifier: platform.identifier && encryptionService.encryptData(platform.identifier)
         }
     }
 
@@ -90,7 +103,8 @@ export default class PlatformService {
             agentId: platform.agent_id,
             platform: platform.platform,
             webhookUrl: platform.webhook_url,
-            webhookSecret: encryptionService.encryptData(platform.webhook_secret),
+            webhookSecret: encryptionService.decryptData(platform.webhook_secret),
+            identifier: encryptionService.decryptData(platform.identifier)
         }
     }
 }

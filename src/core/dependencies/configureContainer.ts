@@ -16,6 +16,11 @@ import RedisService from '../services/RedisService';
 import { configureWorkspacesDependencies } from '../../modules/workspaces/workspaces.dependencies';
 import { configureAgentsDependencies } from '../../modules/agents/agents.dependencies';
 import { configurePlatformsDependencies } from '../../modules/platforms/platforms.dependencies';
+import { configureConversationsDependencies } from '../../modules/conversations/conversations.dependencies';
+import { configureClientsDependencies } from '../../modules/clients/clients.dependencies';
+import { configureSessionsDependencies } from '../../modules/sessions/sessions.dependencies';
+import { configureWhatsappDependencies } from '../../modules/whatsapp/whatsapp.dependencies';
+import { configureMessagesDependencies } from '../../modules/messages/messages.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -54,18 +59,35 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
     const connectionUrl = testRedis ?? (process.env.REDIS_URL as string || "");
     const redisClient = await new RedisService(connectionUrl).createClient();
     Container.register<RedisClientType>("RedisClient", redisClient);
+
+    // sessions //
+    configureSessionsDependencies(redisClient);
  
+    // agents //
+    configureAgentsDependencies(pool);
+
+    // clients // 
+    configureClientsDependencies(pool);
+
+    // conversations //
+    configureConversationsDependencies(pool);
+
+    // messages //
+    configureMessagesDependencies(pool);
+
     // platforms //
     configurePlatformsDependencies(pool);
 
     // users //
     configureUsersDependencies(pool);
 
+    // whatsapp //
+    configureWhatsappDependencies();
+
     // workspaces //
     configureWorkspacesDependencies(pool);
 
-    // agents //
-    configureAgentsDependencies(pool);
+    
 
    // middleware --- must configure users above this block //
     const usersService = Container.resolve<UserService>("UsersService");

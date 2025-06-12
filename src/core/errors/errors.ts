@@ -1,5 +1,12 @@
 import AppError from "./AppError";
 
+export class ExternalAPIError extends AppError {
+  constructor(message = 'External api error', context?: Record<string, unknown>) {
+    super(message, 400, true, context);
+    this.name = 'ExternalAPIError';
+  }
+}
+
 export class AuthenticationError extends AppError {
   constructor(message = 'Authentication failed', context?: Record<string, unknown>) {
     super(message, 401, true, context);

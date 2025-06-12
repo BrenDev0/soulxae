@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const error_service_1 = require("../../core/errors/error.service");
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
-class PlatformService {
+class PlatformsService {
     constructor(repository) {
         this.block = "platforms.service";
         this.repository = repository;
@@ -31,7 +31,6 @@ class PlatformService {
             }
         });
     }
-    // do not map
     resource(whereCol, identifier) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -43,6 +42,34 @@ class PlatformService {
             }
             catch (error) {
                 (0, error_service_1.handleServiceError)(error, this.block, "resource", { whereCol, identifier });
+                throw error;
+            }
+        });
+    }
+    getAgentPlatform(agentId, platform) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.getAgentPlatform(agentId, platform);
+                if (!result) {
+                    return null;
+                }
+                return this.mapFromDb(result);
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "getAgentPlatform", { agentId, platform });
+                throw error;
+            }
+        });
+    }
+    collection(agentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.select("agent_id", agentId);
+                const data = result.map((platform) => this.mapFromDb(platform));
+                return data;
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { agentId });
                 throw error;
             }
         });
@@ -78,7 +105,8 @@ class PlatformService {
             platform: platform.platform,
             webhook_url: platform.webhookUrl,
             webhook_secret: platform.webhookSecret && encryptionService.encryptData(platform.webhookSecret),
-            token: platform.token && encryptionService.encryptData(platform.token)
+            token: platform.token && encryptionService.encryptData(platform.token),
+            identifier: platform.identifier && encryptionService.encryptData(platform.identifier)
         };
     }
     mapFromDb(platform) {
@@ -88,8 +116,9 @@ class PlatformService {
             agentId: platform.agent_id,
             platform: platform.platform,
             webhookUrl: platform.webhook_url,
-            webhookSecret: encryptionService.encryptData(platform.webhook_secret),
+            webhookSecret: encryptionService.decryptData(platform.webhook_secret),
+            identifier: encryptionService.decryptData(platform.identifier)
         };
     }
 }
-exports.default = PlatformService;
+exports.default = PlatformsService;

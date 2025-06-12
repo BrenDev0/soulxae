@@ -73,6 +73,15 @@ export default class AgentsController {
         throw new NotFoundError("Agent not found")
       }
 
+      if(resource.userId !== user.user_id) {
+        throw new AuthorizationError(undefined, {
+          block: `${block}.userCheck`,
+          workspaceUserId: resource.userId,
+          userId: user.user_id
+        })
+      }
+
+
       res.status(200).json({ data: resource})
     } catch (error) {
       throw error;
@@ -111,6 +120,7 @@ export default class AgentsController {
   async updateRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.updateRequest`;
     try { 
+      const user = req.user;
       const agentId = req.params.agentId;
       this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
 
@@ -120,6 +130,15 @@ export default class AgentsController {
           block: `${block}.notFound`,
         });
       }
+
+      if(resource.userId !== user.user_id) {
+        throw new AuthorizationError(undefined, {
+          block: `${block}.userCheck`,
+          workspaceUserId: resource.userId,
+          userId: user.user_id
+        })
+      }
+
 
       const allowedChanges = ["name", "description", "apiKey", "provider", "agentType"];
 
@@ -143,6 +162,7 @@ export default class AgentsController {
   async deleteRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.deleteRequest`;
     try {
+      const user = req.user;
       const agentId = req.params.agentId;
       this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
 
@@ -151,6 +171,14 @@ export default class AgentsController {
         throw new NotFoundError(undefined, {
           block: `${block}.notFound`,
         });
+      }
+
+      if(resource.userId !== user.user_id) {
+        throw new AuthorizationError(undefined, {
+          block: `${block}.userCheck`,
+          workspaceUserId: resource.userId,
+          userId: user.user_id
+        })
       }
 
       await this.agentsService.delete(agentId);

@@ -34,7 +34,7 @@ class AgentService {
     resource(agentId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.selectOne("agent_id", agentId);
+                const result = yield this.repository.resource(agentId);
                 if (!result) {
                     return null;
                 }
@@ -49,7 +49,7 @@ class AgentService {
     collection(workspaceId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.select("workspace_id", workspaceId);
+                const result = yield this.repository.collection(workspaceId);
                 const data = result.map((agent) => this.mapFromDb(agent));
                 return data;
             }
@@ -86,6 +86,7 @@ class AgentService {
     mapToDb(agent) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
+            agent_type: agent.agentType.toLowerCase(),
             workspace_id: agent.workspaceId,
             provider: agent.provider,
             api_key: agent.apiKey && encryptionService.encryptData(agent.apiKey),
@@ -97,11 +98,13 @@ class AgentService {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
             agentId: agent.agent_id,
+            agentType: agent.agent_type.toLowerCase(),
             workspaceId: agent.workspace_id,
             provider: agent.provider,
             apiKey: encryptionService.decryptData(agent.api_key),
             name: agent.name,
-            description: agent.description
+            description: agent.description,
+            userId: agent.user_id
         };
     }
 }

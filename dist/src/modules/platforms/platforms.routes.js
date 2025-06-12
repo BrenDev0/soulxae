@@ -37,6 +37,14 @@ const initializePlatformsRouter = (customController) => {
     #swagger.description = 'get platform by id'
     */
     controller.resourceRequest.bind(controller));
+    secureRouter.get("/collection/:agentId", 
+    /*
+    #swagger.tags = ['Platforms']
+    #swagger.path =  '/platforms/secure/collection/{agentId}'
+    #swagger.security = [{ "bearerAuth": [] }]
+    #swagger.description = 'get agents platforms'
+    */
+    controller.collectionRequest.bind(controller));
     secureRouter.put("/:platformId", 
     /*
     #swagger.tags = ['Platforms']
