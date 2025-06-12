@@ -5,8 +5,17 @@ import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
 
 
 export default class WhatsappService {
+
+    async handleIncomingMessage(message: any) {
+        try {
+            console.log(message) 
+            return;
+        } catch (error) {
+            throw error;
+        }
+    }
  
-    async handleMessage(message: Content, fromId: string, to: string, token: string): Promise<void> {
+    async handleOutgoingMessage(message: Content, fromId: string, to: string, token: string): Promise<void> {
         try {
             let messageObject: MessageObject;
 

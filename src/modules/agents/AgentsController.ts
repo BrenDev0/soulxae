@@ -23,7 +23,7 @@ export default class AgentsController {
     const block = `${this.block}.createRequest`;
     try {
       const user = req.user;
-      const requiredFields = ["apiKey", "description", "name", "provider", "workspaceId", "agentType"];
+      const requiredFields = ["apiKey", "description", "name", "workspaceId", "agentType"];
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
       
       const{ workspaceId, agentType } = req.body;
@@ -140,7 +140,7 @@ export default class AgentsController {
       }
 
 
-      const allowedChanges = ["name", "description", "apiKey", "provider", "agentType"];
+      const allowedChanges = ["name", "description", "apiKey", "agentType"];
 
       const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<AgentData>(allowedChanges, req.body, block);
 

@@ -26,7 +26,7 @@ class AgentsController {
             const block = `${this.block}.createRequest`;
             try {
                 const user = req.user;
-                const requiredFields = ["apiKey", "description", "name", "provider", "workspaceId", "agentType"];
+                const requiredFields = ["apiKey", "description", "name", "workspaceId", "agentType"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const { workspaceId, agentType } = req.body;
                 this.httpService.requestValidation.validateUuid(workspaceId, "workspaceId", block);
@@ -131,7 +131,7 @@ class AgentsController {
                         userId: user.user_id
                     });
                 }
-                const allowedChanges = ["name", "description", "apiKey", "provider", "agentType"];
+                const allowedChanges = ["name", "description", "apiKey", "agentType"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 if (filteredChanges.agentType && !this.allowedAgentTypes.includes(filteredChanges.agentType)) {
                     throw new errors_1.BadRequestError("Invalid agent type", {

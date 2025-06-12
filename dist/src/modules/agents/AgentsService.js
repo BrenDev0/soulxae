@@ -88,7 +88,6 @@ class AgentService {
         return {
             agent_type: agent.agentType.toLowerCase(),
             workspace_id: agent.workspaceId,
-            provider: agent.provider,
             api_key: agent.apiKey && encryptionService.encryptData(agent.apiKey),
             name: agent.name,
             description: agent.description
@@ -100,8 +99,7 @@ class AgentService {
             agentId: agent.agent_id,
             agentType: agent.agent_type.toLowerCase(),
             workspaceId: agent.workspace_id,
-            provider: agent.provider,
-            apiKey: encryptionService.decryptData(agent.api_key),
+            apiKey: agent.api_key === null ? null : encryptionService.decryptData(agent.api_key),
             name: agent.name,
             description: agent.description,
             userId: agent.user_id

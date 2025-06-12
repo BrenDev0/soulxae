@@ -4,8 +4,7 @@ export interface Agent {
   agent_id?: string;
   agent_type: string;
   workspace_id: string;
-  provider: string;
-  api_key: string;
+  api_key: string | null;
   name: string;
   description: string
   user_id?: string;
@@ -17,8 +16,7 @@ export interface AgentData {
   agentId?: string;
   agentType: string;
   workspaceId: string;
-  provider: string;
-  apiKey: string;
+  apiKey: string  |  null;
   name: string;
   description: string;
   userId?: string;

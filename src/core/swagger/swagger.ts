@@ -56,10 +56,9 @@ const doc = {
         name: "new name"
       },
       createAgent: {
-        apiKey: "required",
+        apiKey: "required for type bot",
         description: "required",
         name: "required",
-        provider: "only voiceflow is supported atm",
         workspaceId: "required",
         agentType: "bot, or human"
       },

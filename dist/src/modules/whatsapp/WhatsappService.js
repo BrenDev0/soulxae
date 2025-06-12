@@ -15,7 +15,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const errors_1 = require("../../core/errors/errors");
 class WhatsappService {
-    handleMessage(message, fromId, to, token) {
+    handleIncomingMessage(message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log(message);
+                return;
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    handleOutgoingMessage(message, fromId, to, token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 let messageObject;

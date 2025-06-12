@@ -205,6 +205,34 @@
                 ]
             }
         },
+        "/platforms/secure/collection/{agentId}": {
+            "get": {
+                "tags": [
+                    "Platforms"
+                ],
+                "description": "get agents platforms",
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/platforms/secure/{platformId}": {
             "put": {
                 "tags": [
@@ -722,7 +750,7 @@
                 "properties": {
                     "apiKey": {
                         "type": "string",
-                        "example": "required"
+                        "example": "required for type bot"
                     },
                     "description": {
                         "type": "string",
@@ -732,13 +760,13 @@
                         "type": "string",
                         "example": "required"
                     },
-                    "provider": {
-                        "type": "string",
-                        "example": "only voiceflow is supported atm"
-                    },
                     "workspaceId": {
                         "type": "string",
                         "example": "required"
+                    },
+                    "agentType": {
+                        "type": "string",
+                        "example": "bot, or human"
                     }
                 }
             },
@@ -768,7 +796,7 @@
                     },
                     "platform": {
                         "type": "string",
-                        "example": "whatsapp, messenger, ect.."
+                        "example": "whatsapp, messenger, instagram, direct(for human agents)"
                     },
                     "token": {
                         "type": "string",

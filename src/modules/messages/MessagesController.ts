@@ -36,7 +36,7 @@ export default class MessagesController {
       switch(conversation.platform) {
         case "whatsapp":
           const whatsappService = Container.resolve<WhatsappService>("WhatsappService");
-          await whatsappService.handleMessage(message.content, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token)
+          await whatsappService.handleOutgoingMessage(message.content, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token)
           break;
         default: 
           throw new BadRequestError("Code nfinished messages.controller.createReqquest")  
