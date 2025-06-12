@@ -8,10 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 class DirectMessagagingController {
     constructor(httpService) {
         this.httpService = httpService;
+    }
+    verifyWebhook(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const webhookService = Container_1.default.resolve("WebhookService");
+                const challenge = yield webhookService.verifyWebhook(req);
+                console.log('WEBHOOK_VERIFIED');
+                res.status(200).send(challenge);
+            }
+            catch (error) {
+                throw error;
+            }
+        });
     }
     incomingMessage(req, res) {
         return __awaiter(this, void 0, void 0, function* () {

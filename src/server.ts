@@ -9,6 +9,7 @@ import { initializeAgentsRouter } from './modules/agents/agents.routes';
 import { initializePlatformsRouter } from './modules/platforms/platforms.routes';
 import { initializeUsersRouter } from './modules/users/users.routes';
 import { initializeWorkspacesRouter } from './modules/workspaces/workspaces.routes';
+import { initializeDirectMessageingRouter } from './modules/directMessaging/directMessaging.routes';
 
 
 const server = async() => {
@@ -19,6 +20,7 @@ const server = async() => {
 
     // routers //
     const agentsRouter = initializeAgentsRouter();
+    const directMessagingRouter = initializeDirectMessageingRouter();
     const platformsRouter = initializePlatformsRouter();
     const usersRouter = initializeUsersRouter();
     const workspacesRouter = initializeWorkspacesRouter();
@@ -30,6 +32,7 @@ const server = async() => {
     process.env.NODE_ENV !== 'production' && app.use('/docs/endpoints', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
     app.use("/agents", agentsRouter);
+    app.use("/direct", directMessagingRouter);
     app.use("/platforms", platformsRouter);
     app.use("/users", usersRouter);
     app.use("/workspaces", workspacesRouter)

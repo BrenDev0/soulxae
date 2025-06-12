@@ -70,7 +70,8 @@ const doc = {
       createPlatform: {
         agentId: "required",
         platform: "whatsapp, messenger, instagram, direct(for human agents)",
-        token: "system user token form meta"
+        token: "system user token form meta",
+        identifier: "from api connections in meta developers app"
       },
       updatePlatform: {
         token: "new token",

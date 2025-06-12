@@ -33,6 +33,7 @@ const clients_dependencies_1 = require("../../modules/clients/clients.dependenci
 const sessions_dependencies_1 = require("../../modules/sessions/sessions.dependencies");
 const whatsapp_dependencies_1 = require("../../modules/whatsapp/whatsapp.dependencies");
 const messages_dependencies_1 = require("../../modules/messages/messages.dependencies");
+const directMessaging_dependencies_1 = require("../../modules/directMessaging/directMessaging.dependencies");
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -70,6 +71,8 @@ function configureContainer(testPool, testRedis) {
         (0, clients_dependencies_1.configureClientsDependencies)(pool);
         // conversations //
         (0, conversations_dependencies_1.configureConversationsDependencies)(pool);
+        // direct to client messaging //
+        (0, directMessaging_dependencies_1.configureDirectMessagingDependencies)();
         // messages //
         (0, messages_dependencies_1.configureMessagesDependencies)(pool);
         // platforms //

@@ -15,7 +15,7 @@ export const initializeDirectMessageingRouter = (customController?: DirectMessag
 
     // unprotected Routes //
     router.post("/:id/webhook", controller.incomingMessage.bind(controller));
-
+    router.get('/:id/webhook', controller.verifyWebhook.bind(controller));
     // mounts //
 
     router.use("/secure", secureRouter);

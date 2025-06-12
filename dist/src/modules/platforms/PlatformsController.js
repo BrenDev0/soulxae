@@ -44,7 +44,11 @@ class PlatformsController {
                 const webhookUrl = `https://${process.env.WEBHOOK_URL}/${platform}/${encryptedId}/webhook`;
                 const platformData = Object.assign(Object.assign({}, req.body), { webhookUrl: webhookUrl, webhookSecret: secret });
                 yield this.platformsService.create(platformData);
-                res.status(200).json({ message: "Platform added." });
+                res.status(200).json({
+                    message: "Platform added.",
+                    webhook: webhookUrl,
+                    secret: secret
+                });
             }
             catch (error) {
                 throw error;

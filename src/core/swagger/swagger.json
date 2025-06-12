@@ -801,6 +801,10 @@
           "token": {
             "type": "string",
             "example": "system user token form meta"
+          },
+          "identifier": {
+            "type": "string",
+            "example": "from api connections in meta developers app"
           }
         }
       },
