@@ -45,7 +45,7 @@ class WhatsappService {
                 yield this.sendReadRecipt(message.id, fromId, token);
                 let messageContent = {
                     header: null,
-                    body: message.text.body,
+                    body: "",
                     footer: null,
                     buttons: null
                 };

@@ -40,12 +40,12 @@ export default class WhatsappService {
 
             let messageContent: Content =  {
                 header: null,
-                body: message.text.body,
+                body: "",
                 footer: null,
                 buttons: null
             }
 
-            
+
             if(message.image) {
                 const url = await this.getMedia(message.image.id, token);
 
