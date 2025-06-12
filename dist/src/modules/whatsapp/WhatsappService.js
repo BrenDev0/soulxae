@@ -67,8 +67,7 @@ class WhatsappService {
                     status: "read",
                     message_id: messageId
                 };
-                const response = yield this.send(readReceipt, fromId, token);
-                console.log(response, "REsponse::::::");
+                yield this.send(readReceipt, fromId, token);
                 return;
             }
             catch (error) {
@@ -79,11 +78,12 @@ class WhatsappService {
     send(messageObject, fromId, token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield axios_1.default.post(`https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`, messageObject, {
+                const response = yield axios_1.default.post(`https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`, messageObject, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+                console.log(response, "REsponse::::::");
                 console.log("message sent");
                 return;
             }

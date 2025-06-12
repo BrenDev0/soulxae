@@ -38,7 +38,7 @@ export default class WhatsappService {
             
             await this.sendReadRecipt(message.id, fromId, token);
 
-            console.log(message, "message:::::.",);
+            console.log(message, "message:::::.");
             return;
         } catch (error) {
             throw error;
@@ -62,8 +62,7 @@ export default class WhatsappService {
                 message_id: messageId
             }
 
-           const response =  await this.send(readReceipt, fromId, token);
-           console.log(response, "REsponse::::::")
+           await this.send(readReceipt, fromId, token);
             return;
         } catch (error) {
             throw error;
@@ -72,17 +71,18 @@ export default class WhatsappService {
 
     async send(messageObject: MessageObject | ReadReceipt, fromId: string, token: string) {
         try {
-        await axios.post(
-            `https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`,
-            messageObject,
-            {
-                headers: {
-                Authorization: `Bearer ${token}`,
-                },
-            }
-            );
-            console.log("message sent");
-            return;
+            const response = await axios.post(
+                `https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`,
+                messageObject,
+                {
+                    headers: {
+                    Authorization: `Bearer ${token}`,
+                    },
+                }
+                );
+                console.log(response, "REsponse::::::")
+                console.log("message sent");
+                return;
         } catch (error) {
         throw new ExternalAPIError(undefined, {
             service: "whatsapp",
