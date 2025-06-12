@@ -101,6 +101,7 @@ class ConversationsService {
         });
     }
     mapToDb(conversation) {
+        console.log("CONVERSATION::::::", conversation);
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
             agent_id: conversation.agentId,

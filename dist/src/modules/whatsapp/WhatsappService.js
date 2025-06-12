@@ -83,12 +83,11 @@ class WhatsappService {
     send(messageObject, fromId, token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield axios_1.default.post(`https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`, messageObject, {
+                yield axios_1.default.post(`https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`, messageObject, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                console.log(response, "REsponse::::::");
                 console.log("message sent");
                 return;
             }
