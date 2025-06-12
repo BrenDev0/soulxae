@@ -54,7 +54,7 @@ export default class WebhooksService {
             let platformsService;
 
             
-            const messagingProduct = req.body.entry[0]?.changes[0]?.value?.messagingProduct;
+            const messagingProduct = req.body.entry[0]?.changes[0]?.value?.messaging_product;
             console.log(req.body.entry[0], "entry::::")
             console.log("Changes::::", req.body.entry[0]?.changes[0])
             if(!messagingProduct) {
