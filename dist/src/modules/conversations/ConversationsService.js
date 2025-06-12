@@ -114,6 +114,7 @@ class ConversationsService {
     mapFromDb(conversation) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
+            conversationId: conversation.conversation_id,
             agentId: conversation.agent_id,
             platform: conversation.platform,
             clientId: conversation.client_id,

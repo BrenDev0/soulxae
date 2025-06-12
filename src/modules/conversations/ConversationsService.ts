@@ -98,6 +98,7 @@ export default class ConversationsService {
     mapFromDb(conversation: Conversation): ConversationData {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
+            conversationId: conversation.conversation_id,
             agentId: conversation.agent_id,
             platform: conversation.platform,
             clientId: conversation.client_id,
