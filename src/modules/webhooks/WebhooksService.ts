@@ -81,6 +81,12 @@ export default class WebhooksService {
             const conversationId = await this.handleConversaton(agentId, clientId, messagingProduct);
             const messageContent = await productService.getMessageContent(req, platformData.identifier, platformData.token);
           
+            await messagesService.create({
+                conversationId: conversationId,
+                content: messageContent,
+                type: "client"
+            })
+            
            return;
         } catch (error) {
             throw error;

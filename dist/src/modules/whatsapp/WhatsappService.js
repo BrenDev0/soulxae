@@ -43,8 +43,13 @@ class WhatsappService {
             try {
                 const message = req.body.entry[0].changes[0].value.messages[0];
                 yield this.sendReadRecipt(message.id, fromId, token);
-                console.log(message, "message:::::.");
-                return;
+                const messageContent = {
+                    header: null,
+                    body: message.text.body,
+                    footer: null,
+                    buttons: null
+                };
+                return messageContent;
             }
             catch (error) {
                 throw error;

@@ -13,10 +13,10 @@ export interface Button {
 }
 
 export interface Content {
-    header: Header;
-    body: string;
-    footer: string;
-    buttons: Button[]
+  header: Header | null;
+  body: string;
+  footer: string | null;
+  buttons: Button[] | null
 }
 
 export interface Message {

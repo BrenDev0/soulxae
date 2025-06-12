@@ -32,14 +32,19 @@ export default class WhatsappService {
         }
     }
 
-    async getMessageContent(req: Request, fromId: string, token: string) {
+    async getMessageContent(req: Request, fromId: string, token: string): Promise<Content> {
         try {
             const message = req.body.entry[0].changes[0].value.messages[0];
             
             await this.sendReadRecipt(message.id, fromId, token);
 
-            console.log(message, "message:::::.");
-            return;
+            const messageContent: Content =  {
+                header: null,
+                body: message.text.body,
+                footer: null,
+                buttons: null
+            }
+            return messageContent;
         } catch (error) {
             throw error;
         }
@@ -138,7 +143,7 @@ export default class WhatsappService {
 
     imageMessage(message: Content, to: string): MessageObject {
         let imageObjcet: ImageObject =  {
-            link: message.header.image!
+            link: message.header!.image!
         }
 
         if(message.body) {
