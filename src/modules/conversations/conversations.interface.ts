@@ -49,5 +49,6 @@ export interface ConversationForAPIData {
 }
 
 export interface IConversationsRepository extends IRepository<Conversation> {
-  getAPIData(conversationId: string): Promise<ConversationForAPI | null>
+  getAPIData(conversationId: string): Promise<ConversationForAPI | null>;
+  findByIds(agentId: string, clientId: string): Promise<Conversation | null>
 }

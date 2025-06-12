@@ -30,5 +30,15 @@ class ConversationsRepositoy extends BaseRepository_1.default {
             return result.rows[0] || null;
         });
     }
+    findByIds(agentId, clientId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const sqlRead = `
+            SELECT * FROM conversations
+            WHERE agent_id = $1 AND client_id = $2;    
+        `;
+            const result = yield this.pool.query(sqlRead, [agentId, clientId]);
+            return result.rows[0] || null;
+        });
+    }
 }
 exports.default = ConversationsRepositoy;

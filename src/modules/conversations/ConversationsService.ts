@@ -35,6 +35,19 @@ export default class ConversationsService {
         }
     }
 
+    async findByParticipantIds(agentId: string, clientId: string): Promise<ConversationData | null> {
+        try {
+            const result = await this.repository.findByIds(agentId, clientId)
+            if(!result) {
+                return null
+            }
+            return this.mapFromDb(result)
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "findByIds", { agentId, clientId })
+            throw error;
+        }
+    }
+
     async getAPIData(conversationId: string): Promise<ConversationForAPIData | null> {
          try {
             const result = await this.repository.getAPIData(conversationId);

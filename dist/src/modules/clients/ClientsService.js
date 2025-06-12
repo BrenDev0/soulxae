@@ -83,7 +83,7 @@ class ClientsService {
         return {
             clientId: client.client_id,
             agentId: client.agent_id,
-            name: encryptionService.decryptData(client.name),
+            name: client.name === null ? null : encryptionService.decryptData(client.name),
             contactIdentifier: encryptionService.decryptData(client.contact_identifier)
         };
     }

@@ -2,7 +2,7 @@ import { Request } from "express";
 import Container from "../../core/dependencies/Container";
 import HttpService from "../../core/services/HttpService";
 import PlatformsService from "../platforms/PlatformsService";
-import { AuthorizationError, BadRequestError } from "../../core/errors/errors";
+import { AuthorizationError, BadRequestError, DatabaseError, NotFoundError } from "../../core/errors/errors";
 import MessagesService from "../messages/MessagesService";
 import ConversationsService from "../conversations/ConversationsService";
 import ClientsService from "../clients/ClientsService";
@@ -73,6 +73,22 @@ export default class WebhooksService {
             };
 
             const clientMetaData = platformsService.getClientInfo(req);
+            let conversationid: string;
+            let clientId: string;
+            const client = await clientsService.resource("contact_identifier", clientMetaData.display_phone_number);
+            if(!client) {
+                const newClient = await clientsService.create({
+                    agentId: agentId,
+                    name: null,
+                    contactIdentifier: clientMetaData.display_phone_number
+                })
+
+                if(!newClient.client_id) {
+                    throw new DatabaseError("Error creating client");
+                }
+
+                clientId = newClient.client_id
+            } 
 
            console.log("Meta Data::::", clientMetaData);
            return;

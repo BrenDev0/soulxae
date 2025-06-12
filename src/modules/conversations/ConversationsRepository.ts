@@ -19,4 +19,15 @@ export default class ConversationsRepositoy extends BaseRepository<Conversation>
 
         return result.rows[0] as ConversationForAPI || null;
     }
+
+    async findByIds(agentId: string, clientId: string): Promise<Conversation | null> {
+        const sqlRead = `
+            SELECT * FROM conversations
+            WHERE agent_id = $1 AND client_id = $2;    
+        `
+
+        const result = await this.pool.query(sqlRead, [agentId, clientId]);
+
+        return result.rows[0] as Conversation || null;
+    }
 }

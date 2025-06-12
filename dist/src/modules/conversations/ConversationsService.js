@@ -46,6 +46,21 @@ class ConversationsService {
             }
         });
     }
+    findByParticipantIds(agentId, clientId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.findByIds(agentId, clientId);
+                if (!result) {
+                    return null;
+                }
+                return this.mapFromDb(result);
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "findByIds", { agentId, clientId });
+                throw error;
+            }
+        });
+    }
     getAPIData(conversationId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

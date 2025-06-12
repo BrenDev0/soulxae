@@ -74,6 +74,20 @@ class WebhooksService {
                 }
                 ;
                 const clientMetaData = platformsService.getClientInfo(req);
+                let conversationid;
+                let clientId;
+                const client = yield clientsService.resource("contact_identifier", clientMetaData.display_phone_number);
+                if (!client) {
+                    const newClient = yield clientsService.create({
+                        agentId: agentId,
+                        name: null,
+                        contactIdentifier: clientMetaData.display_phone_number
+                    });
+                    if (!newClient.client_id) {
+                        throw new errors_1.DatabaseError("Error creating client");
+                    }
+                    clientId = newClient.client_id;
+                }
                 console.log("Meta Data::::", clientMetaData);
                 return;
             }
