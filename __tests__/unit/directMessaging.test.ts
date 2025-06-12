@@ -68,6 +68,16 @@ describe("USERS ROUTES", () => {
         expect(res.status).toBe(200);
         expect(res.body.message).toBe('Message sent');
       });
+
+      it('should return 200 and add a new agent', async () => {
+        const res = await request(app)
+          .post(`https://graph.facebook.com/v23.0/738288961978853`)
+          .set('Authorization', token)
+          
+    
+        expect(res.status).toBe(200);
+        expect(res.body.message).toBe('Message sent');
+      });
     });
 })
 
