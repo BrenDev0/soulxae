@@ -8,20 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 class DirectMessagagingController {
-    constructor(httpService) {
+    constructor(httpService, webhookService) {
         this.httpService = httpService;
+        this.webhookService = webhookService;
     }
     verifyWebhook(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const webhookService = Container_1.default.resolve("WebhookService");
-                const challenge = yield webhookService.verifyWebhook(req, "direct");
+                const challenge = yield this.webhookService.verifyWebhook(req, "direct");
                 console.log('WEBHOOK_VERIFIED');
                 res.status(200).send(challenge);
             }
@@ -30,10 +26,11 @@ class DirectMessagagingController {
             }
         });
     }
-    incomingMessage(req, res) {
+    handleIncommingMessage(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(req.body);
+                yield this.webhookService.incomingMessage(req);
+                res.status(200).send();
             }
             catch (error) {
                 throw error;

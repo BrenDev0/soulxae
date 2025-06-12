@@ -4,7 +4,7 @@ import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
 import EncryptionService from '../../core/services/EncryptionService';
 
-export default class ClientService {
+export default class ClientsService {
     private repository: BaseRepository<Client>;
     private block = "clients.service"
     constructor(repository: BaseRepository<Client>) {
@@ -21,15 +21,15 @@ export default class ClientService {
         }
     }
 
-    async resource(clientId: string): Promise<ClientData | null> {
+    async resource(whereCol: string, identifier: string): Promise<ClientData | null> {
         try {
-            const result = await this.repository.selectOne("client_id", clientId);
+            const result = await this.repository.selectOne(whereCol, identifier);
             if(!result) {
                 return null
             }
             return this.mapFromDb(result)
         } catch (error) {
-            handleServiceError(error as Error, this.block, "resource", {clientId})
+            handleServiceError(error as Error, this.block, "resource", {whereCol, identifier})
             throw error;
         }
     }

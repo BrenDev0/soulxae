@@ -4,7 +4,7 @@ import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
 import EncryptionService from '../../core/services/EncryptionService';
 
-export default class MessageService {
+export default class MessagesService {
     private repository: BaseRepository<Message>;
     private block = "messages.service"
     constructor(repository: BaseRepository<Message>) {
@@ -73,7 +73,6 @@ export default class MessageService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
           conversation_id: message.conversationId,
-          sender: message.sender,
           content: message.content,
           type: message.type 
         }
@@ -84,7 +83,6 @@ export default class MessageService {
         return {
             messageId: message.message_id,
             conversationId: message.conversation_id,
-            sender: message.sender,
             content: message.content,
             type: message.type 
         }

@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const error_service_1 = require("../../core/errors/error.service");
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
-class MessageService {
+class MessagesService {
     constructor(repository) {
         this.block = "messages.service";
         this.repository = repository;
@@ -85,7 +85,6 @@ class MessageService {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
             conversation_id: message.conversationId,
-            sender: message.sender,
             content: message.content,
             type: message.type
         };
@@ -95,10 +94,9 @@ class MessageService {
         return {
             messageId: message.message_id,
             conversationId: message.conversation_id,
-            sender: message.sender,
             content: message.content,
             type: message.type
         };
     }
 }
-exports.default = MessageService;
+exports.default = MessagesService;

@@ -71,9 +71,6 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
     // conversations //
     configureConversationsDependencies(pool);
 
-    // direct to client messaging //
-    configureDirectMessagingDependencies()
-
     // messages //
     configureMessagesDependencies(pool);
 
@@ -89,12 +86,17 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
     // webhooks //
     configureWebhooksDependencies();
 
-    // whatsapp //
-    configureWhatsappDependencies();
-
+    
     // workspaces //
     configureWorkspacesDependencies(pool);
 
+
+    // messaging services  --- must configure webhooks above this block //
+    // whatsapp //
+    configureWhatsappDependencies();
+
+    // direct to client messaging //
+    configureDirectMessagingDependencies()
     
 
    // middleware --- must configure users above this block //

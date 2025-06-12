@@ -70,8 +70,6 @@ function configureContainer(testPool, testRedis) {
         (0, clients_dependencies_1.configureClientsDependencies)(pool);
         // conversations //
         (0, conversations_dependencies_1.configureConversationsDependencies)(pool);
-        // direct to client messaging //
-        (0, directMessaging_dependencies_1.configureDirectMessagingDependencies)();
         // messages //
         (0, messages_dependencies_1.configureMessagesDependencies)(pool);
         // platforms //
@@ -82,10 +80,13 @@ function configureContainer(testPool, testRedis) {
         (0, users_dependencies_1.configureUsersDependencies)(pool);
         // webhooks //
         (0, webhooks_dependencies_1.configureWebhooksDependencies)();
-        // whatsapp //
-        (0, whatsapp_dependencies_1.configureWhatsappDependencies)();
         // workspaces //
         (0, workspaces_dependencies_1.configureWorkspacesDependencies)(pool);
+        // messaging services  --- must configure webhooks above this block //
+        // whatsapp //
+        (0, whatsapp_dependencies_1.configureWhatsappDependencies)();
+        // direct to client messaging //
+        (0, directMessaging_dependencies_1.configureDirectMessagingDependencies)();
         // middleware --- must configure users above this block //
         const usersService = Container_1.default.resolve("UsersService");
         const middlewareService = new MiddlewareService_1.default(webtokenService, usersService, errorHandler);

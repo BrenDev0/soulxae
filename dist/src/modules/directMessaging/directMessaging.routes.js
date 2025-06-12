@@ -14,7 +14,7 @@ const initializeDirectMessageingRouter = (customController) => {
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     // protected Routes //
     // unprotected Routes //
-    router.post("/:id/webhook", controller.incomingMessage.bind(controller));
+    router.post("/:id/webhook", controller.handleIncommingMessage.bind(controller));
     router.get('/:id/webhook', controller.verifyWebhook.bind(controller));
     // mounts //
     router.use("/secure", secureRouter);

@@ -1,20 +1,29 @@
-import { ImageObject, InteractiveObject, MessageObject } from '../whatsapp/whatsapp.interface'
+import { ImageObject, InteractiveObject, MessageObject, ReadReceipt, WhatsappMetaData } from '../whatsapp/whatsapp.interface'
 import { Content } from '../messages/messages.interface';
 import axios from 'axios';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
+import { Request } from 'express';
+import { Conversation, ConversationData } from '../conversations/conversations.interface';
+import Container from '../../core/dependencies/Container';
+import ConversationsService from '../conversations/ConversationsService';
 
 
 export default class WhatsappService {
 
-    async handleIncomingMessage(message: any) {
-        try {
-            console.log(message) 
-            return;
-        } catch (error) {
-            throw error;
-        }
-    }
- 
+    // async handleIncomingMessage(req: Request, agentId: string): Promise<void> {
+    //     try {
+    //         const conversationService = Container.resolve<ConversationsService>("ConversationsService");
+    //         const clientMetaData = this.getClientInfo(req);
+    //         if(!clientMetaData) {
+
+    //         }
+
+           
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
+
     async handleOutgoingMessage(message: Content, fromId: string, to: string, token: string): Promise<void> {
         try {
             let messageObject: MessageObject;
@@ -35,6 +44,33 @@ export default class WhatsappService {
             
         } catch (error) {
             throw error
+        }
+    }
+
+    getClientInfo(req: Request): WhatsappMetaData {
+        try {
+            const clientInfo = req.body.entry[0]?.changes[0]?.value?.metaData;
+            if(!clientInfo) {
+                throw new BadRequestError("Meta data not found");
+            }
+
+            return clientInfo;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    getReadRecipt(messageId: string): ReadReceipt {
+        try {
+            const readReceipt: ReadReceipt = {
+                messaging_product: "whatsapp",
+                status: "read",
+                message_id: messageId
+            }
+
+            return readReceipt
+        } catch (error) {
+            throw error;
         }
     }
 

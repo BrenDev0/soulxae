@@ -22,7 +22,6 @@ export interface Content {
 export interface Message {
   message_id?: string;
   conversation_id: string;
-  sender: string;
   content: Content;
   type: string;
   timeStamp?:  Date 
@@ -31,7 +30,6 @@ export interface Message {
 export interface MessageData {
   messageId?: string;
   conversationId: string;
-  sender: string;
   content: Content;
   type: string;
   timeStamp?:  Date 

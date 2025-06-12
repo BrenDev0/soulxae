@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const error_service_1 = require("../../core/errors/error.service");
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
-class ClientService {
+class ClientsService {
     constructor(repository) {
         this.block = "clients.service";
         this.repository = repository;
@@ -31,17 +31,17 @@ class ClientService {
             }
         });
     }
-    resource(clientId) {
+    resource(whereCol, identifier) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.selectOne("client_id", clientId);
+                const result = yield this.repository.selectOne(whereCol, identifier);
                 if (!result) {
                     return null;
                 }
                 return this.mapFromDb(result);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "resource", { clientId });
+                (0, error_service_1.handleServiceError)(error, this.block, "resource", { whereCol, identifier });
                 throw error;
             }
         });
@@ -88,4 +88,4 @@ class ClientService {
         };
     }
 }
-exports.default = ClientService;
+exports.default = ClientsService;
