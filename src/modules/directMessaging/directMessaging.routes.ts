@@ -12,6 +12,10 @@ export const initializeDirectMessageingRouter = (customController?: DirectMessag
     secureRouter.use(middlewareService.auth.bind(middlewareService));
 
     // protected Routes //
+    secureRouter.post("/send", 
+        
+        controller.send.bind(controller)
+    )
 
     // unprotected Routes //
     router.post("/:id/webhook", controller.handleIncommingMessage.bind(controller));

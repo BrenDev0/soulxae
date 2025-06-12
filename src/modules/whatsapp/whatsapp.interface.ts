@@ -14,6 +14,14 @@ export interface ReadReceipt{
   message_id: string;
 }
 
+export interface WhatsappMediaResponse {
+  messaging_product: string;
+  url: string;
+  mime_type: string;
+  sha256: string;
+  file_size: string;
+  id: string;
+}
 
 export interface WhatsappContact{
   profile: {

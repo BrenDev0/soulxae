@@ -1,7 +1,7 @@
 export interface Header {
   type: string;
-  image: string | null,
-  text: string | null,
+  image?: string | null,
+  text?: string | null,
 }
 
 export interface Button {

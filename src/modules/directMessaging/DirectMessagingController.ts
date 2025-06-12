@@ -2,14 +2,18 @@ import { Request, Response } from "express";
 import HttpService from "../../core/services/HttpService"
 import Container from "../../core/dependencies/Container";
 import WebhooksService from "../webhooks/WebhooksService";
-import { BadRequestError } from "../../core/errors/errors";
+import { BadRequestError, NotFoundError } from "../../core/errors/errors";
 import WhatsappService from "../whatsapp/WhatsappService";
 import MessagesService from "../messages/MessagesService";
 import { http } from "winston";
 import ConversationsService from "../conversations/ConversationsService";
 import ClientsService from "../clients/ClientsService";
+import { Content, MessageData } from "../messages/messages.interface";
+import PlatformsService from "../platforms/PlatformsService";
+import { Client } from "pg";
 
 export default class DirectMessagagingController {
+    private readonly block = "directMessaging.controller"
     private httpService: HttpService;
     private webhookService: WebhooksService;
     constructor(httpService: HttpService, webhookService: WebhooksService) {
@@ -36,4 +40,61 @@ export default class DirectMessagagingController {
             throw error;
         }
     }
+
+    async send(req: Request, res: Response): Promise<void> {
+        const block = `${this.block}.send`
+        try { 
+            const requiredFields = [ "message"];
+            this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+
+            const message = req.body.message as MessageData;
+            
+            const requiredMessageFields = ["conversationId", "content"]
+            this.httpService.requestValidation.validateRequestBody(requiredMessageFields, message, `${block}.message`);
+            
+            const conversationsService = Container.resolve<ConversationsService>("ConversationsService");
+            const conversation = await conversationsService.resource(message.conversationId);
+            if(!conversation) {
+                throw new NotFoundError("conversation not found")
+            }
+
+            const clientsService = Container.resolve<ClientsService>("ClientsService");
+            const client = await clientsService.resource("client_id", conversation.clientId);
+            if(!client) {
+                throw new NotFoundError("Client not found")
+            }
+            
+            const platformsService = Container.resolve<PlatformsService>("PlatformsService");
+            const agentsPlatform = await platformsService.getAgentPlatform(conversation.agentId, "direct");
+            if(!agentsPlatform) {
+                throw new BadRequestError("Agent platform configuration error")
+            };
+
+            let productService;
+            switch(conversation.platform) {
+                case 'whatsapp':
+                    productService = Container.resolve<WhatsappService>("WhatsappService");
+                    break;
+                default:
+                    break    
+            }
+
+            if(!productService) {
+                throw new BadRequestError("Unsupported messaging product")
+            }
+
+            await productService.handleOutgoingMessage(message.content, agentsPlatform.identifier, client.contactIdentifier, agentsPlatform.token);
+
+            const messagesService = Container.resolve<MessagesService>("MessagesService");
+            await messagesService.create({
+                conversationId: conversation.conversationId!,
+                type: "agent",
+                content: message.content
+            })
+
+            res.status(200).json({ message: "Message sent" })
+        } catch (error) {
+            throw error;
+        }
+    }  
 }

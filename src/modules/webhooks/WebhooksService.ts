@@ -119,7 +119,7 @@ export default class WebhooksService {
     
         if(!resource) {
             const newConversation = await conversationService.create({
-                 agentId: agentId,
+                agentId: agentId,
                 clientId: clientId,
                 handoff: false,
                 title: null,

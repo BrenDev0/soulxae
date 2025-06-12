@@ -43,13 +43,39 @@ class WhatsappService {
             try {
                 const message = req.body.entry[0].changes[0].value.messages[0];
                 yield this.sendReadRecipt(message.id, fromId, token);
-                const messageContent = {
+                let messageContent = {
                     header: null,
                     body: message.text.body,
                     footer: null,
                     buttons: null
                 };
+                if (message.image) {
+                    const url = yield this.getMedia(message.image.id, token);
+                    messageContent.header = {
+                        type: "image",
+                        image: url
+                    };
+                    messageContent.body = message.image.caption ? message.image.caption : null;
+                }
                 return messageContent;
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    getMedia(mediaId, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield axios_1.default.get(`https://graph.facebook.com/v23.0/${mediaId}/`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                if (!response) {
+                    throw new errors_1.ExternalAPIError();
+                }
+                return response.url;
             }
             catch (error) {
                 throw error;

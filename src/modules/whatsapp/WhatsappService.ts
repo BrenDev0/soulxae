@@ -1,4 +1,4 @@
-import { ImageObject, InteractiveObject, MessageObject, ReadReceipt, WhatsappContact } from '../whatsapp/whatsapp.interface'
+import { ImageObject, InteractiveObject, MessageObject, ReadReceipt, WhatsappContact, WhatsappMediaResponse } from '../whatsapp/whatsapp.interface'
 import { Content } from '../messages/messages.interface';
 import axios from 'axios';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
@@ -38,14 +38,49 @@ export default class WhatsappService {
             
             await this.sendReadRecipt(message.id, fromId, token);
 
-            const messageContent: Content =  {
+            let messageContent: Content =  {
                 header: null,
                 body: message.text.body,
                 footer: null,
                 buttons: null
             }
+
+            
+            if(message.image) {
+                const url = await this.getMedia(message.image.id, token);
+
+                messageContent.header = {
+                    type: "image",
+                    image: url
+                }
+
+                messageContent.body = message.image.caption ? message.image.caption : null
+            }
+
+            
             
             return messageContent;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getMedia(mediaId: string, token: string): Promise<string> {
+        try {
+            const response : WhatsappMediaResponse = await axios.get(
+                `https://graph.facebook.com/v23.0/${mediaId}/`,
+                {
+                    headers: {
+                    Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if(!response) {
+                throw new ExternalAPIError();
+            }
+                
+            return response.url;
         } catch (error) {
             throw error;
         }
