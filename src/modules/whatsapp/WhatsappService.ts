@@ -36,9 +36,9 @@ export default class WhatsappService {
         try {
             const message = req.body.entry[0].changes[0].value.messages[0];
             
-            const response = await this.sendReadRecipt(message.id, fromId, token);
+            await this.sendReadRecipt(message.id, fromId, token);
 
-            console.log(message, "message:::::.", response, "RESPONSE:::::::");
+            console.log(message, "message:::::.",);
             return;
         } catch (error) {
             throw error;
@@ -62,7 +62,8 @@ export default class WhatsappService {
                 message_id: messageId
             }
 
-            await this.send(readReceipt, fromId, token);
+           const response =  await this.send(readReceipt, fromId, token);
+           console.log(response, "REsponse::::::")
             return;
         } catch (error) {
             throw error;

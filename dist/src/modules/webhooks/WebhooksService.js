@@ -86,8 +86,9 @@ class WebhooksService {
     }
     handleClient(agentId, client) {
         return __awaiter(this, void 0, void 0, function* () {
+            const encryptionService = Container_1.default.resolve("EncryptionService");
             const clientsService = Container_1.default.resolve("ClientsService");
-            const resource = yield clientsService.resource("contact_identifier", client.wa_id);
+            const resource = yield clientsService.resource("contact_identifier", encryptionService.encryptData(client.wa_id));
             if (!resource) {
                 const newClient = yield clientsService.create({
                     agentId: agentId,

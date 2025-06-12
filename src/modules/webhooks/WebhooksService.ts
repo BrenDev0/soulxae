@@ -8,6 +8,7 @@ import ConversationsService from "../conversations/ConversationsService";
 import ClientsService from "../clients/ClientsService";
 import WhatsappService from "../whatsapp/WhatsappService";
 import { WhatsappContact,  } from "../whatsapp/whatsapp.interface";
+import EncryptionService from "../../core/services/EncryptionService";
 
 export default class WebhooksService {
     private httpService: HttpService;
@@ -87,9 +88,11 @@ export default class WebhooksService {
     }
 
     async handleClient(agentId: string, client: WhatsappContact): Promise<string> {
+        const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         const clientsService = Container.resolve<ClientsService>("ClientsService");
         
-        const resource = await clientsService.resource("contact_identifier", client.wa_id);
+
+        const resource = await clientsService.resource("contact_identifier", encryptionService.encryptData(client.wa_id));
         if(!resource) {
             const newClient = await clientsService.create({
                 agentId: agentId,

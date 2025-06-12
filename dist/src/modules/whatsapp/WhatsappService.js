@@ -42,8 +42,8 @@ class WhatsappService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const message = req.body.entry[0].changes[0].value.messages[0];
-                const response = yield this.sendReadRecipt(message.id, fromId, token);
-                console.log(message, "message:::::.", response, "RESPONSE:::::::");
+                yield this.sendReadRecipt(message.id, fromId, token);
+                console.log(message, "message:::::.");
                 return;
             }
             catch (error) {
@@ -67,7 +67,8 @@ class WhatsappService {
                     status: "read",
                     message_id: messageId
                 };
-                yield this.send(readReceipt, fromId, token);
+                const response = yield this.send(readReceipt, fromId, token);
+                console.log(response, "REsponse::::::");
                 return;
             }
             catch (error) {
