@@ -10,7 +10,7 @@ const initializeDirectMessageingRouter = (customController) => {
     const router = (0, express_1.Router)();
     const secureRouter = (0, express_1.Router)();
     const middlewareService = Container_1.default.resolve("MiddlewareService");
-    const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("DirecMessagingController");
+    const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("DirectMessagingController");
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     // protected Routes //
     // unprotected Routes //

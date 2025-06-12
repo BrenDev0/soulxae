@@ -7,7 +7,7 @@ export const initializeDirectMessageingRouter = (customController?: DirectMessag
     const router = Router();
     const secureRouter = Router();
     const middlewareService = Container.resolve<MiddlewareService>("MiddlewareService");
-    const controller = customController ?? Container.resolve<DirectMessagagingController>("DirecMessagingController");
+    const controller = customController ?? Container.resolve<DirectMessagagingController>("DirectMessagingController");
 
     secureRouter.use(middlewareService.auth.bind(middlewareService));
 
