@@ -6,6 +6,7 @@ import { Request } from 'express';
 import { Conversation, ConversationData } from '../conversations/conversations.interface';
 import Container from '../../core/dependencies/Container';
 import ConversationsService from '../conversations/ConversationsService';
+import AppError from '../../core/errors/AppError';
 
 
 export default class WhatsappService {
@@ -47,18 +48,17 @@ export default class WhatsappService {
             }
 
             if(message.image) {
-                const url = await this.getMedia(message.image.id, token);
-
-                messageContent.header = {
-                    type: "image",
-                    image: url
-                }
-
-                messageContent.body = message.image.caption ? message.image.caption : null
+                messageContent = await this.getImageMessageContent(message, token)
+            } else if(message.text) {
+                messageContent.body = message.text.body
             }
 
             return messageContent;
         } catch (error) {
+            if(error instanceof AppError) {
+                throw error;
+            }
+            
             throw new ExternalAPIError(undefined, {
                 service: "whatsapp",
                 block: `${this.block}.getMessageContent`,
@@ -69,7 +69,7 @@ export default class WhatsappService {
 
     async getMedia(mediaId: string, token: string): Promise<string> {
         try {
-            const response : WhatsappMediaResponse = await axios.get(
+            const response: WhatsappMediaResponse = await axios.get(
                 `https://graph.facebook.com/v23.0/${mediaId}`,
                 {
                     headers: {
@@ -81,9 +81,7 @@ export default class WhatsappService {
             if(!response) {
                 throw new ExternalAPIError();
             }
-
-            console.log(response, "RESPONSE MEDAI::::");
-                
+         
             return response.data.url;
         } catch (error) {
             throw error;
@@ -199,5 +197,20 @@ export default class WhatsappService {
         };
 
         return messageObject;
+    }
+
+    async getImageMessageContent(message: any, token: string): Promise<Content> {
+        const url = await this.getMedia(message.image.id, token);
+        const messageContent: Content = {
+            header: {
+                type: "image",
+                image: url
+            },
+            body: message.image.caption ? message.image.caption : null,
+            footer: null,
+            buttons: null
+        } 
+             
+        return messageContent    
     }
 }

@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const errors_1 = require("../../core/errors/errors");
+const AppError_1 = __importDefault(require("../../core/errors/AppError"));
 class WhatsappService {
     constructor() {
         this.block = "whatsapp.service";
@@ -53,16 +54,17 @@ class WhatsappService {
                     buttons: null
                 };
                 if (message.image) {
-                    const url = yield this.getMedia(message.image.id, token);
-                    messageContent.header = {
-                        type: "image",
-                        image: url
-                    };
-                    messageContent.body = message.image.caption ? message.image.caption : null;
+                    messageContent = yield this.getImageMessageContent(message, token);
+                }
+                else if (message.text) {
+                    messageContent.body = message.text.body;
                 }
                 return messageContent;
             }
             catch (error) {
+                if (error instanceof AppError_1.default) {
+                    throw error;
+                }
                 throw new errors_1.ExternalAPIError(undefined, {
                     service: "whatsapp",
                     block: `${this.block}.getMessageContent`,
@@ -82,7 +84,6 @@ class WhatsappService {
                 if (!response) {
                     throw new errors_1.ExternalAPIError();
                 }
-                console.log(response, "RESPONSE MEDAI::::");
                 return response.data.url;
             }
             catch (error) {
@@ -186,6 +187,21 @@ class WhatsappService {
             image: imageObjcet
         };
         return messageObject;
+    }
+    getImageMessageContent(message, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const url = yield this.getMedia(message.image.id, token);
+            const messageContent = {
+                header: {
+                    type: "image",
+                    image: url
+                },
+                body: message.image.caption ? message.image.caption : null,
+                footer: null,
+                buttons: null
+            };
+            return messageContent;
+        });
     }
 }
 exports.default = WhatsappService;
