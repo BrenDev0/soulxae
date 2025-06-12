@@ -79,6 +79,7 @@ export default class WebhooksService {
             const clientContact = productService.getClientInfo(req);
             const clientId = await this.handleClient(agentId, clientContact);
             const conversationId = await this.handleConversaton(agentId, clientId, messagingProduct);
+            console.log(conversationId, "CONVOID::::", clientId, "CLIentid:::::")
             const messageContent = await productService.getMessageContent(req, platformData.identifier, platformData.token);
             console.log(messageContent, "CONTENT:::::")
           
@@ -117,6 +118,7 @@ export default class WebhooksService {
         const conversationService = Container.resolve<ConversationsService>("ConversationsService");
 
         const resource = await conversationService.findByParticipantIds(agentId, clientId);
+        console.log(resource, "CONVERSATION RESCOURCE::::::")
         if(!resource) {
             const newConversation = await conversationService.create({
                  agentId: agentId,
