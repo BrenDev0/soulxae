@@ -46,7 +46,6 @@ export default class WhatsappService {
                 buttons: null
             }
 
-
             if(message.image) {
                 const url = await this.getMedia(message.image.id, token);
 
@@ -58,8 +57,6 @@ export default class WhatsappService {
                 messageContent.body = message.image.caption ? message.image.caption : null
             }
 
-            
-            
             return messageContent;
         } catch (error) {
             throw new ExternalAPIError(undefined, {
@@ -84,6 +81,8 @@ export default class WhatsappService {
             if(!response) {
                 throw new ExternalAPIError();
             }
+
+            console.log(response, "RESPONSE MEDAI::::");
                 
             return response.url;
         } catch (error) {
