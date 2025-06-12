@@ -68,7 +68,7 @@ export default class WebhooksService {
 
             switch(messagingProduct) {
                 case "whatsapp":
-                    productService = Container.resolve<WhatsappService>("whatsappService");
+                    productService = Container.resolve<WhatsappService>("WhatsappService");
                 default:
                     break;
             }
