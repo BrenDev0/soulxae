@@ -44,6 +44,7 @@ export default class WhatsappService {
                 footer: null,
                 buttons: null
             }
+            
             return messageContent;
         } catch (error) {
             throw error;

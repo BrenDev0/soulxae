@@ -19,9 +19,9 @@ class ConversationsService {
         this.block = "conversations.service";
         this.repository = repository;
     }
-    create(conversations) {
+    create(conversation) {
         return __awaiter(this, void 0, void 0, function* () {
-            const mappedConversation = this.mapToDb(conversations);
+            const mappedConversation = this.mapToDb(conversation);
             try {
                 return this.repository.create(mappedConversation);
             }

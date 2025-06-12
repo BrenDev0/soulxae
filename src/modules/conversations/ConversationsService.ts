@@ -12,8 +12,8 @@ export default class ConversationsService {
         this.repository = repository
     }
 
-    async create(conversations: ConversationData): Promise<Conversation> {
-        const mappedConversation = this.mapToDb(conversations);
+    async create(conversation: ConversationData): Promise<Conversation> {
+        const mappedConversation = this.mapToDb(conversation);
         try {
             return this.repository.create(mappedConversation);
         } catch (error) {
