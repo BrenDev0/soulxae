@@ -7,8 +7,7 @@ import MessagesService from "../messages/MessagesService";
 import ConversationsService from "../conversations/ConversationsService";
 import ClientsService from "../clients/ClientsService";
 import WhatsappService from "../whatsapp/WhatsappService";
-import { WhatsappMetaData } from "../whatsapp/whatsapp.interface";
-import { cli } from "winston/lib/winston/config";
+import { WhatsappContact,  } from "../whatsapp/whatsapp.interface";
 
 export default class WebhooksService {
     private httpService: HttpService;
@@ -60,8 +59,7 @@ export default class WebhooksService {
             let productService;
 
             const messagingProduct = req.body.entry[0]?.changes[0]?.value?.messaging_product;
-            console.log(req.body.entry[0], "entry::::")
-            console.log("Changes::::", req.body.entry[0]?.changes[0])
+
             if(!messagingProduct) {
                 throw new BadRequestError("No product found");
             }
@@ -77,10 +75,10 @@ export default class WebhooksService {
                 throw new BadRequestError("Unsupported product");
             };
 
-            const clientMetaData = productService.getClientInfo(req);
-            const clientId = await this.handleClient(agentId, clientMetaData);
+            const clientContact = productService.getClientInfo(req);
+            const clientId = await this.handleClient(agentId, clientContact);
             const conversationId = await this.handleConversaton(agentId, clientId, messagingProduct);
-            const message = await productService.getMessageContent(req, platformData.identifier, platformData.token);
+            const messageContent = await productService.getMessageContent(req, platformData.identifier, platformData.token);
           
            return;
         } catch (error) {
@@ -88,15 +86,15 @@ export default class WebhooksService {
         }
     }
 
-    async handleClient(agentId: string, client: WhatsappMetaData): Promise<string> {
+    async handleClient(agentId: string, client: WhatsappContact): Promise<string> {
         const clientsService = Container.resolve<ClientsService>("ClientsService");
         
-        const resource = await clientsService.resource("contact_identifier", client.display_phone_number);
+        const resource = await clientsService.resource("contact_identifier", client.wa_id);
         if(!resource) {
             const newClient = await clientsService.create({
                 agentId: agentId,
-                name: null,
-                contactIdentifier: client.display_phone_number
+                name: client.profile.name ? client.profile.name : null,
+                contactIdentifier: client.wa_id
             })
 
             return newClient.client_id!

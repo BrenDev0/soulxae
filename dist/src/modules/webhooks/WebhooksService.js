@@ -50,7 +50,7 @@ class WebhooksService {
     }
     incomingMessage(req, platform) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c, _d;
+            var _a, _b, _c;
             try {
                 const messagesService = Container_1.default.resolve("MessagesService");
                 const agentId = this.httpService.encryptionService.decryptData(req.params.id);
@@ -60,8 +60,6 @@ class WebhooksService {
                 }
                 let productService;
                 const messagingProduct = (_c = (_b = (_a = req.body.entry[0]) === null || _a === void 0 ? void 0 : _a.changes[0]) === null || _b === void 0 ? void 0 : _b.value) === null || _c === void 0 ? void 0 : _c.messaging_product;
-                console.log(req.body.entry[0], "entry::::");
-                console.log("Changes::::", (_d = req.body.entry[0]) === null || _d === void 0 ? void 0 : _d.changes[0]);
                 if (!messagingProduct) {
                     throw new errors_1.BadRequestError("No product found");
                 }
@@ -75,10 +73,10 @@ class WebhooksService {
                     throw new errors_1.BadRequestError("Unsupported product");
                 }
                 ;
-                const clientMetaData = productService.getClientInfo(req);
-                const clientId = yield this.handleClient(agentId, clientMetaData);
+                const clientContact = productService.getClientInfo(req);
+                const clientId = yield this.handleClient(agentId, clientContact);
                 const conversationId = yield this.handleConversaton(agentId, clientId, messagingProduct);
-                const message = yield productService.getMessageContent(req, platformData.identifier, platformData.token);
+                const messageContent = yield productService.getMessageContent(req, platformData.identifier, platformData.token);
                 return;
             }
             catch (error) {
@@ -89,12 +87,12 @@ class WebhooksService {
     handleClient(agentId, client) {
         return __awaiter(this, void 0, void 0, function* () {
             const clientsService = Container_1.default.resolve("ClientsService");
-            const resource = yield clientsService.resource("contact_identifier", client.display_phone_number);
+            const resource = yield clientsService.resource("contact_identifier", client.wa_id);
             if (!resource) {
                 const newClient = yield clientsService.create({
                     agentId: agentId,
-                    name: null,
-                    contactIdentifier: client.display_phone_number
+                    name: client.profile.name ? client.profile.name : null,
+                    contactIdentifier: client.wa_id
                 });
                 return newClient.client_id;
             }

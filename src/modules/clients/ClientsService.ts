@@ -60,7 +60,7 @@ export default class ClientsService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             agent_id: client.agentId,
-            name: client.name && encryptionService.encryptData(client.name),
+            name: client.name === null ? null : encryptionService.encryptData(client.name),
             contact_identifier: client.contactIdentifier && encryptionService.encryptData(client.contactIdentifier)
         }
     }

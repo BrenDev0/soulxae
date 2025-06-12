@@ -1,4 +1,4 @@
-import { ImageObject, InteractiveObject, MessageObject, ReadReceipt, WhatsappMetaData } from '../whatsapp/whatsapp.interface'
+import { ImageObject, InteractiveObject, MessageObject, ReadReceipt, WhatsappContact } from '../whatsapp/whatsapp.interface'
 import { Content } from '../messages/messages.interface';
 import axios from 'axios';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
@@ -36,18 +36,17 @@ export default class WhatsappService {
         try {
             const message = req.body.entry[0].changes[0].value.messages[0];
             
-            await this.sendReadRecipt(message.id, fromId, token);
+            const response = await this.sendReadRecipt(message.id, fromId, token);
 
-            console.log(message);
+            console.log(message, "message:::::.", response, "RESPONSE:::::::");
             return;
         } catch (error) {
             throw error;
         }
     }
 
-    getClientInfo(req: Request): WhatsappMetaData {
-        const clientInfo = req.body.entry[0]?.changes[0]?.value?.metaData;
-        console.log(req.body.entry[0]?.changes[0]?.value?.contacts[0], "contacts::::::::::")
+    getClientInfo(req: Request): WhatsappContact {
+        const clientInfo = req.body.entry[0]?.changes[0]?.value?.contacts[0];
         if(!clientInfo) {
             throw new BadRequestError("Meta data not found");
         }

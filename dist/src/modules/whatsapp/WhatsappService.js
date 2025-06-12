@@ -42,8 +42,8 @@ class WhatsappService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const message = req.body.entry[0].changes[0].value.messages[0];
-                yield this.sendReadRecipt(message.id, fromId, token);
-                console.log(message);
+                const response = yield this.sendReadRecipt(message.id, fromId, token);
+                console.log(message, "message:::::.", response, "RESPONSE:::::::");
                 return;
             }
             catch (error) {
@@ -52,9 +52,8 @@ class WhatsappService {
         });
     }
     getClientInfo(req) {
-        var _a, _b, _c, _d, _e, _f;
-        const clientInfo = (_c = (_b = (_a = req.body.entry[0]) === null || _a === void 0 ? void 0 : _a.changes[0]) === null || _b === void 0 ? void 0 : _b.value) === null || _c === void 0 ? void 0 : _c.metaData;
-        console.log((_f = (_e = (_d = req.body.entry[0]) === null || _d === void 0 ? void 0 : _d.changes[0]) === null || _e === void 0 ? void 0 : _e.value) === null || _f === void 0 ? void 0 : _f.contacts[0], "contacts::::::::::");
+        var _a, _b, _c;
+        const clientInfo = (_c = (_b = (_a = req.body.entry[0]) === null || _a === void 0 ? void 0 : _a.changes[0]) === null || _b === void 0 ? void 0 : _b.value) === null || _c === void 0 ? void 0 : _c.contacts[0];
         if (!clientInfo) {
             throw new errors_1.BadRequestError("Meta data not found");
         }

@@ -15,9 +15,11 @@ export interface ReadReceipt{
 }
 
 
-export interface WhatsappMetaData{
-  display_phone_number: string;
-  phone_number_id: string;
+export interface WhatsappContact{
+  profile: {
+    name: string
+  };
+  wa_id: string;
 }
 
 export interface TextObject {
