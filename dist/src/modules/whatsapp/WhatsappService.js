@@ -83,7 +83,7 @@ class WhatsappService {
                     throw new errors_1.ExternalAPIError();
                 }
                 console.log(response, "RESPONSE MEDAI::::");
-                return response.url;
+                return response.data.url;
             }
             catch (error) {
                 throw error;
