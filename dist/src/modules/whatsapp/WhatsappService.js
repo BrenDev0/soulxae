@@ -15,6 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const errors_1 = require("../../core/errors/errors");
 class WhatsappService {
+    constructor() {
+        this.block = "whatsapp.service";
+    }
     handleOutgoingMessage(message, fromId, to, token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -60,7 +63,11 @@ class WhatsappService {
                 return messageContent;
             }
             catch (error) {
-                throw error;
+                throw new errors_1.ExternalAPIError(undefined, {
+                    service: "whatsapp",
+                    block: `${this.block}.getMessageContent`,
+                    originalError: error.message
+                });
             }
         });
     }

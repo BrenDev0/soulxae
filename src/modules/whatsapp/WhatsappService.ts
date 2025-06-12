@@ -9,6 +9,7 @@ import ConversationsService from '../conversations/ConversationsService';
 
 
 export default class WhatsappService {
+    private readonly block = "whatsapp.service"
     async handleOutgoingMessage(message: Content, fromId: string, to: string, token: string): Promise<void> {
         try {
             let messageObject: MessageObject;
@@ -61,7 +62,11 @@ export default class WhatsappService {
             
             return messageContent;
         } catch (error) {
-            throw error;
+            throw new ExternalAPIError(undefined, {
+                service: "whatsapp",
+                block: `${this.block}.getMessageContent`,
+                originalError: (error as Error).message
+            })
         }
     }
 
@@ -125,10 +130,10 @@ export default class WhatsappService {
             console.log("message sent");
             return;
         } catch (error) {
-        throw new ExternalAPIError(undefined, {
-            service: "whatsapp",
-            originalError: (error as Error).message
-        })
+            throw new ExternalAPIError(undefined, {
+                service: "whatsapp",
+                originalError: (error as Error).message
+            })
         }
     }
 
