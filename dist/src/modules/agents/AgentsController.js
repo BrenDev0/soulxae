@@ -26,7 +26,7 @@ class AgentsController {
             const block = `${this.block}.createRequest`;
             try {
                 const user = req.user;
-                const requiredFields = ["apiKey", "description", "name", "workspaceId", "agentType"];
+                const requiredFields = ["description", "name", "workspaceId", "agentType"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const { workspaceId, agentType } = req.body;
                 this.httpService.requestValidation.validateUuid(workspaceId, "workspaceId", block);
