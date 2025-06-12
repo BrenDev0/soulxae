@@ -64,8 +64,6 @@ function configureContainer(testPool, testRedis) {
         const connectionUrl = testRedis !== null && testRedis !== void 0 ? testRedis : (process.env.REDIS_URL || "");
         const redisClient = yield new RedisService_1.default(connectionUrl).createClient();
         Container_1.default.register("RedisClient", redisClient);
-        // sessions //
-        (0, sessions_dependencies_1.configureSessionsDependencies)(redisClient);
         // agents //
         (0, agents_dependencies_1.configureAgentsDependencies)(pool);
         // clients // 
@@ -78,6 +76,8 @@ function configureContainer(testPool, testRedis) {
         (0, messages_dependencies_1.configureMessagesDependencies)(pool);
         // platforms //
         (0, platforms_dependencies_1.configurePlatformsDependencies)(pool);
+        // sessions //
+        (0, sessions_dependencies_1.configureSessionsDependencies)(redisClient);
         // users //
         (0, users_dependencies_1.configureUsersDependencies)(pool);
         // webhooks //

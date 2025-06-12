@@ -21,7 +21,7 @@ class DirectMessagagingController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const webhookService = Container_1.default.resolve("WebhookService");
-                const challenge = yield webhookService.verifyWebhook(req);
+                const challenge = yield webhookService.verifyWebhook(req, "direct");
                 console.log('WEBHOOK_VERIFIED');
                 res.status(200).send(challenge);
             }

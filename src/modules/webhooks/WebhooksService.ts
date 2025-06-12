@@ -11,11 +11,11 @@ export default class WebhooksService {
         this.httpService = httpService;
     }
 
-    async verifyWebhook(req: Request): Promise<any> {
+    async verifyWebhook(req: Request, platform: string): Promise<any> {
         try {
             const platformsService = Container.resolve<PlatformsService>("PlatformsService");
             const agentId = this.httpService.encryptionService.decryptData(req.params.id)
-            const agentPlatform = await platformsService.getAgentPlatform(agentId, 'whatsapp')
+            const agentPlatform = await platformsService.getAgentPlatform(agentId, platform)
             
             // Parse params from the webhook verification request
             let mode = req.query['hub.mode']

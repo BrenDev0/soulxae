@@ -18,12 +18,12 @@ class WebhooksService {
     constructor(httpService) {
         this.httpService = httpService;
     }
-    verifyWebhook(req) {
+    verifyWebhook(req, platform) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const platformsService = Container_1.default.resolve("PlatformsService");
                 const agentId = this.httpService.encryptionService.decryptData(req.params.id);
-                const agentPlatform = yield platformsService.getAgentPlatform(agentId, 'whatsapp');
+                const agentPlatform = yield platformsService.getAgentPlatform(agentId, platform);
                 // Parse params from the webhook verification request
                 let mode = req.query['hub.mode'];
                 let token = req.query['hub.verify_token'];

@@ -62,9 +62,6 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
     const redisClient = await new RedisService(connectionUrl).createClient();
     Container.register<RedisClientType>("RedisClient", redisClient);
 
-    // sessions //
-    configureSessionsDependencies(redisClient);
- 
     // agents //
     configureAgentsDependencies(pool);
 
@@ -82,6 +79,9 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
     // platforms //
     configurePlatformsDependencies(pool);
+
+    // sessions //
+    configureSessionsDependencies(redisClient);
 
     // users //
     configureUsersDependencies(pool);

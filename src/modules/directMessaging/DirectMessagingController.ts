@@ -12,7 +12,7 @@ export default class DirectMessagagingController {
     async verifyWebhook(req: Request, res: Response): Promise<void> {
         try {
             const webhookService = Container.resolve<WebhooksService>("WebhookService");
-            const challenge = await webhookService.verifyWebhook(req);
+            const challenge = await webhookService.verifyWebhook(req, "direct");
            
             console.log('WEBHOOK_VERIFIED')
             res.status(200).send(challenge);
