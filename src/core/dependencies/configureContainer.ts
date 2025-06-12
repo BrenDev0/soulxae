@@ -22,6 +22,7 @@ import { configureSessionsDependencies } from '../../modules/sessions/sessions.d
 import { configureWhatsappDependencies } from '../../modules/whatsapp/whatsapp.dependencies';
 import { configureMessagesDependencies } from '../../modules/messages/messages.dependencies';
 import { configureDirectMessagingDependencies } from '../../modules/directMessaging/directMessaging.dependencies';
+import { configureWebhooksDependencies } from '../../modules/webhooks/webhooks.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -84,6 +85,9 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
     // users //
     configureUsersDependencies(pool);
+
+    // webhooks //
+    configureWebhooksDependencies();
 
     // whatsapp //
     configureWhatsappDependencies();
