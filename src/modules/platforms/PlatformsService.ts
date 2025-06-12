@@ -38,7 +38,7 @@ export default class PlatformsService {
 
     async getAgentPlatform(agentId: string, platform: string) {
         try {
-            const result = await this.repository.getAgentPlatform(agentId, platform);
+            const result = await this.repository.getPlatformByAgentId(agentId, platform);
             if(!result) {
                 return null
             }
@@ -96,7 +96,7 @@ export default class PlatformsService {
         }
     }
 
-    mapFromDb(platform: Platform): Omit<PlatformData, "token"> {
+    mapFromDb(platform: Platform): PlatformData {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             platformId: platform.platform_id,
@@ -104,7 +104,8 @@ export default class PlatformsService {
             platform: platform.platform,
             webhookUrl: platform.webhook_url,
             webhookSecret: encryptionService.decryptData(platform.webhook_secret),
-            identifier: encryptionService.decryptData(platform.identifier)
+            identifier: encryptionService.decryptData(platform.identifier),
+            token: encryptionService.decryptData(platform.token)
         }
     }
 }

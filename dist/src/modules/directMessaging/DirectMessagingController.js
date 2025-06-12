@@ -29,7 +29,7 @@ class DirectMessagagingController {
     handleIncommingMessage(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.webhookService.incomingMessage(req);
+                yield this.webhookService.incomingMessage(req, "direct");
                 res.status(200).send();
             }
             catch (error) {

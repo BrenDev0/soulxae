@@ -49,7 +49,7 @@ class PlatformsService {
     getAgentPlatform(agentId, platform) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.getAgentPlatform(agentId, platform);
+                const result = yield this.repository.getPlatformByAgentId(agentId, platform);
                 if (!result) {
                     return null;
                 }
@@ -117,7 +117,8 @@ class PlatformsService {
             platform: platform.platform,
             webhookUrl: platform.webhook_url,
             webhookSecret: encryptionService.decryptData(platform.webhook_secret),
-            identifier: encryptionService.decryptData(platform.identifier)
+            identifier: encryptionService.decryptData(platform.identifier),
+            token: encryptionService.decryptData(platform.token)
         };
     }
 }

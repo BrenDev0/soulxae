@@ -15,16 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const errors_1 = require("../../core/errors/errors");
 class WhatsappService {
-    // async handleIncomingMessage(req: Request, agentId: string): Promise<void> {
-    //     try {
-    //         const conversationService = Container.resolve<ConversationsService>("ConversationsService");
-    //         const clientMetaData = this.getClientInfo(req);
-    //         if(!clientMetaData) {
-    //         }
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
     handleOutgoingMessage(message, fromId, to, token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -48,31 +38,42 @@ class WhatsappService {
             }
         });
     }
+    getMessageContent(req, fromId, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const message = req.body.entry[0].changes[0].value.messages[0];
+                yield this.sendReadRecipt(message.id, fromId, token);
+                console.log(message);
+                return;
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     getClientInfo(req) {
         var _a, _b, _c;
-        try {
-            const clientInfo = (_c = (_b = (_a = req.body.entry[0]) === null || _a === void 0 ? void 0 : _a.changes[0]) === null || _b === void 0 ? void 0 : _b.value) === null || _c === void 0 ? void 0 : _c.metaData;
-            if (!clientInfo) {
-                throw new errors_1.BadRequestError("Meta data not found");
-            }
-            return clientInfo;
+        const clientInfo = (_c = (_b = (_a = req.body.entry[0]) === null || _a === void 0 ? void 0 : _a.changes[0]) === null || _b === void 0 ? void 0 : _b.value) === null || _c === void 0 ? void 0 : _c.metaData;
+        if (!clientInfo) {
+            throw new errors_1.BadRequestError("Meta data not found");
         }
-        catch (error) {
-            throw error;
-        }
+        return clientInfo;
     }
-    getReadRecipt(messageId) {
-        try {
-            const readReceipt = {
-                messaging_product: "whatsapp",
-                status: "read",
-                message_id: messageId
-            };
-            return readReceipt;
-        }
-        catch (error) {
-            throw error;
-        }
+    sendReadRecipt(messageId, fromId, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const readReceipt = {
+                    messaging_product: "whatsapp",
+                    status: "read",
+                    message_id: messageId
+                };
+                yield this.send(readReceipt, fromId, token);
+                return;
+            }
+            catch (error) {
+                throw error;
+            }
+        });
     }
     send(messageObject, fromId, token) {
         return __awaiter(this, void 0, void 0, function* () {

@@ -8,7 +8,8 @@ const Container_1 = __importDefault(require("../../core/dependencies/Container")
 const WebhooksService_1 = __importDefault(require("./WebhooksService"));
 function configureWebhooksDependencies() {
     const httpService = Container_1.default.resolve("HttpService");
-    const service = new WebhooksService_1.default(httpService);
+    const platformsService = Container_1.default.resolve("PlatformsService");
+    const service = new WebhooksService_1.default(httpService, platformsService);
     Container_1.default.register("WebhookService", service);
     return;
 }

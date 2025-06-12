@@ -12,16 +12,17 @@ import { cli } from "winston/lib/winston/config";
 
 export default class WebhooksService {
     private httpService: HttpService;
+    private platformsService: PlatformsService;
 
-    constructor(httpService: HttpService) {
+    constructor(httpService: HttpService, platformsService: PlatformsService) {
         this.httpService = httpService;
+        this.platformsService = platformsService;
     }
 
     async verifyWebhook(req: Request, platform: string): Promise<any> {
         try {
-            const platformsService = Container.resolve<PlatformsService>("PlatformsService");
             const agentId = this.httpService.encryptionService.decryptData(req.params.id)
-            const agentPlatform = await platformsService.getAgentPlatform(agentId, platform)
+            const agentPlatform = await this.platformsService.getAgentPlatform(agentId, platform)
             
             // Parse params from the webhook verification request
             let mode = req.query['hub.mode']
@@ -47,12 +48,16 @@ export default class WebhooksService {
         }
     }
 
-    async incomingMessage(req: Request): Promise<void> {
+    async incomingMessage(req: Request, platform: string): Promise<void> {
         try {
-            const agentId = this.httpService.encryptionService.decryptData(req.params.id);
             const messagesService = Container.resolve<MessagesService>("MessagesService");
+            const agentId = this.httpService.encryptionService.decryptData(req.params.id);
+            const platformData = await this.platformsService.getAgentPlatform(agentId, platform);
+            if(!platformData) {
+                throw new BadRequestError("Agent platform configuratin error")
+            }
     
-            let platformsService;
+            let productService;
 
             const messagingProduct = req.body.entry[0]?.changes[0]?.value?.messaging_product;
             console.log(req.body.entry[0], "entry::::")
@@ -63,19 +68,19 @@ export default class WebhooksService {
 
             switch(messagingProduct) {
                 case "whatsapp":
-                    platformsService = Container.resolve<WhatsappService>("whatsappService");
+                    productService = Container.resolve<WhatsappService>("whatsappService");
                 default:
                     break;
             }
 
-            if(!platformsService) {
+            if(!productService) {
                 throw new BadRequestError("Unsupported product");
             };
 
-            const clientMetaData = platformsService.getClientInfo(req);
+            const clientMetaData = productService.getClientInfo(req);
             const clientId = await this.handleClient(agentId, clientMetaData);
             const conversationId = await this.handleConversaton(agentId, clientId, messagingProduct);
-
+            const message = await productService.getMessageContent(req, platformData.identifier, platformData.token);
           
            return;
         } catch (error) {

@@ -9,21 +9,6 @@ import ConversationsService from '../conversations/ConversationsService';
 
 
 export default class WhatsappService {
-
-    // async handleIncomingMessage(req: Request, agentId: string): Promise<void> {
-    //     try {
-    //         const conversationService = Container.resolve<ConversationsService>("ConversationsService");
-    //         const clientMetaData = this.getClientInfo(req);
-    //         if(!clientMetaData) {
-
-    //         }
-
-           
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
-
     async handleOutgoingMessage(message: Content, fromId: string, to: string, token: string): Promise<void> {
         try {
             let messageObject: MessageObject;
@@ -47,20 +32,29 @@ export default class WhatsappService {
         }
     }
 
-    getClientInfo(req: Request): WhatsappMetaData {
+    async getMessageContent(req: Request, fromId: string, token: string) {
         try {
-            const clientInfo = req.body.entry[0]?.changes[0]?.value?.metaData;
-            if(!clientInfo) {
-                throw new BadRequestError("Meta data not found");
-            }
+            const message = req.body.entry[0].changes[0].value.messages[0];
+            
+            await this.sendReadRecipt(message.id, fromId, token);
 
-            return clientInfo;
+            console.log(message);
+            return;
         } catch (error) {
             throw error;
         }
     }
 
-    getReadRecipt(messageId: string): ReadReceipt {
+    getClientInfo(req: Request): WhatsappMetaData {
+        const clientInfo = req.body.entry[0]?.changes[0]?.value?.metaData;
+        if(!clientInfo) {
+            throw new BadRequestError("Meta data not found");
+        }
+
+        return clientInfo;
+    }
+
+    async sendReadRecipt(messageId: string, fromId: string, token: string): Promise<void> {
         try {
             const readReceipt: ReadReceipt = {
                 messaging_product: "whatsapp",
@@ -68,13 +62,14 @@ export default class WhatsappService {
                 message_id: messageId
             }
 
-            return readReceipt
+            await this.send(readReceipt, fromId, token);
+            return;
         } catch (error) {
             throw error;
         }
     }
 
-    async send(messageObject: MessageObject, fromId: string, token: string) {
+    async send(messageObject: MessageObject | ReadReceipt, fromId: string, token: string) {
         try {
         await axios.post(
             `https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`,

@@ -30,7 +30,7 @@ export default class DirectMessagagingController {
 
     async handleIncommingMessage(req: Request, res: Response): Promise<void> {
         try {
-            await this.webhookService.incomingMessage(req);
+            await this.webhookService.incomingMessage(req, "direct");
             res.status(200).send()
         } catch (error) {
             throw error;

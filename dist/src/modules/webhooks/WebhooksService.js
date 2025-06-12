@@ -15,15 +15,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 const errors_1 = require("../../core/errors/errors");
 class WebhooksService {
-    constructor(httpService) {
+    constructor(httpService, platformsService) {
         this.httpService = httpService;
+        this.platformsService = platformsService;
     }
     verifyWebhook(req, platform) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const platformsService = Container_1.default.resolve("PlatformsService");
                 const agentId = this.httpService.encryptionService.decryptData(req.params.id);
-                const agentPlatform = yield platformsService.getAgentPlatform(agentId, platform);
+                const agentPlatform = yield this.platformsService.getAgentPlatform(agentId, platform);
                 // Parse params from the webhook verification request
                 let mode = req.query['hub.mode'];
                 let token = req.query['hub.verify_token'];
@@ -48,13 +48,17 @@ class WebhooksService {
             }
         });
     }
-    incomingMessage(req) {
+    incomingMessage(req, platform) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a, _b, _c, _d;
             try {
-                const agentId = this.httpService.encryptionService.decryptData(req.params.id);
                 const messagesService = Container_1.default.resolve("MessagesService");
-                let platformsService;
+                const agentId = this.httpService.encryptionService.decryptData(req.params.id);
+                const platformData = yield this.platformsService.getAgentPlatform(agentId, platform);
+                if (!platformData) {
+                    throw new errors_1.BadRequestError("Agent platform configuratin error");
+                }
+                let productService;
                 const messagingProduct = (_c = (_b = (_a = req.body.entry[0]) === null || _a === void 0 ? void 0 : _a.changes[0]) === null || _b === void 0 ? void 0 : _b.value) === null || _c === void 0 ? void 0 : _c.messaging_product;
                 console.log(req.body.entry[0], "entry::::");
                 console.log("Changes::::", (_d = req.body.entry[0]) === null || _d === void 0 ? void 0 : _d.changes[0]);
@@ -63,17 +67,18 @@ class WebhooksService {
                 }
                 switch (messagingProduct) {
                     case "whatsapp":
-                        platformsService = Container_1.default.resolve("whatsappService");
+                        productService = Container_1.default.resolve("whatsappService");
                     default:
                         break;
                 }
-                if (!platformsService) {
+                if (!productService) {
                     throw new errors_1.BadRequestError("Unsupported product");
                 }
                 ;
-                const clientMetaData = platformsService.getClientInfo(req);
+                const clientMetaData = productService.getClientInfo(req);
                 const clientId = yield this.handleClient(agentId, clientMetaData);
                 const conversationId = yield this.handleConversaton(agentId, clientId, messagingProduct);
+                const message = yield productService.getMessageContent(req, platformData.identifier, platformData.token);
                 return;
             }
             catch (error) {
