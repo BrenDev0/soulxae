@@ -37,10 +37,11 @@ export default class WhatsappService {
             }
 
             if(!messageObject) {
-                throw new BadRequestError();
+                throw new BadRequestError("Unsupported message type");
             }
 
             const response = await this.send(messageObject, fromId, token);
+
 
             if(!response || !response.data.messages || !response.data.messages[0].id) {
                 throw new ExternalAPIError();
@@ -174,7 +175,7 @@ export default class WhatsappService {
                     },
                 }
             );
-                
+        
             return response;
         } catch (error) {
             throw new ExternalAPIError(undefined, {
@@ -239,7 +240,7 @@ export default class WhatsappService {
             recipient_type: "individual",
             to: to,
             type: "audio",
-            image: audioObject
+            audio: audioObject
         };
 
         return messageObject;

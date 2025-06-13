@@ -71,5 +71,6 @@ export interface MessageObject {
   type: string;
   interactive?: InteractiveObject;
   image?: ImageObject;
-  text?: TextObject 
+  text?: TextObject;
+  audio?: AudioObject;
 }

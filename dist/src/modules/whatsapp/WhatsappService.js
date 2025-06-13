@@ -41,7 +41,7 @@ class WhatsappService {
                         break;
                 }
                 if (!messageObject) {
-                    throw new errors_1.BadRequestError();
+                    throw new errors_1.BadRequestError("Unsupported message type");
                 }
                 const response = yield this.send(messageObject, fromId, token);
                 if (!response || !response.data.messages || !response.data.messages[0].id) {
@@ -218,7 +218,7 @@ class WhatsappService {
             recipient_type: "individual",
             to: to,
             type: "audio",
-            image: audioObject
+            audio: audioObject
         };
         return messageObject;
     }

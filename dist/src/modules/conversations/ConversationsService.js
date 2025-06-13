@@ -77,7 +77,6 @@ class ConversationsService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield this.repository.getAPIData(conversationId);
-                console.log(result, "RESULT::::");
                 if (!result) {
                     return null;
                 }
@@ -143,6 +142,7 @@ class ConversationsService {
         return {
             conversationId: conversation.conversation_id,
             agentId: conversation.agent_id,
+            messagingProduct: conversation.messaging_product,
             platform: conversation.platform,
             clientId: conversation.client_id,
             title: conversation.title,

@@ -53,13 +53,12 @@ class DirectMessagagingController {
                 const requiredMessageFields = ["conversationId", "content", "type"];
                 this.httpService.requestValidation.validateRequestBody(requiredMessageFields, message, `${block}.message`);
                 const conversationsService = Container_1.default.resolve("ConversationsService");
-                console.log(message);
                 const conversation = yield conversationsService.getAPIData(message.conversationId);
                 if (!conversation) {
                     throw new errors_1.NotFoundError("conversation not found");
                 }
                 let productService;
-                switch (conversation.platform) {
+                switch (conversation.messagingProduct) {
                     case 'whatsapp':
                         productService = Container_1.default.resolve("WhatsappService");
                         break;

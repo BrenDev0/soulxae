@@ -28,6 +28,7 @@ export interface ConversationData {
 
 export interface ConversationForAPI {
   conversation_id: string;
+  messaging_product: string;
   agent_id: string;
   platform: string;
   client_id: string;
@@ -40,6 +41,7 @@ export interface ConversationForAPI {
 
 export interface ConversationForAPIData {
   conversationId: string;
+   messagingProduct: string;
   agentId: string;
   platform: string;
   clientId: string;

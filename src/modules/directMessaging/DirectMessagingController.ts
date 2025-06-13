@@ -50,7 +50,6 @@ export default class DirectMessagagingController {
             this.httpService.requestValidation.validateRequestBody(requiredMessageFields, message, `${block}.message`);
             
             const conversationsService = Container.resolve<ConversationsService>("ConversationsService");
-            console.log(message)
            
             const conversation = await conversationsService.getAPIData(message.conversationId);
             if(!conversation) {
@@ -58,7 +57,7 @@ export default class DirectMessagagingController {
             }
 
             let productService;
-            switch(conversation.platform) {
+            switch(conversation.messagingProduct) {
                 case 'whatsapp':
                     productService = Container.resolve<WhatsappService>("WhatsappService");
                     break;
