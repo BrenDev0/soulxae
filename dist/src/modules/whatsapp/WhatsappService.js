@@ -88,15 +88,21 @@ class WhatsappService {
     getMedia(mediaId, token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield axios_1.default.get(`https://graph.facebook.com/v23.0/${mediaId}`, {
+                const responseUrl = yield axios_1.default.get(`https://graph.facebook.com/v23.0/${mediaId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                if (!response) {
+                if (!responseUrl) {
                     throw new errors_1.ExternalAPIError();
                 }
-                return response.data.url;
+                const responseData = yield axios_1.default.get(`${responseUrl.data.url}/${mediaId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                console.log(responseData);
+                return responseUrl.data.url;
             }
             catch (error) {
                 throw error;

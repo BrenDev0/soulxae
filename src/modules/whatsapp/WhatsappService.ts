@@ -87,7 +87,7 @@ export default class WhatsappService {
 
     async getMedia(mediaId: string, token: string): Promise<string> {
         try {
-            const response: WhatsappMediaResponse = await axios.get(
+            const responseUrl: WhatsappMediaResponse = await axios.get(
                 `https://graph.facebook.com/v23.0/${mediaId}`,
                 {
                     headers: {
@@ -96,11 +96,21 @@ export default class WhatsappService {
                 }
             );
 
-            if(!response) {
+            if(!responseUrl) {
                 throw new ExternalAPIError();
             }
-         
-            return response.data.url;
+
+            const responseData = await axios.get(
+                `${responseUrl.data.url}/${mediaId}`,
+                {
+                    headers: {
+                    Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            
+            console.log(responseData)
+            return responseUrl.data.url;
         } catch (error) {
             throw error;
         }
