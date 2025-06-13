@@ -51,6 +51,7 @@ export default class WhatsappService {
     async handleIncomingMessage(req: Request, fromId: string, token: string, conversationId: string): Promise<MessageData> {
         try {
             const message = req.body.entry[0].changes[0].value.messages[0];
+          
             console.log(message, ":::::::::::::::::::::message");
             
             
