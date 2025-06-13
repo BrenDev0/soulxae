@@ -239,7 +239,7 @@ export default class WhatsappService {
     }
 
     async getImageMessageContent(message: WhatsappImage, messageRefereceId: string, conversationId: string, token: string): Promise<ImageContent> {
-        const url = await this.getMedia(message.id, messageRefereceId, conversationId, token);
+        const url = await this.getMedia(message.id, token, conversationId, messageRefereceId);
         const messageContent: ImageContent = {
             url: url,
             caption: message.caption ? message.caption : null

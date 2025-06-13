@@ -218,7 +218,7 @@ class WhatsappService {
     }
     getImageMessageContent(message, messageRefereceId, conversationId, token) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = yield this.getMedia(message.id, messageRefereceId, conversationId, token);
+            const url = yield this.getMedia(message.id, token, conversationId, messageRefereceId);
             const messageContent = {
                 url: url,
                 caption: message.caption ? message.caption : null
