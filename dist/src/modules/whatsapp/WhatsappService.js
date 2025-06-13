@@ -23,14 +23,18 @@ class WhatsappService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 let messageObject;
-                if (message.buttons) {
-                    messageObject = this.buttonsMessage(message, to);
-                }
-                else if (message.header) {
-                    messageObject = this.imageMessage(message, to);
-                }
-                else {
-                    messageObject = this.textMessage(message, to);
+                switch (message.type) {
+                    case "image":
+                        messageObject = this.imageMessage(message.content, to);
+                        break;
+                    case "buttons":
+                        messageObject = this.buttonsMessage(message.content, to);
+                        break;
+                    case "text":
+                        messageObject = this.textMessage(message.content, to);
+                        break;
+                    default:
+                        break;
                 }
                 if (!messageObject) {
                     throw new errors_1.BadRequestError();
@@ -42,24 +46,32 @@ class WhatsappService {
             }
         });
     }
-    getMessageContent(req, fromId, token) {
+    handleIncomingMessage(req, fromId, token, conversationId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const message = req.body.entry[0].changes[0].value.messages[0];
                 yield this.sendReadRecipt(message.id, fromId, token);
-                let messageContent = {
-                    header: null,
-                    body: "",
-                    footer: null,
-                    buttons: null
+                let messageData = {
+                    conversationId: conversationId,
+                    sender: "client",
+                    type: "text",
+                    content: {
+                        body: `Unsupported Message type ${message.type}`
+                    }
                 };
-                if (message.image) {
-                    messageContent = yield this.getImageMessageContent(message, token);
+                switch (message.type) {
+                    case "image":
+                        messageData.content = yield this.getImageMessageContent(message, token);
+                        break;
+                    case "text":
+                        messageData.content = {
+                            body: message.text.body
+                        };
+                        break;
+                    default:
+                        break;
                 }
-                else if (message.text) {
-                    messageContent.body = message.text.body;
-                }
-                return messageContent;
+                return messageData;
             }
             catch (error) {
                 if (error instanceof AppError_1.default) {
@@ -174,10 +186,10 @@ class WhatsappService {
     }
     imageMessage(message, to) {
         let imageObjcet = {
-            link: message.header.image
+            link: message.url
         };
-        if (message.body) {
-            imageObjcet.caption = message.body;
+        if (message.caption) {
+            imageObjcet.caption = message.caption;
         }
         const messageObject = {
             messaging_product: "whatsapp",
@@ -192,13 +204,8 @@ class WhatsappService {
         return __awaiter(this, void 0, void 0, function* () {
             const url = yield this.getMedia(message.image.id, token);
             const messageContent = {
-                header: {
-                    type: "image",
-                    image: url
-                },
-                body: message.image.caption ? message.image.caption : null,
-                footer: null,
-                buttons: null
+                url: url,
+                caption: message.image.caption ? message.image.caption : null
             };
             return messageContent;
         });

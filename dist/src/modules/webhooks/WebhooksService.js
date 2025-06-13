@@ -70,18 +70,14 @@ class WebhooksService {
                         break;
                 }
                 if (!productService) {
-                    throw new errors_1.BadRequestError("Unsupported product");
+                    throw new errors_1.BadRequestError("Unsupported messaging product");
                 }
                 ;
                 const clientContact = productService.getClientInfo(req);
                 const clientId = yield this.handleClient(agentId, clientContact);
                 const conversationId = yield this.handleConversaton(agentId, clientId, messagingProduct);
-                const messageContent = yield productService.getMessageContent(req, platformData.identifier, platformData.token);
-                yield messagesService.create({
-                    conversationId: conversationId,
-                    content: messageContent,
-                    type: "client"
-                });
+                const messageData = yield productService.handleIncomingMessage(req, platformData.identifier, platformData.token, conversationId);
+                yield messagesService.create(messageData);
                 return;
             }
             catch (error) {

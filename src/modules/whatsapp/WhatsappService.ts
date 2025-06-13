@@ -1,5 +1,5 @@
 import { ImageObject, InteractiveObject, MessageObject, ReadReceipt, WhatsappContact, WhatsappMediaResponse } from '../whatsapp/whatsapp.interface'
-import { Content } from '../messages/messages.interface';
+import { ButtonsContent, ImageContent, Message, MessageData, TextContent } from '../messages/messages.interface';
 import axios from 'axios';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
 import { Request } from 'express';
@@ -12,16 +12,23 @@ import AppError from '../../core/errors/AppError';
 export default class WhatsappService {
     private readonly block = "whatsapp.service";
     
-    async handleOutgoingMessage(message: Content, fromId: string, to: string, token: string): Promise<void> {
+    async handleOutgoingMessage(message: MessageData, fromId: string, to: string, token: string): Promise<void> {
         try {
-            let messageObject: MessageObject;
+            let messageObject: MessageObject | undefined;
 
-            if(message.buttons) {
-                messageObject = this.buttonsMessage(message, to);
-            } else if(message.header) {
-                messageObject = this.imageMessage(message, to);
-            } else {
-                messageObject = this.textMessage(message, to)
+            switch(message.type) {
+                case "image":
+                    messageObject = this.imageMessage(message.content as ImageContent, to);
+                    break;
+                case "buttons":
+                    messageObject = this.buttonsMessage(message.content as ButtonsContent, to);
+                    break;
+                case "text":
+                    messageObject = this.textMessage(message.content as TextContent, to);
+                    break;
+                default: 
+                    break;
+
             }
 
             if(!messageObject) {
@@ -35,26 +42,36 @@ export default class WhatsappService {
         }
     }
 
-    async getMessageContent(req: Request, fromId: string, token: string): Promise<Content> {
+    async handleIncomingMessage(req: Request, fromId: string, token: string, conversationId: string): Promise<MessageData> {
         try {
             const message = req.body.entry[0].changes[0].value.messages[0];
             
+            
             await this.sendReadRecipt(message.id, fromId, token);
 
-            let messageContent: Content =  {
-                header: null,
-                body: "",
-                footer: null,
-                buttons: null
+            let messageData: MessageData =  {
+                conversationId: conversationId,
+                sender: "client",
+                type: "text",
+                content: {
+                    body: `Unsupported Message type ${message.type}`
+                }
             }
 
-            if(message.image) {
-                messageContent = await this.getImageMessageContent(message, token)
-            } else if(message.text) {
-                messageContent.body = message.text.body
+            switch(message.type) {
+                case "image":
+                    messageData.content = await this.getImageMessageContent(message, token)
+                    break;
+                case "text":
+                    messageData.content = {
+                        body: message.text.body
+                    } 
+                    break;
+                default: 
+                    break;
             }
 
-            return messageContent;
+            return messageData;
         } catch (error) {
             if(error instanceof AppError) {
                 throw error;
@@ -135,7 +152,7 @@ export default class WhatsappService {
         }
     }
 
-    textMessage(message: Content, to: string): MessageObject  {
+    textMessage(message: TextContent, to: string): MessageObject  {
         const messageObject: MessageObject = {
             messaging_product: "whatsapp",
             recipient_type: "individual",
@@ -150,7 +167,7 @@ export default class WhatsappService {
         return messageObject;
     }
 
-    buttonsMessage(message: Content, to: string): MessageObject {
+    buttonsMessage(message: ButtonsContent, to: string): MessageObject {
         const interactiveObject: InteractiveObject = {
             type: "button",
             body: {
@@ -180,13 +197,13 @@ export default class WhatsappService {
         return messageObject;
     }
 
-    imageMessage(message: Content, to: string): MessageObject {
+    imageMessage(message: ImageContent, to: string): MessageObject {
         let imageObjcet: ImageObject =  {
-            link: message.header!.image!
+            link: message.url
         }
 
-        if(message.body) {
-            imageObjcet.caption = message.body;
+        if(message.caption) {
+            imageObjcet.caption = message.caption;
         }
 
         const messageObject: MessageObject = {
@@ -200,16 +217,11 @@ export default class WhatsappService {
         return messageObject;
     }
 
-    async getImageMessageContent(message: any, token: string): Promise<Content> {
+    async getImageMessageContent(message: any, token: string): Promise<ImageContent> {
         const url = await this.getMedia(message.image.id, token);
-        const messageContent: Content = {
-            header: {
-                type: "image",
-                image: url
-            },
-            body: message.image.caption ? message.image.caption : null,
-            footer: null,
-            buttons: null
+        const messageContent: ImageContent = {
+            url: url,
+            caption: message.image.caption ? message.image.caption : null
         } 
              
         return messageContent    

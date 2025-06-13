@@ -73,19 +73,15 @@ export default class WebhooksService {
             }
 
             if(!productService) {
-                throw new BadRequestError("Unsupported product");
+                throw new BadRequestError("Unsupported messaging product");
             };
 
             const clientContact = productService.getClientInfo(req);
             const clientId = await this.handleClient(agentId, clientContact);
             const conversationId = await this.handleConversaton(agentId, clientId, messagingProduct);
-            const messageContent = await productService.getMessageContent(req, platformData.identifier, platformData.token);
+            const messageData = await productService.handleIncomingMessage(req, platformData.identifier, platformData.token, conversationId);
           
-            await messagesService.create({
-                conversationId: conversationId,
-                content: messageContent,
-                type: "client"
-            })
+            await messagesService.create(messageData)
 
            return;
         } catch (error) {

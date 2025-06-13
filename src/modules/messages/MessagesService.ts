@@ -73,6 +73,7 @@ export default class MessagesService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
           conversation_id: message.conversationId,
+          sender: message.sender,
           content: message.content,
           type: message.type 
         }
@@ -83,6 +84,7 @@ export default class MessagesService {
         return {
             messageId: message.message_id,
             conversationId: message.conversation_id,
+            sender: message.sender,
             content: message.content,
             type: message.type 
         }
