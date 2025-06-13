@@ -8,6 +8,7 @@ import Container from '../../core/dependencies/Container';
 import ConversationsService from '../conversations/ConversationsService';
 import AppError from '../../core/errors/AppError';
 import S3Service from '../media/S3Service';
+import { read } from 'fs';
 
 
 export default class WhatsappService {
@@ -155,6 +156,8 @@ export default class WhatsappService {
                 message_id: messageId
             }
 
+            console.log(readReceipt, "READREC:::::")
+
            await this.send(readReceipt, fromId, token);
             return;
         } catch (error) {
@@ -173,6 +176,8 @@ export default class WhatsappService {
                     },
                 }
             );
+
+            console.log(response, "::::::::::::::RES")
                 
             return response;
         } catch (error) {

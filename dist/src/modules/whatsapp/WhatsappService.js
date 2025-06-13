@@ -145,6 +145,7 @@ class WhatsappService {
                     status: "read",
                     message_id: messageId
                 };
+                console.log(readReceipt, "READREC:::::");
                 yield this.send(readReceipt, fromId, token);
                 return;
             }
@@ -161,6 +162,7 @@ class WhatsappService {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+                console.log(response, "::::::::::::::RES");
                 return response;
             }
             catch (error) {
