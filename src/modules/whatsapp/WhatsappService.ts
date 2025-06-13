@@ -86,6 +86,7 @@ export default class WhatsappService {
 
             return messageData;
         } catch (error) {
+            console.log(error, ":::::::::error")
             if(error instanceof AppError) {
                 throw error;
             }
