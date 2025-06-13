@@ -70,6 +70,7 @@ class WhatsappService {
                     case "audio":
                         message.type = "audio";
                         messageData.content = yield this.getAudioContent(message.audio, conversationId, token);
+                        break;
                     case "image":
                         message.type = "image";
                         messageData.content = yield this.getImageMessageContent(message.image, conversationId, token);
