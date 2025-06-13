@@ -44,10 +44,10 @@ class WhatsappService {
                     throw new errors_1.BadRequestError();
                 }
                 const response = yield this.send(messageObject, fromId, token);
-                if (!response || !response.messages || !response.messages[0].id) {
+                if (!response || !response.data.messages || !response.data.messages[0].id) {
                     throw new errors_1.ExternalAPIError();
                 }
-                return response.messages[0].id;
+                return response.data.messages[0].id;
             }
             catch (error) {
                 throw error;
@@ -161,7 +161,7 @@ class WhatsappService {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                return response.data;
+                return response;
             }
             catch (error) {
                 throw new errors_1.ExternalAPIError(undefined, {

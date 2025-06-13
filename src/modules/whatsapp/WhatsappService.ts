@@ -41,10 +41,10 @@ export default class WhatsappService {
 
             const response = await this.send(messageObject, fromId, token);
 
-            if(!response || !response.messages || !response.messages[0].id) {
+            if(!response || !response.data.messages || !response.data.messages[0].id) {
                 throw new ExternalAPIError();
             }
-            return response.messages[0].id;
+            return response.data.messages[0].id;
             
         } catch (error) {
             throw error
@@ -174,7 +174,7 @@ export default class WhatsappService {
                 }
             );
                 
-            return response.data;
+            return response;
         } catch (error) {
             throw new ExternalAPIError(undefined, {
                 service: "whatsapp",
