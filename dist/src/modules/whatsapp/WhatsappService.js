@@ -68,11 +68,11 @@ class WhatsappService {
                 };
                 switch (message.type) {
                     case "audio":
-                        message.type = "audio";
+                        messageData.type = "audio";
                         messageData.content = yield this.getAudioContent(message.audio, conversationId, token);
                         break;
                     case "image":
-                        message.type = "image";
+                        messageData.type = "image";
                         messageData.content = yield this.getImageMessageContent(message.image, conversationId, token);
                         break;
                     case "text":

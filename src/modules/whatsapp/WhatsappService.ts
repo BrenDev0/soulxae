@@ -69,11 +69,11 @@ export default class WhatsappService {
 
             switch(message.type) {
                 case "audio":
-                    message.type = "audio";
+                    messageData.type = "audio";
                     messageData.content = await this.getAudioContent(message.audio, conversationId, token);
                     break
                 case "image":
-                    message.type = "image"
+                    messageData.type = "image"
                     messageData.content = await this.getImageMessageContent(message.image, conversationId, token)
                     break;
                 case "text":
