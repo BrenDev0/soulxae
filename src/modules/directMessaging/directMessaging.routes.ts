@@ -13,7 +13,20 @@ export const initializeDirectMessageingRouter = (customController?: DirectMessag
 
     // protected Routes //
     secureRouter.post("/send", 
-        
+         /*
+        #swagger.tags = ['Messaging']
+        #swagger.path =  '/direct/secure/send'
+        #swagger.security = [{ "bearerAuth": [] }] 
+        #swagger.description = 'send Message to client'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: { $ref: "#/components/schemas/sendDirectMessage" }
+                }
+            }
+        }
+        */
         controller.send.bind(controller)
     )
 

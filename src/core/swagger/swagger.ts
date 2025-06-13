@@ -76,6 +76,24 @@ const doc = {
       updatePlatform: {
         token: "new token",
         platform: "new platform"
+      },
+
+      sendDirectMessage: {
+        message: {
+          conversationId: "conversationId",
+          type: "image, text",
+          content: {
+            body: "See interfaces at bottom of docs for proper structures"
+          }
+        }
+      },
+
+      TextContent: {
+        body: "message text"
+      },
+      ImageContent: {
+        url: "image url",
+        caption: "optional message"
       }
     },
     
@@ -87,6 +105,7 @@ const endpointsFiles = [
   '../../modules/agents/agents.routes.ts',
   '../../modules/clients/clients.routes.ts',
   '../../modules/conversations/conversations.routes.ts',
+  '../../modules/directMessaging/directMessaging.routes.ts',
   '../../modules/platforms/platforms.routes.ts',
   '../../modules/users/users.routes.ts',
   '../../modules/workspaces/workspaces.routes.ts'

@@ -13,7 +13,22 @@ const initializeDirectMessageingRouter = (customController) => {
     const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("DirectMessagingController");
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     // protected Routes //
-    secureRouter.post("/send", controller.send.bind(controller));
+    secureRouter.post("/send", 
+    /*
+   #swagger.tags = ['Messaging']
+   #swagger.path =  '/direct/secure/send'
+   #swagger.security = [{ "bearerAuth": [] }]
+   #swagger.description = 'send Message to client'
+   #swagger.requestBody = {
+       required: true,
+       content: {
+           "application/json": {
+               schema: { $ref: "#/components/schemas/sendDirectMessage" }
+           }
+       }
+   }
+   */
+    controller.send.bind(controller));
     // unprotected Routes //
     router.post("/:id/webhook", controller.handleIncommingMessage.bind(controller));
     router.get('/:id/webhook', controller.verifyWebhook.bind(controller));

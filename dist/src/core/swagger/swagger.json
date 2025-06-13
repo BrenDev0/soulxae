@@ -317,6 +317,52 @@
                 ]
             }
         },
+        "/direct/secure/send": {
+            "post": {
+                "tags": [
+                    "Messaging"
+                ],
+                "description": "send Message to client",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/sendDirectMessage"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/{id}/webhook": {
+            "post": {
+                "description": "",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            },
+            "get": {
+                "description": "",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/platforms/secure/create": {
             "post": {
                 "tags": [
@@ -986,6 +1032,55 @@
                     "platform": {
                         "type": "string",
                         "example": "new platform"
+                    }
+                }
+            },
+            "sendDirectMessage": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "object",
+                        "properties": {
+                            "conversationId": {
+                                "type": "string",
+                                "example": "conversationId"
+                            },
+                            "type": {
+                                "type": "string",
+                                "example": "image, text"
+                            },
+                            "content": {
+                                "type": "object",
+                                "properties": {
+                                    "body": {
+                                        "type": "string",
+                                        "example": "See interfaces at bottom of docs for proper structures"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "TextContent": {
+                "type": "object",
+                "properties": {
+                    "body": {
+                        "type": "string",
+                        "example": "message text"
+                    }
+                }
+            },
+            "ImageContent": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "example": "image url"
+                    },
+                    "caption": {
+                        "type": "string",
+                        "example": "optional message"
                     }
                 }
             }
