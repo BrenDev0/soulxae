@@ -100,7 +100,9 @@ class WhatsappService {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
+                    responseType: 'arraybuffer'
                 });
+                console.log(responseData.headers['content-type'], "Type:_:::::");
                 console.log(responseData);
                 return responseUrl.data.url;
             }
