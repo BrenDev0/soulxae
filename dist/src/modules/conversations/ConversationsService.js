@@ -77,6 +77,7 @@ class ConversationsService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield this.repository.getAPIData(conversationId);
+                console.log(result, "RESULT::::");
                 if (!result) {
                     return null;
                 }

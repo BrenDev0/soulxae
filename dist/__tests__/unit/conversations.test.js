@@ -37,21 +37,21 @@ describe("AGENTSREPOSITORY", () => {
         Container_1.default.clear();
     }));
     describe("resource", () => {
-        it("should return agent info with user_id", () => __awaiter(void 0, void 0, void 0, function* () {
-            const repo = new ConversationsRepository_1.default(pool);
-            const service = new ConversationsService_1.default(repo);
-            const data = {
-                agentId: "7a367831-5458-47be-ae3d-3b5788c56af8",
-                platform: "messenger",
-                messagingProduct: "direct",
-                title: "test",
-                clientId: "e869c44f-fed3-4887-bb31-a19bf1492b30",
-                handoff: true
-            };
-            const result = yield service.create(data);
-            console.log(result, "RESULT::::::");
-            expect(result).toHaveProperty("conversation_id");
-        }));
+        // it("should return agent info with user_id", async() => {
+        //     const repo = new ConversationsRepositoy(pool);
+        //     const service = new ConversationsService(repo);
+        //     const data: ConversationData =  {
+        //         agentId: "7a367831-5458-47be-ae3d-3b5788c56af8",
+        //         platform: "messenger",
+        //         messagingProduct: "direct",
+        //         title: "test",
+        //         clientId: "e869c44f-fed3-4887-bb31-a19bf1492b30",
+        //         handoff: true
+        //     }
+        //     const result = await service.create(data);
+        //     console.log(result, "RESULT::::::")
+        //     expect(result).toHaveProperty("conversation_id");
+        // })
     });
     // describe("resource", () => {
     //     it("should return agent info with user_id", async() => {
@@ -73,9 +73,9 @@ describe("AGENTSREPOSITORY", () => {
         it("should return agent info with user_id", () => __awaiter(void 0, void 0, void 0, function* () {
             const repo = new ConversationsRepository_1.default(pool);
             const service = new ConversationsService_1.default(repo);
-            const result = yield service.resource("4299ab5c-0bd4-4e86-97ec-f956af6a0ba3");
+            const result = yield service.getAPIData("9c00d775-c78f-496c-aad5-2814fdef0ff0");
             console.log(result, "RESULT::::::");
-            expect(result).toHaveProperty("platformIdentifier");
+            expect(result).toHaveProperty("agent_id");
         }));
     });
 });

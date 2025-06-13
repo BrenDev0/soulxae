@@ -50,10 +50,10 @@ export default class DirectMessagagingController {
             this.httpService.requestValidation.validateRequestBody(requiredMessageFields, message, `${block}.message`);
             
             const conversationsService = Container.resolve<ConversationsService>("ConversationsService");
+            console.log(message)
            
             const conversation = await conversationsService.getAPIData(message.conversationId);
             if(!conversation) {
-                console.log(conversation, ":::::Convo")
                 throw new NotFoundError("conversation not found")
             }
 

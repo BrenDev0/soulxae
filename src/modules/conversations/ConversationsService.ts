@@ -62,7 +62,7 @@ export default class ConversationsService {
     async getAPIData(conversationId: string): Promise<ConversationForAPIData | null> {
          try {
             const result = await this.repository.getAPIData(conversationId);
-            
+            console.log(result, "RESULT::::")
             if(!result) {
                 return null
             }

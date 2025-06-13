@@ -73,7 +73,7 @@ describe("USERS ROUTES", () => {
                 .set('Authorization', token)
                 .send({
                 message: {
-                    conversationId: "66f8048e-bb28-4d42-ba36-53bbc19dbe3a",
+                    conversationId: "9c00d775-c78f-496c-aad5-2814fdef0ff0",
                     type: "auido",
                     content: {
                         url: "https://soulxae-imagenes.s3.us-east-1.amazonaws.com/66f8048e-bb28-4d42-ba36-53bbc19dbe3a/audio/ogg/1360710618544424"
