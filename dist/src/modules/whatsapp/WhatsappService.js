@@ -204,6 +204,18 @@ class WhatsappService {
         };
         return messageObject;
     }
+    // audioMessage(message: AudioContent, to: string): MessageObject {
+    // }
+    getAudioContent(message, conversationId, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(message);
+            const url = yield this.getMedia(message.id, token, conversationId);
+            const messageContent = {
+                url: url
+            };
+            return messageContent;
+        });
+    }
     imageMessage(message, to) {
         let imageObjcet = {
             link: message.url
@@ -219,15 +231,6 @@ class WhatsappService {
             image: imageObjcet
         };
         return messageObject;
-    }
-    getAudioContent(message, conversationId, token) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const url = yield this.getMedia(message.id, token, conversationId);
-            const messageContent = {
-                url: url
-            };
-            return messageContent;
-        });
     }
     getImageMessageContent(message, conversationId, token) {
         return __awaiter(this, void 0, void 0, function* () {

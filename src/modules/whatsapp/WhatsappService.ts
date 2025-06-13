@@ -222,6 +222,21 @@ export default class WhatsappService {
         return messageObject;
     }
 
+    // audioMessage(message: AudioContent, to: string): MessageObject {
+
+    // }
+
+    async getAudioContent(message: WhatsAppAudio, conversationId: string, token: string): Promise<AudioContent> {
+        console.log(message)
+        const url = await this.getMedia(message.id, token, conversationId);
+
+        const messageContent: AudioContent = {
+            url: url
+        }
+
+        return messageContent;
+    }
+
     imageMessage(message: ImageContent, to: string): MessageObject {
         let imageObjcet: ImageObject =  {
             link: message.url
@@ -240,16 +255,6 @@ export default class WhatsappService {
         };
 
         return messageObject;
-    }
-
-    async getAudioContent(message: WhatsAppAudio, conversationId: string, token: string): Promise<AudioContent> {
-        const url = await this.getMedia(message.id, token, conversationId);
-
-        const messageContent: AudioContent = {
-            url: url
-        }
-
-        return messageContent;
     }
 
     async getImageMessageContent(message: WhatsappImage, conversationId: string, token: string): Promise<ImageContent> {
