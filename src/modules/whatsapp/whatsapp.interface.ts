@@ -1,13 +1,5 @@
 import { Header } from "../messages/messages.interface";
 
-export interface Whatsapp {
-  // Define your database interface fields here
-}
-
-export interface WhatsappData {
-  // Define your data interface fields here
-}
-
 export interface ReadReceipt{
   "messaging_product": string;
   "status": string;
@@ -31,6 +23,15 @@ export interface WhatsappContact{
   };
   wa_id: string;
 }
+
+export interface WhatsAppAudio {
+
+  mime_type: string;
+  sha256: string;
+  id: string;
+  voice: boolean;
+
+  }
 
 export interface WhatsappImage {
   caption?: string;

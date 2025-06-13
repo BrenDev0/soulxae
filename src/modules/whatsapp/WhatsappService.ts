@@ -1,5 +1,5 @@
-import { ImageObject, InteractiveObject, MessageObject, ReadReceipt, WhatsappContact, WhatsappImage, WhatsappMediaResponse } from '../whatsapp/whatsapp.interface'
-import { ButtonsContent, ImageContent, Message, MessageData, TextContent } from '../messages/messages.interface';
+import { ImageObject, InteractiveObject, MessageObject, ReadReceipt, WhatsAppAudio, WhatsappContact, WhatsappImage, WhatsappMediaResponse } from '../whatsapp/whatsapp.interface'
+import { AudioContent, ButtonsContent, ImageContent, Message, MessageData, TextContent } from '../messages/messages.interface';
 import axios from 'axios';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
 import { Request } from 'express';
@@ -67,7 +67,11 @@ export default class WhatsappService {
             }
 
             switch(message.type) {
+                case "audio":
+                    message.type = "audio";
+                    messageData.content = await this.getAudioContent(message.audio, conversationId, token)
                 case "image":
+                    message.type = "image"
                     messageData.content = await this.getImageMessageContent(message.image, conversationId, token)
                     break;
                 case "text":
@@ -236,6 +240,16 @@ export default class WhatsappService {
         };
 
         return messageObject;
+    }
+
+    async getAudioContent(message: WhatsAppAudio, conversationId: string, token: string): Promise<AudioContent> {
+        const url = await this.getMedia(message.id, token, conversationId);
+
+        const messageContent: AudioContent = {
+            url: url
+        }
+
+        return messageContent;
     }
 
     async getImageMessageContent(message: WhatsappImage, conversationId: string, token: string): Promise<ImageContent> {
