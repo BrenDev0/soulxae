@@ -230,7 +230,6 @@ export default class WhatsappService {
     // }
 
     async getAudioContent(message: WhatsAppAudio, conversationId: string, token: string): Promise<AudioContent> {
-        console.log(message)
         const url = await this.getMedia(message.id, token, conversationId);
 
         const messageContent: AudioContent = {

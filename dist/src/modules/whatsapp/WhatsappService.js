@@ -210,7 +210,6 @@ class WhatsappService {
     // }
     getAudioContent(message, conversationId, token) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(message);
             const url = yield this.getMedia(message.id, token, conversationId);
             const messageContent = {
                 url: url
