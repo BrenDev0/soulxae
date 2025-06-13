@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import HttpService from "../../core/services/HttpService"
 import { BadRequestError, NotFoundError } from "../../core/errors/errors";
-import MediaService from "./MediaService";
+import MediaService from "./S3Service";
 import { MediaData } from "./media.interface";
 
 export default class MediaController { 

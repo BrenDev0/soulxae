@@ -32,6 +32,13 @@ export interface WhatsappContact{
   wa_id: string;
 }
 
+export interface WhatsappImage {
+  caption?: string;
+  mime_type: string;
+  sha256: string;
+  id: string;
+}
+
 export interface TextObject {
   preview_url: boolean,
   body: string;

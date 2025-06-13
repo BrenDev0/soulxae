@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const errors_1 = require("../../core/errors/errors");
+const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 const AppError_1 = __importDefault(require("../../core/errors/AppError"));
 class WhatsappService {
     constructor() {
@@ -39,7 +40,11 @@ class WhatsappService {
                 if (!messageObject) {
                     throw new errors_1.BadRequestError();
                 }
-                yield this.send(messageObject, fromId, token);
+                const response = yield this.send(messageObject, fromId, token);
+                if (!response || !response.messages || !response.messages[0].id) {
+                    throw new errors_1.ExternalAPIError();
+                }
+                return response.messages[0].id;
             }
             catch (error) {
                 throw error;
@@ -52,6 +57,7 @@ class WhatsappService {
                 const message = req.body.entry[0].changes[0].value.messages[0];
                 yield this.sendReadRecipt(message.id, fromId, token);
                 let messageData = {
+                    messageReferenceId: message.id,
                     conversationId: conversationId,
                     sender: "client",
                     type: "text",
@@ -61,7 +67,7 @@ class WhatsappService {
                 };
                 switch (message.type) {
                     case "image":
-                        messageData.content = yield this.getImageMessageContent(message, token);
+                        messageData.content = yield this.getImageMessageContent(message.image, message.id, conversationId, token);
                         break;
                     case "text":
                         messageData.content = {
@@ -85,7 +91,7 @@ class WhatsappService {
             }
         });
     }
-    getMedia(mediaId, token) {
+    getMedia(mediaId, token, conversarionId, messageReferenceId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseUrl = yield axios_1.default.get(`https://graph.facebook.com/v23.0/${mediaId}`, {
@@ -102,9 +108,11 @@ class WhatsappService {
                     },
                     responseType: 'arraybuffer'
                 });
-                console.log(responseData.headers['content-type'], "Type:_:::::");
-                console.log(responseData);
-                return responseUrl.data.url;
+                const contentType = responseData.headers['content-type'];
+                const key = `${conversarionId}/${contentType}/${messageReferenceId}`;
+                const mediaService = Container_1.default.resolve("S3Service");
+                const url = yield mediaService.uploadBuffer(key, responseData.data, contentType);
+                return url;
             }
             catch (error) {
                 throw error;
@@ -138,13 +146,13 @@ class WhatsappService {
     send(messageObject, fromId, token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield axios_1.default.post(`https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`, messageObject, {
+                const response = yield axios_1.default.post(`https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`, messageObject, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
                 console.log("message sent");
-                return;
+                return response.data;
             }
             catch (error) {
                 throw new errors_1.ExternalAPIError(undefined, {
@@ -208,12 +216,12 @@ class WhatsappService {
         };
         return messageObject;
     }
-    getImageMessageContent(message, token) {
+    getImageMessageContent(message, messageRefereceId, conversationId, token) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = yield this.getMedia(message.image.id, token);
+            const url = yield this.getMedia(message.id, messageRefereceId, conversationId, token);
             const messageContent = {
                 url: url,
-                caption: message.image.caption ? message.image.caption : null
+                caption: message.caption ? message.caption : null
             };
             return messageContent;
         });

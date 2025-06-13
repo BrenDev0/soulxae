@@ -14,7 +14,7 @@ export interface Button {
 
 export interface ImageContent {
   url: string;
-  caption: string
+  caption: string | null
 }
 
 export interface ButtonsContent {
@@ -30,6 +30,7 @@ export interface TextContent {
 
 export interface Message {
   message_id?: string;
+  message_reference_id: string;
   conversation_id: string;
   sender: string;
   type: string;
@@ -39,6 +40,7 @@ export interface Message {
 
 export interface MessageData {
   messageId?: string;
+  messageReferenceId: string;
   conversationId: string;
   sender: string;
   content: ImageContent | ButtonsContent | TextContent;

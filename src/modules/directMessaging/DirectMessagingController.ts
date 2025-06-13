@@ -68,10 +68,11 @@ export default class DirectMessagagingController {
                 throw new BadRequestError("Unsupported messaging product")
             }
 
-            await productService.handleOutgoingMessage(message, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token);
+            const messageRefereceId = await productService.handleOutgoingMessage(message, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token);
 
             const messagesService = Container.resolve<MessagesService>("MessagesService");
             await messagesService.create({
+                messageReferenceId: messageRefereceId,
                 conversationId: conversation.conversationId!,
                 sender: "agent",
                 type: message.type,

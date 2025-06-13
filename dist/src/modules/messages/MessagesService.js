@@ -84,6 +84,7 @@ class MessagesService {
     mapToDb(message) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
+            message_reference_id: message.messageReferenceId,
             conversation_id: message.conversationId,
             sender: message.sender,
             content: message.content,
@@ -94,6 +95,7 @@ class MessagesService {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
             messageId: message.message_id,
+            messageReferenceId: message.message_reference_id,
             conversationId: message.conversation_id,
             sender: message.sender,
             content: message.content,

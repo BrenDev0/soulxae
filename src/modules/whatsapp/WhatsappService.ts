@@ -1,4 +1,4 @@
-import { ImageObject, InteractiveObject, MessageObject, ReadReceipt, WhatsappContact, WhatsappMediaResponse } from '../whatsapp/whatsapp.interface'
+import { ImageObject, InteractiveObject, MessageObject, ReadReceipt, WhatsappContact, WhatsappImage, WhatsappMediaResponse } from '../whatsapp/whatsapp.interface'
 import { ButtonsContent, ImageContent, Message, MessageData, TextContent } from '../messages/messages.interface';
 import axios from 'axios';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
@@ -7,12 +7,13 @@ import { Conversation, ConversationData } from '../conversations/conversations.i
 import Container from '../../core/dependencies/Container';
 import ConversationsService from '../conversations/ConversationsService';
 import AppError from '../../core/errors/AppError';
+import S3Service from '../media/S3Service';
 
 
 export default class WhatsappService {
     private readonly block = "whatsapp.service";
     
-    async handleOutgoingMessage(message: MessageData, fromId: string, to: string, token: string): Promise<void> {
+    async handleOutgoingMessage(message: MessageData, fromId: string, to: string, token: string): Promise<string> {
         try {
             let messageObject: MessageObject | undefined;
 
@@ -35,7 +36,12 @@ export default class WhatsappService {
                 throw new BadRequestError();
             }
 
-            await this.send(messageObject, fromId, token)
+            const response = await this.send(messageObject, fromId, token);
+
+            if(!response || !response.messages || !response.messages[0].id) {
+                throw new ExternalAPIError();
+            }
+            return response.messages[0].id;
             
         } catch (error) {
             throw error
@@ -50,6 +56,7 @@ export default class WhatsappService {
             await this.sendReadRecipt(message.id, fromId, token);
 
             let messageData: MessageData =  {
+                messageReferenceId: message.id,
                 conversationId: conversationId,
                 sender: "client",
                 type: "text",
@@ -60,7 +67,7 @@ export default class WhatsappService {
 
             switch(message.type) {
                 case "image":
-                    messageData.content = await this.getImageMessageContent(message, token)
+                    messageData.content = await this.getImageMessageContent(message.image, message.id, conversationId, token)
                     break;
                 case "text":
                     messageData.content = {
@@ -85,7 +92,7 @@ export default class WhatsappService {
         }
     }
 
-    async getMedia(mediaId: string, token: string): Promise<string> {
+    async getMedia(mediaId: string, token: string, conversarionId: string, messageReferenceId: string): Promise<string> {
         try {
             const responseUrl: WhatsappMediaResponse = await axios.get(
                 `https://graph.facebook.com/v23.0/${mediaId}`,
@@ -109,9 +116,12 @@ export default class WhatsappService {
                     responseType: 'arraybuffer'
                 }
             );
-            console.log(responseData.headers['content-type'], "Type:_:::::")
-            console.log(responseData)
-            return responseUrl.data.url;
+            const contentType = responseData.headers['content-type']
+            const key = `${conversarionId}/${contentType}/${messageReferenceId}`
+
+            const mediaService = Container.resolve<S3Service>("S3Service");
+            const url = await mediaService.uploadBuffer(key, responseData.data, contentType)
+            return url;
         } catch (error) {
             throw error;
         }
@@ -143,7 +153,7 @@ export default class WhatsappService {
 
     async send(messageObject: MessageObject | ReadReceipt, fromId: string, token: string) {
         try {
-            await axios.post(
+            const response = await axios.post(
                 `https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`,
                 messageObject,
                 {
@@ -154,7 +164,7 @@ export default class WhatsappService {
             );
                 
             console.log("message sent");
-            return;
+            return response.data;
         } catch (error) {
             throw new ExternalAPIError(undefined, {
                 service: "whatsapp",
@@ -228,11 +238,11 @@ export default class WhatsappService {
         return messageObject;
     }
 
-    async getImageMessageContent(message: any, token: string): Promise<ImageContent> {
-        const url = await this.getMedia(message.image.id, token);
+    async getImageMessageContent(message: WhatsappImage, messageRefereceId: string, conversationId: string, token: string): Promise<ImageContent> {
+        const url = await this.getMedia(message.id, messageRefereceId, conversationId, token);
         const messageContent: ImageContent = {
             url: url,
-            caption: message.image.caption ? message.image.caption : null
+            caption: message.caption ? message.caption : null
         } 
              
         return messageContent    

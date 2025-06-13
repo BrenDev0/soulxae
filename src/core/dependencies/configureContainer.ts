@@ -23,6 +23,7 @@ import { configureWhatsappDependencies } from '../../modules/whatsapp/whatsapp.d
 import { configureMessagesDependencies } from '../../modules/messages/messages.dependencies';
 import { configureDirectMessagingDependencies } from '../../modules/directMessaging/directMessaging.dependencies';
 import { configureWebhooksDependencies } from '../../modules/webhooks/webhooks.dependencies';
+import { configureMediaDependencies } from '../../modules/media/media.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -70,6 +71,9 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
     // conversations //
     configureConversationsDependencies(pool);
+
+    // media //
+    configureMediaDependencies(pool);
 
     // messages //
     configureMessagesDependencies(pool);

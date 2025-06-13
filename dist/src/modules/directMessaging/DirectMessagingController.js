@@ -68,9 +68,10 @@ class DirectMessagagingController {
                 if (!productService) {
                     throw new errors_1.BadRequestError("Unsupported messaging product");
                 }
-                yield productService.handleOutgoingMessage(message, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token);
+                const messageRefereceId = yield productService.handleOutgoingMessage(message, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token);
                 const messagesService = Container_1.default.resolve("MessagesService");
                 yield messagesService.create({
+                    messageReferenceId: messageRefereceId,
                     conversationId: conversation.conversationId,
                     sender: "agent",
                     type: message.type,
