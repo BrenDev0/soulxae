@@ -45,6 +45,10 @@ export interface TextObject {
   body: string;
 }
 
+export interface AudioObject  {
+  id?: string;
+  link: string; 
+}
 export interface ImageObject {
   link: string;
   caption?: string; 

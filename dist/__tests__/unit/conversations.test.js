@@ -43,6 +43,7 @@ describe("AGENTSREPOSITORY", () => {
             const data = {
                 agentId: "7a367831-5458-47be-ae3d-3b5788c56af8",
                 platform: "messenger",
+                messagingProduct: "direct",
                 title: "test",
                 clientId: "e869c44f-fed3-4887-bb31-a19bf1492b30",
                 handoff: true

@@ -4,6 +4,7 @@ export interface Conversation {
   conversation_id?: string;
   agent_id: string;
   platform: string;
+  messaging_product: string;
   client_id: string;
   title: string | null;
   handoff: boolean;
@@ -15,6 +16,7 @@ export interface Conversation {
 export interface ConversationData {
   conversationId?: string;
   agentId: string;
+  messagingProduct: string;
   platform: string;
   clientId: string;
   title: string | null;

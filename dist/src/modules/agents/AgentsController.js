@@ -17,7 +17,7 @@ const Container_1 = __importDefault(require("../../core/dependencies/Container")
 class AgentsController {
     constructor(httpService, agentsService) {
         this.block = "agents.controller";
-        this.allowedAgentTypes = ["bot", "human"];
+        this.allowedAgentTypes = ["flow", "direct"];
         this.httpService = httpService;
         this.agentsService = agentsService;
     }

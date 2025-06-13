@@ -5,13 +5,12 @@ import AgentsService from "./AgentsService";
 import { AgentData } from "./agents.interface";
 import Container from "../../core/dependencies/Container";
 import WorkspaceService from "../workspaces/WorkspacesService";
-import { agent } from "supertest";
 
 export default class AgentsController { 
   private httpService: HttpService;
   private agentsService: AgentsService;  
   private block = "agents.controller"; 
-  private readonly allowedAgentTypes =  ["bot", "human"]
+  private readonly allowedAgentTypes =  ["flow", "direct"]
 
   constructor(httpService: HttpService, agentsService: AgentsService) {
     this.httpService = httpService;

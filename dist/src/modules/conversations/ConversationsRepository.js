@@ -22,8 +22,8 @@ class ConversationsRepositoy extends BaseRepository_1.default {
             const sqlRead = `
             SELECT conversations.*, platforms.identifier AS platform_identifier, clients.contact_identifier AS client_identifier
             FROM conversations
-            JOIN platforms ON conversations.platform = platforms.platform AND conversations.agent_id = platforms.agent_id
-            JOIN clients ON conversations.client_id = clients.client_id
+            LEFT JOIN platforms ON conversations.platform = platforms.platform AND conversations.agent_id = platforms.agent_id
+            LEFT JOIN clients ON conversations.client_id = clients.client_id
             WHERE conversations.conversation_id = $1;
         `;
             const result = yield this.pool.query(sqlRead, [conversationId]);

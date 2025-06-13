@@ -25,6 +25,9 @@ class WhatsappService {
             try {
                 let messageObject;
                 switch (message.type) {
+                    case "audio":
+                        messageObject = this.audioMessage(message.content, to);
+                        break;
                     case "image":
                         messageObject = this.imageMessage(message.content, to);
                         break;
@@ -206,8 +209,19 @@ class WhatsappService {
         };
         return messageObject;
     }
-    // audioMessage(message: AudioContent, to: string): MessageObject {
-    // }
+    audioMessage(message, to) {
+        let audioObject = {
+            link: message.url
+        };
+        const messageObject = {
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to: to,
+            type: "audio",
+            image: audioObject
+        };
+        return messageObject;
+    }
     getAudioContent(message, conversationId, token) {
         return __awaiter(this, void 0, void 0, function* () {
             const url = yield this.getMedia(message.id, token, conversationId);

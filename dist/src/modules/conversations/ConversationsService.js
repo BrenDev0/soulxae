@@ -113,10 +113,10 @@ class ConversationsService {
         });
     }
     mapToDb(conversation) {
-        console.log("CONVERSATION::::::", conversation);
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
             agent_id: conversation.agentId,
+            messaging_product: conversation.messagingProduct,
             platform: conversation.platform,
             client_id: conversation.clientId,
             title: conversation.title,
@@ -128,6 +128,7 @@ class ConversationsService {
         return {
             conversationId: conversation.conversation_id,
             agentId: conversation.agent_id,
+            messagingProduct: conversation.messaging_product,
             platform: conversation.platform,
             clientId: conversation.client_id,
             title: conversation.title,

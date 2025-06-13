@@ -62,6 +62,7 @@ export default class ConversationsService {
     async getAPIData(conversationId: string): Promise<ConversationForAPIData | null> {
          try {
             const result = await this.repository.getAPIData(conversationId);
+            
             if(!result) {
                 return null
             }
@@ -95,10 +96,10 @@ export default class ConversationsService {
     }
 
     mapToDb(conversation: ConversationData): Conversation {
-        console.log("CONVERSATION::::::", conversation)
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
            agent_id: conversation.agentId,
+           messaging_product: conversation.messagingProduct,
            platform: conversation.platform,
            client_id: conversation.clientId,
            title: conversation.title,
@@ -111,6 +112,7 @@ export default class ConversationsService {
         return {
             conversationId: conversation.conversation_id,
             agentId: conversation.agent_id,
+            messagingProduct: conversation.messaging_product,
             platform: conversation.platform,
             clientId: conversation.client_id,
             title: conversation.title,

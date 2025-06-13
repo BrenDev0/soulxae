@@ -46,38 +46,52 @@ describe("USERS ROUTES", () => {
     })
 
     describe('POST /direct/secure/send', () => {
-      it('should return 200 and add a new agent', async () => {
+      // it('should send image message', async () => {
+      //   const res = await request(app)
+      //     .post('/direct/secure/send')
+      //     .set('Authorization', token)
+      //     .send({
+      //       message: {
+      //           conversationId: "29bbc5a6-64c9-4d21-adca-b8fae2b9f43b",
+      //           content: {
+      //               header: {
+      //                   type: "image",
+      //                   image: "https://blogs-app.s3.us-east-1.amazonaws.com/images/15/67/blog_image_1.png"
+      //               },
+      //               body: "hello form jest2",
+      //               footer: null,
+      //               buttons: null
+      //           }
+      //       }
+      //     });
+    
+      //   expect(res.status).toBe(200);
+      //   expect(res.body.message).toBe('Message sent');
+
+
+      // });
+
+      it('should send audio message', async () => {
         const res = await request(app)
           .post('/direct/secure/send')
           .set('Authorization', token)
           .send({
             message: {
-                conversationId: "29bbc5a6-64c9-4d21-adca-b8fae2b9f43b",
+                conversationId: "66f8048e-bb28-4d42-ba36-53bbc19dbe3a",
+                type: "auido",
                 content: {
-                    header: {
-                        type: "image",
-                        image: "https://blogs-app.s3.us-east-1.amazonaws.com/images/15/67/blog_image_1.png"
-                    },
-                    body: "hello form jest2",
-                    footer: null,
-                    buttons: null
+                    url: "https://soulxae-imagenes.s3.us-east-1.amazonaws.com/66f8048e-bb28-4d42-ba36-53bbc19dbe3a/audio/ogg/1360710618544424"
                 }
             }
           });
-    
-        expect(res.status).toBe(200);
-        expect(res.body.message).toBe('Message sent');
-      });
 
-      it('should return 200 and add a new agent', async () => {
-        const res = await request(app)
-          .post(`https://graph.facebook.com/v23.0/738288961978853`)
-          .set('Authorization', token)
-          
+          console.log(res.body)
     
         expect(res.status).toBe(200);
         expect(res.body.message).toBe('Message sent');
+
+        
       });
-    });
+  })
 })
 

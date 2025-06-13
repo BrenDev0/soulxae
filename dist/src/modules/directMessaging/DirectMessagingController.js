@@ -55,6 +55,7 @@ class DirectMessagagingController {
                 const conversationsService = Container_1.default.resolve("ConversationsService");
                 const conversation = yield conversationsService.getAPIData(message.conversationId);
                 if (!conversation) {
+                    console.log(conversation, ":::::Convo");
                     throw new errors_1.NotFoundError("conversation not found");
                 }
                 let productService;
