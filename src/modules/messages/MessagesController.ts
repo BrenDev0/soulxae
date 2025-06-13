@@ -17,39 +17,7 @@ export default class MessagesController {
     this.messagesService = messagesService;
   }
 
-  async createRequest(req: Request, res: Response): Promise<void> {
-    const block = `${this.block}.createRequest`;
-    try {
-      const requiredFields = ["message"];
-      this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-
-      const message = req.body.message as MessageData;
-
-      const conversationService = Container.resolve<ConversationsService>("ConversationsService");
-      const conversation = await conversationService.getAPIData(message.conversationId);
-      if(!conversation) {
-        throw new NotFoundError(undefined, {
-          conversation: conversation || `No conversation found in db with id: ${message.conversationId}` 
-        })
-      }
-      
-      switch(conversation.platform) {
-        case "whatsapp":
-          const whatsappService = Container.resolve<WhatsappService>("WhatsappService");
-          await whatsappService.handleOutgoingMessage(message.content, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token)
-          break;
-        default: 
-          throw new BadRequestError("Code nfinished messages.controller.createReqquest")  
-      }
-      
-      await this.messagesService.create(message);
-      
-      res.status(200).json({ message: "Message added" });
-    } catch (error) {
-      throw error;
-    }
-  }
-
+  
   // async resourceRequest(req: Request, res: Response): Promise<void> {
   //   const block = `${this.block}.resourceRequest`;
   //   try {

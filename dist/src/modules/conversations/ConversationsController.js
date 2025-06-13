@@ -48,29 +48,40 @@ class ConversationsController {
             }
         });
     }
-    updateRequest(req, res) {
+    collectionRequest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const block = `${this.block}.updateRequest`;
+            const block = `${this.block}.resourceRequest`;
             try {
-                const conversationId = req.params.conversationId;
-                this.httpService.requestValidation.validateUuid(conversationId, "conversationId", block);
-                const resource = yield this.conversationsService.resource(conversationId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.conversationExistCheck`,
-                        resource: resource || `No conversation found in db with id ${conversationId}`
-                    });
-                }
-                const allowedChanges = [""];
-                const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
-                yield this.conversationsService.update(conversationId, filteredChanges);
-                res.status(200).json({ message: "updated" });
+                const agentId = req.params.agentId;
+                this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
+                const data = yield this.conversationsService.collection(agentId);
+                res.status(200).json({ data: data });
             }
             catch (error) {
                 throw error;
             }
         });
     }
+    // async updateRequest(req: Request, res: Response): Promise<void> {
+    //   const block = `${this.block}.updateRequest`;
+    //   try { 
+    //    const conversationId = req.params.conversationId;
+    //     this.httpService.requestValidation.validateUuid(conversationId, "conversationId", block);
+    //     const resource = await this.conversationsService.resource(conversationId);
+    //     if(!resource) {
+    //       throw new NotFoundError(undefined, {
+    //         block: `${block}.conversationExistCheck`,
+    //         resource: resource || `No conversation found in db with id ${conversationId}`
+    //       })
+    //     }
+    //     const allowedChanges = [""];
+    //     const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<ConversationData>(allowedChanges, req.body, block);
+    //     await this.conversationsService.update(conversationId, filteredChanges);
+    //     res.status(200).json({ message: "updated" });
+    //   } catch (error) {
+    //     throw error;
+    //   }
+    // }
     deleteRequest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.deleteRequest`;

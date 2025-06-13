@@ -24,22 +24,48 @@ export default class ClientsController {
 
   //     this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
       
-  //     await this.clientsService.create(clientData);
+  //     await this.clientsService.create(req.body);
 
-  //     res.status(200).json({ message: " added." });
+  //     res.status(200).json({ message: "Client added." });
   //   } catch (error) {
   //     throw error;
   //   }
   // }
 
-  // async resourceRequest(req: Request, res: Response): Promise<void> {
-  //   const block = `${this.block}.resourceRequest`;
-  //   try {
+  async resourceRequest(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.resourceRequest`;
+    try {
+      const clientId = req.params.clientId;
+      this.httpService.requestValidation.validateUuid(clientId, "clientId", block);
+
+      const resource = await this.clientsService.resource("client_id", clientId);
+      if(!resource) {
+        throw new NotFoundError(undefined, {
+          block: `${block}.clientExistCheck`,
+          resource: resource || `No client found in db with id ${clientId}`
+        })
+      }
+
+      res.status(200).json({ data: resource })
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async collectionRequest(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.resourceRequest`;
+    try {
+      const agentId = req.params.agentId;
+      this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
+
+      const data = await this.clientsService.resource("agent_id", agentId);
       
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+
+      res.status(200).json({ data: data })
+    } catch (error) {
+      throw error;
+    }
+  }
 
   // async updateRequest(req: Request, res: Response): Promise<void> {
   //   const block = `${this.block}.updateRequest`;
@@ -62,12 +88,24 @@ export default class ClientsController {
   //   }
   // }
 
-  // async deleteRequest(req: Request, res: Response): Promise<void> {
-  //   const block = `${this.block}.deleteRequest`;
-  //   try {
-     
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+  async deleteRequest(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.deleteRequest`;
+    try {
+      const clientId = req.params.clientId;
+      this.httpService.requestValidation.validateUuid(clientId, "clientId", block);
+
+      const resource = await this.clientsService.resource("client_id", clientId);
+      if(!resource) {
+        throw new NotFoundError(undefined, {
+          block: `${block}.clientExistCheck`,
+          resource: resource || `No client found in db with id ${clientId}`
+        })
+      }
+      
+      await this.clientsService.delete(clientId);
+      res.status(200).json({ message: "Client deleted"})
+    } catch (error) {
+      throw error;
+    }
+  }
 }

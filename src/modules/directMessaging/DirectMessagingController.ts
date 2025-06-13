@@ -5,12 +5,9 @@ import WebhooksService from "../webhooks/WebhooksService";
 import { BadRequestError, NotFoundError } from "../../core/errors/errors";
 import WhatsappService from "../whatsapp/WhatsappService";
 import MessagesService from "../messages/MessagesService";
-import { http } from "winston";
 import ConversationsService from "../conversations/ConversationsService";
-import ClientsService from "../clients/ClientsService";
-import { Content, MessageData } from "../messages/messages.interface";
-import PlatformsService from "../platforms/PlatformsService";
-import { Client } from "pg";
+import { MessageData } from "../messages/messages.interface";
+
 
 export default class DirectMessagagingController {
     private readonly block = "directMessaging.controller"
@@ -53,22 +50,10 @@ export default class DirectMessagagingController {
             this.httpService.requestValidation.validateRequestBody(requiredMessageFields, message, `${block}.message`);
             
             const conversationsService = Container.resolve<ConversationsService>("ConversationsService");
-            const conversation = await conversationsService.resource(message.conversationId);
+            const conversation = await conversationsService.getAPIData(message.conversationId);
             if(!conversation) {
                 throw new NotFoundError("conversation not found")
             }
-
-            const clientsService = Container.resolve<ClientsService>("ClientsService");
-            const client = await clientsService.resource("client_id", conversation.clientId);
-            if(!client) {
-                throw new NotFoundError("Client not found")
-            }
-            
-            const platformsService = Container.resolve<PlatformsService>("PlatformsService");
-            const agentsPlatform = await platformsService.getAgentPlatform(conversation.agentId, "direct");
-            if(!agentsPlatform) {
-                throw new BadRequestError("Agent platform configuration error")
-            };
 
             let productService;
             switch(conversation.platform) {
@@ -83,7 +68,7 @@ export default class DirectMessagagingController {
                 throw new BadRequestError("Unsupported messaging product")
             }
 
-            await productService.handleOutgoingMessage(message.content, agentsPlatform.identifier, client.contactIdentifier, agentsPlatform.token);
+            await productService.handleOutgoingMessage(message.content, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token);
 
             const messagesService = Container.resolve<MessagesService>("MessagesService");
             await messagesService.create({

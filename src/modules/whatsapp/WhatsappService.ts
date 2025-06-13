@@ -10,7 +10,8 @@ import AppError from '../../core/errors/AppError';
 
 
 export default class WhatsappService {
-    private readonly block = "whatsapp.service"
+    private readonly block = "whatsapp.service";
+    
     async handleOutgoingMessage(message: Content, fromId: string, to: string, token: string): Promise<void> {
         try {
             let messageObject: MessageObject;
@@ -58,7 +59,7 @@ export default class WhatsappService {
             if(error instanceof AppError) {
                 throw error;
             }
-            
+
             throw new ExternalAPIError(undefined, {
                 service: "whatsapp",
                 block: `${this.block}.getMessageContent`,

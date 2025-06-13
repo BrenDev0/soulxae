@@ -35,6 +35,17 @@ export default class ConversationsService {
         }
     }
 
+    async collection(agentId: string): Promise<ConversationData[]> {
+        try {
+            const result = await this.repository.select("agent_id", agentId);
+           
+            return result.map((conversation) => this.mapFromDb(conversation))
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "collection", { agentId })
+            throw error;
+        }
+    }
+
     async findByParticipantIds(agentId: string, clientId: string): Promise<ConversationData | null> {
         try {
             const result = await this.repository.findByIds(agentId, clientId)
@@ -56,7 +67,7 @@ export default class ConversationsService {
             }
             return this.mapForAPI(result)
         } catch (error) {
-            handleServiceError(error as Error, this.block, "resource", { conversationId })
+            handleServiceError(error as Error, this.block, "getAPIdata", { conversationId })
             throw error;
         }
     }

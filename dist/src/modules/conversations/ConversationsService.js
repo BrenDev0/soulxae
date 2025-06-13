@@ -46,6 +46,18 @@ class ConversationsService {
             }
         });
     }
+    collection(agentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.select("agent_id", agentId);
+                return result.map((conversation) => this.mapFromDb(conversation));
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { agentId });
+                throw error;
+            }
+        });
+    }
     findByParticipantIds(agentId, clientId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -71,7 +83,7 @@ class ConversationsService {
                 return this.mapForAPI(result);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "resource", { conversationId });
+                (0, error_service_1.handleServiceError)(error, this.block, "getAPIdata", { conversationId });
                 throw error;
             }
         });

@@ -53,21 +53,10 @@ class DirectMessagagingController {
                 const requiredMessageFields = ["conversationId", "content"];
                 this.httpService.requestValidation.validateRequestBody(requiredMessageFields, message, `${block}.message`);
                 const conversationsService = Container_1.default.resolve("ConversationsService");
-                const conversation = yield conversationsService.resource(message.conversationId);
+                const conversation = yield conversationsService.getAPIData(message.conversationId);
                 if (!conversation) {
                     throw new errors_1.NotFoundError("conversation not found");
                 }
-                const clientsService = Container_1.default.resolve("ClientsService");
-                const client = yield clientsService.resource("client_id", conversation.clientId);
-                if (!client) {
-                    throw new errors_1.NotFoundError("Client not found");
-                }
-                const platformsService = Container_1.default.resolve("PlatformsService");
-                const agentsPlatform = yield platformsService.getAgentPlatform(conversation.agentId, "direct");
-                if (!agentsPlatform) {
-                    throw new errors_1.BadRequestError("Agent platform configuration error");
-                }
-                ;
                 let productService;
                 switch (conversation.platform) {
                     case 'whatsapp':
@@ -79,7 +68,7 @@ class DirectMessagagingController {
                 if (!productService) {
                     throw new errors_1.BadRequestError("Unsupported messaging product");
                 }
-                yield productService.handleOutgoingMessage(message.content, agentsPlatform.identifier, client.contactIdentifier, agentsPlatform.token);
+                yield productService.handleOutgoingMessage(message.content, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token);
                 const messagesService = Container_1.default.resolve("MessagesService");
                 yield messagesService.create({
                     conversationId: conversation.conversationId,

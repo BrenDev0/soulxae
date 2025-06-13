@@ -53,30 +53,44 @@ export default class ConversationsController {
     }
   }
 
-  async updateRequest(req: Request, res: Response): Promise<void> {
-    const block = `${this.block}.updateRequest`;
-    try { 
-     const conversationId = req.params.conversationId;
-      this.httpService.requestValidation.validateUuid(conversationId, "conversationId", block);
+  async collectionRequest(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.resourceRequest`;
+    try {
+      const agentId= req.params.agentId;
+      this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
 
-      const resource = await this.conversationsService.resource(conversationId);
-      if(!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.conversationExistCheck`,
-          resource: resource || `No conversation found in db with id ${conversationId}`
-        })
-      }
-      const allowedChanges = [""];
+      const data = await this.conversationsService.collection(agentId);
 
-      const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<ConversationData>(allowedChanges, req.body, block);
-
-      await this.conversationsService.update(conversationId, filteredChanges);
-
-      res.status(200).json({ message: "updated" });
+      res.status(200).json({ data: data })
     } catch (error) {
       throw error;
     }
   }
+
+  // async updateRequest(req: Request, res: Response): Promise<void> {
+  //   const block = `${this.block}.updateRequest`;
+  //   try { 
+  //    const conversationId = req.params.conversationId;
+  //     this.httpService.requestValidation.validateUuid(conversationId, "conversationId", block);
+
+  //     const resource = await this.conversationsService.resource(conversationId);
+  //     if(!resource) {
+  //       throw new NotFoundError(undefined, {
+  //         block: `${block}.conversationExistCheck`,
+  //         resource: resource || `No conversation found in db with id ${conversationId}`
+  //       })
+  //     }
+  //     const allowedChanges = [""];
+
+  //     const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<ConversationData>(allowedChanges, req.body, block);
+
+  //     await this.conversationsService.update(conversationId, filteredChanges);
+
+  //     res.status(200).json({ message: "updated" });
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   async deleteRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.deleteRequest`;

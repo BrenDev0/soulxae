@@ -46,6 +46,18 @@ class ClientsService {
             }
         });
     }
+    collection(agentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.select("agent_id", agentId);
+                return result.map((client) => this.mapFromDb(client));
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { agentId });
+                throw error;
+            }
+        });
+    }
     update(clientId, changes) {
         return __awaiter(this, void 0, void 0, function* () {
             const mappedChanges = this.mapToDb(changes);

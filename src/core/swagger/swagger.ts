@@ -85,6 +85,8 @@ const doc = {
 const outputFile = './swagger.json';  
 const endpointsFiles = [
   '../../modules/agents/agents.routes.ts',
+  '../../modules/clients/clients.routes.ts',
+  '../../modules/conversations/conversations.routes.ts',
   '../../modules/platforms/platforms.routes.ts',
   '../../modules/users/users.routes.ts',
   '../../modules/workspaces/workspaces.routes.ts'

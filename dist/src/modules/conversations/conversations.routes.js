@@ -12,21 +12,31 @@ const initializeConversationsRouter = (customController) => {
     const middlewareService = Container_1.default.resolve("MiddlewareService");
     const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("ConversationsController");
     secureRouter.use(middlewareService.auth.bind(middlewareService));
-    /*
-       #swagger.tags = ['Conversations']
-       #swagger.path =  '/conversations/secure'
-       #swagger.security = [{ "bearerAuth": [] }]
-       #swagger.description = 'Update conversations'
-       #swagger.requestBody = {
-           required: true,
-           content: {
-               "application/json": {
-                   schema: { $ref: "#/components/schemas/updateConversations" }
-               }
-           }
-       }
-       */
     // protected Routes //
+    secureRouter.get("/resource/:conversationId", 
+    /*
+   #swagger.tags = ['Conversations']
+   #swagger.path =  '/conversations/secure/resource/{conversationId}'
+   #swagger.security = [{ "bearerAuth": [] }]
+   #swagger.description = 'get conversation by id'
+   */
+    controller.resourceRequest.bind(controller));
+    secureRouter.get("/collection/:agentId", 
+    /*
+   #swagger.tags = ['Conversations']
+   #swagger.path =  '/conversations/secure/collection/{agentId}'
+   #swagger.security = [{ "bearerAuth": [] }]
+   #swagger.description = 'get agents conversations'
+   */
+    controller.collectionRequest.bind(controller));
+    secureRouter.delete("/:conversationId", 
+    /*
+   #swagger.tags = ['Conversations']
+   #swagger.path =  '/conversations/secure/{conversationId}'
+   #swagger.security = [{ "bearerAuth": [] }]
+   #swagger.description = 'delete converation by id'
+   */
+    controller.deleteRequest.bind(controller));
     // mounts //
     router.use("/secure", secureRouter);
     console.log("Conversations router initialized.");

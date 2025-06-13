@@ -11,23 +11,37 @@ export const initializeClientsRouter = (customController?: ClientsController) =>
 
     secureRouter.use(middlewareService.auth.bind(middlewareService));
 
-     /*
-        #swagger.tags = ['Clients']
-        #swagger.path =  '/clients/secure'
-        #swagger.security = [{ "bearerAuth": [] }] 
-        #swagger.description = 'Update clients'
-        #swagger.requestBody = {
-            required: true,
-            content: {
-                "application/json": {
-                    schema: { $ref: "#/components/schemas/updateClients" }
-                }
-            }
-        }
-        */
-
     // protected Routes //
+    secureRouter.get("/resource/:clientId", 
+         /*
+        #swagger.tags = ['Clients']
+        #swagger.path =  '/clients/secure/resource/{clientId}'
+        #swagger.security = [{ "bearerAuth": [] }] 
+        #swagger.description = 'Get client by id'
+       
+        */
+       controller.resourceRequest.bind(controller)
+    )
 
+    secureRouter.get("/collection/:agentId", 
+         /*
+        #swagger.tags = ['Clients']
+        #swagger.path =  '/clients/secure/collection/{agentId}'
+        #swagger.security = [{ "bearerAuth": [] }] 
+        #swagger.description = 'Get agents clients'
+        */
+       controller.resourceRequest.bind(controller)
+    )
+
+    secureRouter.delete("/:clientId",
+        /*
+        #swagger.tags = ['Clients']
+        #swagger.path =  '/clients/secure/{clientId}'
+        #swagger.security = [{ "bearerAuth": [] }] 
+        #swagger.description = 'delete client by id'
+        */
+        controller.deleteRequest.bind(controller)
+    )
 
   
 
