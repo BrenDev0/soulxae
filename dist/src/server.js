@@ -24,6 +24,7 @@ const workspaces_routes_1 = require("./modules/workspaces/workspaces.routes");
 const directMessaging_routes_1 = require("./modules/directMessaging/directMessaging.routes");
 const clients_routes_1 = require("./modules/clients/clients.routes");
 const conversations_routes_1 = require("./modules/conversations/conversations.routes");
+const whatsapp_routes_1 = require("./modules/whatsapp/whatsapp.routes");
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, createApp_1.default)();
     yield (0, configureContainer_1.configureContainer)();
@@ -35,6 +36,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const directMessagingRouter = (0, directMessaging_routes_1.initializeDirectMessageingRouter)();
     const platformsRouter = (0, platforms_routes_1.initializePlatformsRouter)();
     const usersRouter = (0, users_routes_1.initializeUsersRouter)();
+    const whatsappRouter = (0, whatsapp_routes_1.initializeWhatsappRouter)();
     const workspacesRouter = (0, workspaces_routes_1.initializeWorkspacesRouter)();
     // Routes //
     process.env.NODE_ENV === "production" && app.use(middlewareService.verifyHMAC);
@@ -45,6 +47,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     app.use("/direct", directMessagingRouter);
     app.use("/platforms", platformsRouter);
     app.use("/users", usersRouter);
+    app.use("/whatsapp", whatsappRouter);
     app.use("/workspaces", workspacesRouter);
     app.use((req, res) => {
         res.status(404).json({ message: "Route not found." });
