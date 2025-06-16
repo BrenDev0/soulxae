@@ -67,7 +67,7 @@ export default class MessengerService {
                 body: message.text
             }
             } else if(message.attachments) {
-                console.log(message.attachments)
+                console.log(message.attachment)
             }
 
             return messageData;
@@ -199,5 +199,14 @@ export default class MessengerService {
             }
         }
         return messengerObject;
+    }
+
+    getMediaContent(message: any): StandarMediaContent {
+        const mediaContent: StandarMediaContent = {
+            url: message.url,
+            caption: message.payload ? message.payload : null
+        }
+
+        return mediaContent
     }
 }

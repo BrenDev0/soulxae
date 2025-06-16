@@ -70,7 +70,7 @@ class MessengerService {
                     };
                 }
                 else if (message.attachments) {
-                    console.log(message.attachments);
+                    console.log(message.attachment);
                 }
                 return messageData;
             }
@@ -189,6 +189,13 @@ class MessengerService {
             }
         };
         return messengerObject;
+    }
+    getMediaContent(message) {
+        const mediaContent = {
+            url: message.url,
+            caption: message.payload ? message.payload : null
+        };
+        return mediaContent;
     }
 }
 exports.default = MessengerService;

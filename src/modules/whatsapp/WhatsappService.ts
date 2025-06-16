@@ -250,7 +250,6 @@ export default class WhatsappService {
         return messageObject;
     }
 
-
     mediaMessage(message: StandarMediaContent, to: string, type: string): MessageObject {
         
         const mediaObject: StandardObject = {
