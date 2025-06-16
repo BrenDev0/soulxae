@@ -56,7 +56,7 @@ class MessengerService {
                 const message = req.body.entry[0].messaging[0].message;
                 console.log(message, ":::::::::::::::::::::message");
                 let messageData = {
-                    messageReferenceId: message.id,
+                    messageReferenceId: message.mid,
                     conversationId: conversationId,
                     sender: "client",
                     type: "text",

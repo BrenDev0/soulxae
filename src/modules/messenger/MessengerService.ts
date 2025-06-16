@@ -53,7 +53,7 @@ export default class MessengerService {
             console.log(message, ":::::::::::::::::::::message");
         
             let messageData: MessageData =  {
-                messageReferenceId: message.id,
+                messageReferenceId: message.mid,
                 conversationId: conversationId,
                 sender: "client",
                 type: "text",
