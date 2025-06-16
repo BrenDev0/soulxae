@@ -123,7 +123,7 @@ class MessengerService {
         return __awaiter(this, void 0, void 0, function* () {
             const message = req.body.entry[0].messaging[0].message;
             const clientInfo = yield axios_1.default.get(`https://graph.facebook.com/${process.env.MESSENGER_VERSION}/${message.mid}?fields=id,created_time,from,to,message&access_token=${token}`);
-            console.log(clientInfo, "REspinse::::::::::");
+            console.log(clientInfo.data, "REspinse::::::::::");
             if (!clientInfo) {
                 throw new errors_1.BadRequestError("Meta data not found");
             }

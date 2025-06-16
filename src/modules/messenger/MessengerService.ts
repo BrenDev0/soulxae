@@ -122,7 +122,7 @@ export default class MessengerService {
     async getClientInfo(req: Request, token: string) {
         const message = req.body.entry[0].messaging[0].message;
         const clientInfo = await axios.get(`https://graph.facebook.com/${process.env.MESSENGER_VERSION}/${message.mid}?fields=id,created_time,from,to,message&access_token=${token}`);
-        console.log(clientInfo, "REspinse::::::::::")
+        console.log(clientInfo.data, "REspinse::::::::::")
         
         if(!clientInfo) {
             throw new BadRequestError("Meta data not found");
