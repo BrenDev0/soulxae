@@ -60,15 +60,8 @@ export default class WebhooksService {
             }
     
             let productService;
-            console.log(req.body.entry[0] ,"logging error::::::::")
-
-            const messagingProduct = req.body.entry[0]?.changes[0]?.value?.messaging_product;
-
-            if(!messagingProduct) {
-                throw new BadRequestError("No product found");
-            }
-
-            switch(messagingProduct) {
+        
+            switch(platform) {
                 case "messenger":
                     productService = Container.resolve<MessengerService>("MessengerService");
                     break;

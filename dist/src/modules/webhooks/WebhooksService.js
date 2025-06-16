@@ -50,7 +50,6 @@ class WebhooksService {
     }
     incomingMessage(req, platform) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c;
             try {
                 const messagesService = Container_1.default.resolve("MessagesService");
                 const agentId = this.httpService.encryptionService.decryptData(req.params.id);
@@ -59,12 +58,7 @@ class WebhooksService {
                     throw new errors_1.BadRequestError("Agent platform configuratin error");
                 }
                 let productService;
-                console.log(req.body.entry[0], "logging error::::::::");
-                const messagingProduct = (_c = (_b = (_a = req.body.entry[0]) === null || _a === void 0 ? void 0 : _a.changes[0]) === null || _b === void 0 ? void 0 : _b.value) === null || _c === void 0 ? void 0 : _c.messaging_product;
-                if (!messagingProduct) {
-                    throw new errors_1.BadRequestError("No product found");
-                }
-                switch (messagingProduct) {
+                switch (platform) {
                     case "messenger":
                         productService = Container_1.default.resolve("MessengerService");
                         break;
