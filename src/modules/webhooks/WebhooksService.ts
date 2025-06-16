@@ -59,6 +59,7 @@ export default class WebhooksService {
             }
     
             let productService;
+            console.log(req.body)
 
             const messagingProduct = req.body.entry[0]?.changes[0]?.value?.messaging_product;
 

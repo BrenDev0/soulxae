@@ -59,6 +59,7 @@ class WebhooksService {
                     throw new errors_1.BadRequestError("Agent platform configuratin error");
                 }
                 let productService;
+                console.log(req.body);
                 const messagingProduct = (_c = (_b = (_a = req.body.entry[0]) === null || _a === void 0 ? void 0 : _a.changes[0]) === null || _b === void 0 ? void 0 : _b.value) === null || _c === void 0 ? void 0 : _c.messaging_product;
                 if (!messagingProduct) {
                     throw new errors_1.BadRequestError("No product found");
