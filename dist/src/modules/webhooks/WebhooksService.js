@@ -79,6 +79,7 @@ class WebhooksService {
                 return;
             }
             catch (error) {
+                console.log(error, "error:::::::::::");
                 throw error;
             }
         });
