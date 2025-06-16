@@ -78,7 +78,8 @@ class WhatsappService {
                         messageData.content = yield this.getAudioContent(message.audio, conversationId, token, agentId);
                         break;
                     case "document":
-                        messageData.content = message.document;
+                        messageData.type = "document";
+                        messageData.content = yield this.getDocumentContent(message.document, conversationId, token, agentId);
                         break;
                     case "image":
                         messageData.type = "image";
@@ -246,6 +247,16 @@ class WhatsappService {
             document: message
         };
         return messageObject;
+    }
+    getDocumentContent(message, conversationId, token, agentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const url = yield this.getMedia(message.id, token, conversationId, agentId);
+            const messageContent = {
+                url: url,
+                caption: message.caption ? message.caption : null
+            };
+            return messageContent;
+        });
     }
     imageMessage(message, to) {
         let imageObjcet = {
