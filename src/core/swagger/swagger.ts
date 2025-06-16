@@ -56,11 +56,11 @@ const doc = {
         name: "new name"
       },
       createAgent: {
-        apiKey: "required for type bot",
+        apiKey: "required for type flow",
         description: "required",
         name: "required",
         workspaceId: "required",
-        agentType: "bot, or human"
+        agentType: "direct or flow"
       },
       updateAgent:{
         name: "new name",
@@ -69,7 +69,7 @@ const doc = {
       },
       createPlatform: {
         agentId: "required",
-        platform: "whatsapp, messenger, instagram, direct(for human agents)",
+        platform: "whatsapp or  messenger or instagram",
         token: "system user token form meta",
         identifier: "from api connections in meta developers app"
       },

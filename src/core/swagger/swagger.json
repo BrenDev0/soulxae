@@ -964,7 +964,7 @@
         "properties": {
           "apiKey": {
             "type": "string",
-            "example": "required for type bot"
+            "example": "required for type flow"
           },
           "description": {
             "type": "string",
@@ -980,7 +980,7 @@
           },
           "agentType": {
             "type": "string",
-            "example": "bot, or human"
+            "example": "direct or flow"
           }
         }
       },
@@ -1010,7 +1010,7 @@
           },
           "platform": {
             "type": "string",
-            "example": "whatsapp, messenger, instagram, direct(for human agents)"
+            "example": "whatsapp or  messenger or instagram"
           },
           "token": {
             "type": "string",
