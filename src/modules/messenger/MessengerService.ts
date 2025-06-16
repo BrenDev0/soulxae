@@ -119,14 +119,15 @@ export default class MessengerService {
         }
     }
 
-     getClientInfo(req: Request) {
-            const clientInfo = req.body.entry[0]?.changes[0]?.value?.contacts[0];
-            if(!clientInfo) {
-                throw new BadRequestError("Meta data not found");
-            }
-    
-            return clientInfo;
+    getClientInfo(req: Request) {
+        const clientInfo = req.body.entry[0]?.sender;
+        console.log(clientInfo, "CLinetinfo:::::::::")
+        if(!clientInfo) {
+            throw new BadRequestError("Meta data not found");
         }
+
+        return clientInfo;
+    }
 
     textMessage(message: TextContent, to: string): MessengerObject {
         const messengerObject = {
