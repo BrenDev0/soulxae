@@ -1,5 +1,5 @@
 import { AudioObject, ImageObject, InteractiveObject, MessageObject, ReadReceipt, WhatsAppAudio, WhatsappContact, WhatsappImage, WhatsappMediaResponse } from '../whatsapp/whatsapp.interface'
-import { AudioContent, ButtonsContent, ImageContent, Message, MessageData, TextContent } from '../messages/messages.interface';
+import { AudioContent, ButtonsContent, DocumentContent, ImageContent, Message, MessageData, TextContent } from '../messages/messages.interface';
 import axios from 'axios';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
 import { Request } from 'express';
@@ -21,6 +21,9 @@ export default class WhatsappService {
             switch(message.type) {
                 case "audio":
                     messageObject = this.audioMessage(message.content as AudioContent, to);
+                    break;
+                case "document":
+                    messageObject = this.documentMessage(message.content as DocumentContent, to);
                     break;
                 case "image":
                     messageObject = this.imageMessage(message.content as ImageContent, to);
@@ -76,6 +79,9 @@ export default class WhatsappService {
                 case "audio":
                     messageData.type = "audio";
                     messageData.content = await this.getAudioContent(message.audio, conversationId, token);
+                    break
+                case "document":
+                    messageData.content = message.document;
                     break
                 case "image":
                     messageData.type = "image"
@@ -254,6 +260,19 @@ export default class WhatsappService {
         }
 
         return messageContent;
+    }
+
+    documentMessage(message: DocumentContent, to: string): MessageObject {
+        
+        const messageObject: MessageObject = {
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to: to,
+            type: "document",
+            document: message
+        };
+
+        return messageObject;
     }
 
     imageMessage(message: ImageContent, to: string): MessageObject {

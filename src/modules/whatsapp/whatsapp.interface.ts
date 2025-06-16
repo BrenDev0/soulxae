@@ -1,4 +1,4 @@
-import { Header } from "../messages/messages.interface";
+import { DocumentContent, Header } from "../messages/messages.interface";
 
 export interface ReadReceipt{
   "messaging_product": string;
@@ -73,4 +73,5 @@ export interface MessageObject {
   image?: ImageObject;
   text?: TextObject;
   audio?: AudioObject;
+  document?: DocumentContent;
 }

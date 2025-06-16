@@ -28,6 +28,9 @@ class WhatsappService {
                     case "audio":
                         messageObject = this.audioMessage(message.content, to);
                         break;
+                    case "document":
+                        messageObject = this.documentMessage(message.content, to);
+                        break;
                     case "image":
                         messageObject = this.imageMessage(message.content, to);
                         break;
@@ -73,6 +76,9 @@ class WhatsappService {
                     case "audio":
                         messageData.type = "audio";
                         messageData.content = yield this.getAudioContent(message.audio, conversationId, token);
+                        break;
+                    case "document":
+                        messageData.content = message.document;
                         break;
                     case "image":
                         messageData.type = "image";
@@ -230,6 +236,16 @@ class WhatsappService {
             };
             return messageContent;
         });
+    }
+    documentMessage(message, to) {
+        const messageObject = {
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to: to,
+            type: "document",
+            document: message
+        };
+        return messageObject;
     }
     imageMessage(message, to) {
         let imageObjcet = {

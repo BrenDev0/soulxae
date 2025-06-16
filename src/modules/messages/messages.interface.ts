@@ -16,6 +16,12 @@ export interface AudioContent {
   url: string;
 }
 
+export interface DocumentContent {
+  link: string,
+  filename: string,
+  caption: string | null;
+}
+
 export interface ImageContent {
   url: string;
   caption: string | null
@@ -38,7 +44,7 @@ export interface Message {
   conversation_id: string;
   sender: string;
   type: string;
-  content: ImageContent | ButtonsContent | TextContent | AudioContent;
+  content: ImageContent | ButtonsContent | TextContent | AudioContent | DocumentContent;
   timeStamp?:  Date 
 }
 
@@ -47,7 +53,7 @@ export interface MessageData {
   messageReferenceId: string;
   conversationId: string;
   sender: string;
-  content: ImageContent | ButtonsContent | TextContent | AudioContent;
+  content: ImageContent | ButtonsContent | TextContent | AudioContent | DocumentContent;
   type: string;
   timeStamp?:  Date 
 }
