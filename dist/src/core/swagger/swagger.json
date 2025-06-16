@@ -1084,6 +1084,14 @@
                     }
                 }
             }
+        },
+        "examples": {
+            "imageContent": {
+                "value": {
+                    "url": "media url",
+                    "caption": "optional message text"
+                }
+            }
         }
     }
 }

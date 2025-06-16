@@ -97,6 +97,12 @@ const doc = {
                 caption: "optional message"
             }
         },
+        examples: {
+            imageContent: {
+                url: "media url",
+                caption: "optional message text"
+            }
+        }
     },
 };
 const outputFile = './swagger.json';
