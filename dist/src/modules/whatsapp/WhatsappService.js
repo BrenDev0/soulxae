@@ -65,7 +65,7 @@ class WhatsappService {
             try {
                 const message = req.body.entry[0].changes[0].value.messages[0];
                 console.log(message, ":::::::::::::::::::::message");
-                message.type !== "unsupported" && (yield this.sendReadRecipt(message.id, fromId, token));
+                yield this.sendReadRecipt(message.id, fromId, token);
                 let messageData = {
                     messageReferenceId: message.id,
                     conversationId: conversationId,
@@ -164,7 +164,8 @@ class WhatsappService {
                     status: "read",
                     message_id: messageId
                 };
-                yield this.send(readReceipt, fromId, token);
+                const response = yield this.send(readReceipt, fromId, token);
+                console.log(response.data && response.data, "data:::::::::");
                 return;
             }
             catch (error) {
