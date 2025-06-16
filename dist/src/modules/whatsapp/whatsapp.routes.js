@@ -28,6 +28,7 @@ const initializeWhatsappRouter = (customController) => {
        */
     // protected Routes //
     // unprotected routes //
+    router.post("/:id/webhook", controller.handleIncommingMessage.bind(controller));
     router.get('/:id/webhook', controller.verifyWebhook.bind(controller));
     // mounts //
     router.use("/secure", secureRouter);
