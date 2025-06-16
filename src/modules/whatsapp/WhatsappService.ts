@@ -56,7 +56,7 @@ export default class WhatsappService {
         }
     }
 
-    async handleIncomingMessage(req: Request, fromId: string, token: string, conversationId: string): Promise<MessageData> {
+    async handleIncomingMessage(req: Request, fromId: string, token: string, conversationId: string, agentId: string): Promise<MessageData> {
         try {
             const message = req.body.entry[0].changes[0].value.messages[0];
           
@@ -78,14 +78,14 @@ export default class WhatsappService {
             switch(message.type) {
                 case "audio":
                     messageData.type = "audio";
-                    messageData.content = await this.getAudioContent(message.audio, conversationId, token);
+                    messageData.content = await this.getAudioContent(message.audio, conversationId, token, agentId);
                     break
                 case "document":
                     messageData.content = message.document;
                     break
                 case "image":
                     messageData.type = "image"
-                    messageData.content = await this.getImageMessageContent(message.image, conversationId, token)
+                    messageData.content = await this.getImageMessageContent(message.image, conversationId, token, agentId)
                     break;
                 case "text":
                     messageData.content = {
@@ -111,7 +111,7 @@ export default class WhatsappService {
         }
     }
 
-    async getMedia(mediaId: string, token: string, conversarionId: string): Promise<string> {
+    async getMedia(mediaId: string, token: string, conversarionId: string, agentId: string): Promise<string> {
         try {
             const responseUrl: WhatsappMediaResponse = await axios.get(
                 `https://graph.facebook.com/v23.0/${mediaId}`,
@@ -136,7 +136,7 @@ export default class WhatsappService {
                 }
             );
             const contentType = responseData.headers['content-type']
-            const key = `${conversarionId}/${contentType}/${mediaId}`
+            const key = `${agentId}/${conversarionId}/${contentType}/${mediaId}`
 
             const mediaService = Container.resolve<S3Service>("S3Service");
             const url = await mediaService.uploadBuffer(key, responseData.data, contentType)
@@ -252,8 +252,8 @@ export default class WhatsappService {
         return messageObject;
     }
 
-    async getAudioContent(message: WhatsAppAudio, conversationId: string, token: string): Promise<AudioContent> {
-        const url = await this.getMedia(message.id, token, conversationId);
+    async getAudioContent(message: WhatsAppAudio, conversationId: string, token: string, agentId: string): Promise<AudioContent> {
+        const url = await this.getMedia(message.id, token, conversationId, agentId);
 
         const messageContent: AudioContent = {
             url: url
@@ -295,8 +295,8 @@ export default class WhatsappService {
         return messageObject;
     }
 
-    async getImageMessageContent(message: WhatsappImage, conversationId: string, token: string): Promise<ImageContent> {
-        const url = await this.getMedia(message.id, token, conversationId);
+    async getImageMessageContent(message: WhatsappImage, conversationId: string, token: string, agentId: string): Promise<ImageContent> {
+        const url = await this.getMedia(message.id, token, conversationId, agentId);
         const messageContent: ImageContent = {
             url: url,
             caption: message.caption ? message.caption : null

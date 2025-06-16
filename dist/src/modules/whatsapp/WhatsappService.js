@@ -57,7 +57,7 @@ class WhatsappService {
             }
         });
     }
-    handleIncomingMessage(req, fromId, token, conversationId) {
+    handleIncomingMessage(req, fromId, token, conversationId, agentId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const message = req.body.entry[0].changes[0].value.messages[0];
@@ -75,14 +75,14 @@ class WhatsappService {
                 switch (message.type) {
                     case "audio":
                         messageData.type = "audio";
-                        messageData.content = yield this.getAudioContent(message.audio, conversationId, token);
+                        messageData.content = yield this.getAudioContent(message.audio, conversationId, token, agentId);
                         break;
                     case "document":
                         messageData.content = message.document;
                         break;
                     case "image":
                         messageData.type = "image";
-                        messageData.content = yield this.getImageMessageContent(message.image, conversationId, token);
+                        messageData.content = yield this.getImageMessageContent(message.image, conversationId, token, agentId);
                         break;
                     case "text":
                         messageData.content = {
@@ -107,7 +107,7 @@ class WhatsappService {
             }
         });
     }
-    getMedia(mediaId, token, conversarionId) {
+    getMedia(mediaId, token, conversarionId, agentId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseUrl = yield axios_1.default.get(`https://graph.facebook.com/v23.0/${mediaId}`, {
@@ -125,7 +125,7 @@ class WhatsappService {
                     responseType: 'arraybuffer'
                 });
                 const contentType = responseData.headers['content-type'];
-                const key = `${conversarionId}/${contentType}/${mediaId}`;
+                const key = `${agentId}/${conversarionId}/${contentType}/${mediaId}`;
                 const mediaService = Container_1.default.resolve("S3Service");
                 const url = yield mediaService.uploadBuffer(key, responseData.data, contentType);
                 return url;
@@ -228,9 +228,9 @@ class WhatsappService {
         };
         return messageObject;
     }
-    getAudioContent(message, conversationId, token) {
+    getAudioContent(message, conversationId, token, agentId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = yield this.getMedia(message.id, token, conversationId);
+            const url = yield this.getMedia(message.id, token, conversationId, agentId);
             const messageContent = {
                 url: url
             };
@@ -263,9 +263,9 @@ class WhatsappService {
         };
         return messageObject;
     }
-    getImageMessageContent(message, conversationId, token) {
+    getImageMessageContent(message, conversationId, token, agentId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = yield this.getMedia(message.id, token, conversationId);
+            const url = yield this.getMedia(message.id, token, conversationId, agentId);
             const messageContent = {
                 url: url,
                 caption: message.caption ? message.caption : null
