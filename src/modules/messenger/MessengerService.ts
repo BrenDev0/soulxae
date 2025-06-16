@@ -120,7 +120,7 @@ export default class MessengerService {
     }
 
     getClientInfo(req: Request) {
-        const clientInfo = req.body.entry[0]?.sender;
+        const clientInfo = req.body.entry[0];
         console.log(clientInfo, "CLinetinfo:::::::::")
         if(!clientInfo) {
             throw new BadRequestError("Meta data not found");
