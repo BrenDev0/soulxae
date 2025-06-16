@@ -175,7 +175,6 @@ export default class WhatsappService {
             }
 
             const response = await this.send(readReceipt, fromId, token);
-            console.log(response, "data:::::::::")
             return;
         } catch (error) {
             throw error;
@@ -193,6 +192,8 @@ export default class WhatsappService {
                     },
                 }
             );
+
+            console.log(response, "RES:::::::::::::::::")
         
             return response;
         } catch (error) {

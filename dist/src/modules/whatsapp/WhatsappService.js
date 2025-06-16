@@ -166,7 +166,6 @@ class WhatsappService {
                     message_id: messageId
                 };
                 const response = yield this.send(readReceipt, fromId, token);
-                console.log(response, "data:::::::::");
                 return;
             }
             catch (error) {
@@ -182,6 +181,7 @@ class WhatsappService {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+                console.log(response, "RES:::::::::::::::::");
                 return response;
             }
             catch (error) {
