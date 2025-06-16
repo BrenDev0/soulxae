@@ -159,6 +159,8 @@ export default class WhatsappService {
             throw new BadRequestError("Meta data not found");
         }
 
+        console.log(clientInfo, "WHATSS APP CLIENT INFO::::::::")
+
         return {
             name: clientInfo.prfile.name || null,
             id: clientInfo.wa_id
