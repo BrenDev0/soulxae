@@ -26,13 +26,10 @@ class WhatsappService {
                 let messageObject;
                 switch (message.type) {
                     case "audio":
-                        messageObject = this.audioMessage(message.content, to);
-                        break;
                     case "document":
-                        messageObject = this.documentMessage(message.content, to);
-                        break;
+                    case "video":
                     case "image":
-                        messageObject = this.imageMessage(message.content, to);
+                        messageObject = this.mediaMessage(message.content, to);
                         break;
                     case "buttons":
                         messageObject = this.buttonsMessage(message.content, to);
@@ -75,20 +72,24 @@ class WhatsappService {
                 switch (message.type) {
                     case "audio":
                         messageData.type = "audio";
-                        messageData.content = yield this.getAudioContent(message.audio, conversationId, token, agentId);
+                        messageData.content = yield this.getMediaContent(message.audio, conversationId, token, agentId);
                         break;
                     case "document":
                         messageData.type = "document";
-                        messageData.content = yield this.getDocumentContent(message.document, conversationId, token, agentId);
+                        messageData.content = yield this.getMediaContent(message.document, conversationId, token, agentId);
                         break;
                     case "image":
                         messageData.type = "image";
-                        messageData.content = yield this.getImageMessageContent(message.image, conversationId, token, agentId);
+                        messageData.content = yield this.getMediaContent(message.image, conversationId, token, agentId);
                         break;
                     case "text":
                         messageData.content = {
                             body: message.text.body
                         };
+                        break;
+                    case "video":
+                        messageData.type = "video";
+                        messageData.content = yield this.getMediaContent(message.image, conversationId, token, agentId);
                         break;
                     default:
                         break;
@@ -216,30 +217,7 @@ class WhatsappService {
         };
         return messageObject;
     }
-    audioMessage(message, to) {
-        let audioObject = {
-            link: message.url
-        };
-        const messageObject = {
-            messaging_product: "whatsapp",
-            recipient_type: "individual",
-            to: to,
-            type: "audio",
-            audio: audioObject
-        };
-        return messageObject;
-    }
-    getAudioContent(message, conversationId, token, agentId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const url = yield this.getMedia(message.id, token, conversationId, agentId);
-            const messageContent = {
-                url: url,
-                caption: null
-            };
-            return messageContent;
-        });
-    }
-    documentMessage(message, to) {
+    mediaMessage(message, to) {
         const documentContent = {
             link: message.url,
         };
@@ -255,33 +233,7 @@ class WhatsappService {
         };
         return messageObject;
     }
-    getDocumentContent(message, conversationId, token, agentId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const url = yield this.getMedia(message.id, token, conversationId, agentId);
-            const messageContent = {
-                url: url,
-                caption: message.caption ? message.caption : null
-            };
-            return messageContent;
-        });
-    }
-    imageMessage(message, to) {
-        let imageObjcet = {
-            link: message.url
-        };
-        if (message.caption) {
-            imageObjcet.caption = message.caption;
-        }
-        const messageObject = {
-            messaging_product: "whatsapp",
-            recipient_type: "individual",
-            to: to,
-            type: "image",
-            image: imageObjcet
-        };
-        return messageObject;
-    }
-    getImageMessageContent(message, conversationId, token, agentId) {
+    getMediaContent(message, conversationId, token, agentId) {
         return __awaiter(this, void 0, void 0, function* () {
             const url = yield this.getMedia(message.id, token, conversationId, agentId);
             const messageContent = {
