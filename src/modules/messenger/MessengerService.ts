@@ -49,44 +49,26 @@ export default class MessengerService {
     async handleIncomingMessage(req: Request, fromId: string, token: string, conversationId: string, agentId: string): Promise<MessageData> {
         try {
             const message = req.body.entry[0].messaging[0].message;
-            
+
             console.log(message, ":::::::::::::::::::::message");
-        
+
             let messageData: MessageData =  {
                 messageReferenceId: message.mid,
                 conversationId: conversationId,
                 sender: "client",
                 type: "text",
                 content: {
-                    body: `Unsupported Message type ${message.type}`
+                    body: `Unsupported Message type`
                 }
             }
 
-            // switch(message.type) {
-            //     case "audio":
-            //         messageData.type = "audio";
-            //         messageData.content = await this.getMediaContent(message.audio, conversationId, token, agentId);
-            //         break
-            //     case "document":
-            //         messageData.type = "document"
-            //         messageData.content = await this.getMediaContent(message.document, conversationId, token, agentId);
-            //         break
-            //     case "image":
-            //         messageData.type = "image"
-            //         messageData.content = await this.getMediaContent(message.image, conversationId, token, agentId)
-            //         break;
-            //     case "text":
-            //         messageData.content = {
-            //             body: message.text.body
-            //         } 
-            //         break;
-            //     case "video":
-            //         messageData.type = "video"
-            //         messageData.content = await this.getMediaContent(message.image, conversationId, token, agentId)
-            //         break;
-            //     default: 
-            //         break;
-            // }
+            if(message.text) {
+            messageData.content = {
+                body: message.text
+            }
+            } else if(message.attachments) {
+                console.log(message.attachments)
+            }
 
             return messageData;
         } catch (error) {
