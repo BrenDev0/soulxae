@@ -160,7 +160,7 @@ export default class WhatsappService {
         }
 
         return {
-            name: clientInfo.prfile.name || null,
+            name: clientInfo.profile?.name || null,
             id: clientInfo.wa_id
         }
     }
