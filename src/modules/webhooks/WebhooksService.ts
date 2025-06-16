@@ -75,7 +75,7 @@ export default class WebhooksService {
                 throw new BadRequestError("Unsupported messaging product");
             };
 
-            const clientContact = productService.getClientInfo(req);
+            const clientContact = await  productService.getClientInfo(req, platformData.token);
             const clientId = await this.handleClient(agentId, clientContact);
             const conversationId = await this.handleConversaton(clientId, platformData.platformId!);
             const messageData = await productService.handleIncomingMessage(req, platformData.identifier, platformData.token, conversationId, agentId);
@@ -89,7 +89,7 @@ export default class WebhooksService {
         }
     }
 
-    async handleClient(agentId: string, client: WhatsappContact): Promise<string> {
+    async handleClient(agentId: string, client: any): Promise<string> {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         const clientsService = Container.resolve<ClientsService>("ClientsService");
         
