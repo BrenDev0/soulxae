@@ -64,7 +64,7 @@ class WhatsappService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const message = req.body.entry[0].changes[0].value.messages[0];
-                console.log(message, ":::::::::::::::::::::message");
+                // console.log(message, ":::::::::::::::::::::message");
                 yield this.sendReadRecipt(message.id, fromId, token);
                 let messageData = {
                     messageReferenceId: message.id,
@@ -105,7 +105,6 @@ class WhatsappService {
                 return messageData;
             }
             catch (error) {
-                console.log(error, ":::::::::error");
                 if (error instanceof AppError_1.default) {
                     throw error;
                 }
@@ -148,7 +147,6 @@ class WhatsappService {
     getClientInfo(req) {
         var _a, _b, _c, _d;
         const clientInfo = (_c = (_b = (_a = req.body.entry[0]) === null || _a === void 0 ? void 0 : _a.changes[0]) === null || _b === void 0 ? void 0 : _b.value) === null || _c === void 0 ? void 0 : _c.contacts[0];
-        console.log(clientInfo, "wa CLientinfor:::::::::::::::::");
         if (!clientInfo) {
             throw new errors_1.BadRequestError("Meta data not found");
         }
@@ -165,7 +163,7 @@ class WhatsappService {
                     status: "read",
                     message_id: messageId
                 };
-                const response = yield this.send(readReceipt, fromId, token);
+                yield this.send(readReceipt, fromId, token);
                 return;
             }
             catch (error) {
@@ -176,12 +174,12 @@ class WhatsappService {
     send(messageObject, fromId, token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log(messageObject, "OBJECT SENT OT META");
                 const response = yield axios_1.default.post(`https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`, messageObject, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                console.log(response, "RES:::::::::::::::::");
                 return response;
             }
             catch (error) {

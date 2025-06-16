@@ -60,7 +60,7 @@ export default class WhatsappService {
         try {
             const message = req.body.entry[0].changes[0].value.messages[0];
           
-            console.log(message, ":::::::::::::::::::::message");
+           // console.log(message, ":::::::::::::::::::::message");
             
             
             await this.sendReadRecipt(message.id, fromId, token);
@@ -105,7 +105,6 @@ export default class WhatsappService {
 
             return messageData;
         } catch (error) {
-            console.log(error, ":::::::::error")
             if(error instanceof AppError) {
                 throw error;
             }
@@ -155,7 +154,7 @@ export default class WhatsappService {
 
     getClientInfo(req: Request): ClientContact {
         const clientInfo = req.body.entry[0]?.changes[0]?.value?.contacts[0];
-        console.log(clientInfo, "wa CLientinfor:::::::::::::::::")
+       
         if(!clientInfo) {
             throw new BadRequestError("Meta data not found");
         }
@@ -174,7 +173,7 @@ export default class WhatsappService {
                 message_id: messageId
             }
 
-            const response = await this.send(readReceipt, fromId, token);
+            await this.send(readReceipt, fromId, token);
             return;
         } catch (error) {
             throw error;
@@ -183,6 +182,7 @@ export default class WhatsappService {
 
     async send(messageObject: MessageObject | ReadReceipt, fromId: string, token: string) {
         try {
+            console.log(messageObject, "OBJECT SENT OT META")
             const response = await axios.post(
                 `https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`,
                 messageObject,
@@ -193,8 +193,6 @@ export default class WhatsappService {
                 }
             );
 
-            console.log(response, "RES:::::::::::::::::")
-        
             return response;
         } catch (error) {
             console.log(error)
