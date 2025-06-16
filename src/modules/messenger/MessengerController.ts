@@ -13,7 +13,7 @@ export default class MessengerController {
 
      async verifyWebhook(req: Request, res: Response): Promise<void> {
         try {
-            const challenge = await this.webhookService.verifyWebhook(req, "whatsapp");
+            const challenge = await this.webhookService.verifyWebhook(req, "messenger");
            
             console.log('WEBHOOK_VERIFIED')
             res.status(200).send(challenge);
@@ -24,7 +24,7 @@ export default class MessengerController {
 
     async handleIncommingMessage(req: Request, res: Response): Promise<void> {
         try {
-            await this.webhookService.incomingMessage(req, "whatsapp");
+            await this.webhookService.incomingMessage(req, "messenger");
             res.status(200).send()
         } catch (error) {
             throw error;

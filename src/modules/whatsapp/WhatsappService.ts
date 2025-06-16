@@ -82,7 +82,7 @@ export default class WhatsappService {
                 case "document":
                     messageData.type = "document"
                     messageData.content = await this.getMediaContent(message.document, conversationId, token, agentId);
-                    break
+                    break;
                 case "image":
                     messageData.type = "image"
                     messageData.content = await this.getMediaContent(message.image, conversationId, token, agentId)

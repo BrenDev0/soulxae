@@ -17,7 +17,7 @@ class MessengerController {
     verifyWebhook(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const challenge = yield this.webhookService.verifyWebhook(req, "whatsapp");
+                const challenge = yield this.webhookService.verifyWebhook(req, "messenger");
                 console.log('WEBHOOK_VERIFIED');
                 res.status(200).send(challenge);
             }
@@ -29,7 +29,7 @@ class MessengerController {
     handleIncommingMessage(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.webhookService.incomingMessage(req, "whatsapp");
+                yield this.webhookService.incomingMessage(req, "messenger");
                 res.status(200).send();
             }
             catch (error) {
