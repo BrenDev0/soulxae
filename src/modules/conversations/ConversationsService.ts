@@ -4,6 +4,7 @@ import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
 import EncryptionService from '../../core/services/EncryptionService';
 import ConversationsRepositoy from './ConversationsRepository';
+import { platform } from 'os';
 
 export default class ConversationsService {
     private repository: ConversationsRepositoy
@@ -46,15 +47,15 @@ export default class ConversationsService {
         }
     }
 
-    async findByParticipantIds(agentId: string, clientId: string): Promise<ConversationData | null> {
+    async findByParticipantIds(platformId: string, clientId: string): Promise<ConversationData | null> {
         try {
-            const result = await this.repository.findByIds(agentId, clientId)
+            const result = await this.repository.findByIds(platformId, clientId)
             if(!result) {
                 return null
             }
             return this.mapFromDb(result)
         } catch (error) {
-            handleServiceError(error as Error, this.block, "findByIds", { agentId, clientId })
+            handleServiceError(error as Error, this.block, "findByIds", { platformId, clientId })
             throw error;
         }
     }
@@ -109,7 +110,6 @@ export default class ConversationsService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             conversationId: conversation.conversation_id,
-            
             platformId: conversation.platform_id,
             clientId: conversation.client_id,
             title: conversation.title,

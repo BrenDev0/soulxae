@@ -34,7 +34,7 @@ class ConversationsRepositoy extends BaseRepository_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const sqlRead = `
             SELECT * FROM conversations
-            WHERE agent_id = $1 AND client_id = $2;    
+            WHERE platform_id = $1 AND client_id = $2;    
         `;
             const result = yield this.pool.query(sqlRead, [agentId, clientId]);
             return result.rows[0] || null;
