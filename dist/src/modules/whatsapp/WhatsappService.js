@@ -166,7 +166,7 @@ class WhatsappService {
                     message_id: messageId
                 };
                 const response = yield this.send(readReceipt, fromId, token);
-                console.log(response.data && response.data, "data:::::::::");
+                console.log(response, "data:::::::::");
                 return;
             }
             catch (error) {
