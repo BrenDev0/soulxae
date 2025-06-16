@@ -5,7 +5,7 @@ import Container from '../../core/dependencies/Container';
 import EncryptionService from '../../core/services/EncryptionService';
 import { AgentsRepository } from './AgentsRepository';
 
-export default class AgentService {
+export default class AgentsService {
     private repository: AgentsRepository;
     private block = "agents.service"
     constructor(repository: AgentsRepository) {

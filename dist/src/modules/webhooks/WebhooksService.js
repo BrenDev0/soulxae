@@ -75,7 +75,7 @@ class WebhooksService {
                 ;
                 const clientContact = productService.getClientInfo(req);
                 const clientId = yield this.handleClient(agentId, clientContact);
-                const conversationId = yield this.handleConversaton(agentId, clientId, platform, messagingProduct);
+                const conversationId = yield this.handleConversaton(clientId, platformData.platformId);
                 const messageData = yield productService.handleIncomingMessage(req, platformData.identifier, platformData.token, conversationId);
                 yield messagesService.create(messageData);
                 return;
@@ -101,18 +101,16 @@ class WebhooksService {
             return resource.clientId;
         });
     }
-    handleConversaton(agentId, clientId, platform, messagingProduct) {
+    handleConversaton(clientId, platformId) {
         return __awaiter(this, void 0, void 0, function* () {
             const conversationService = Container_1.default.resolve("ConversationsService");
-            const resource = yield conversationService.findByParticipantIds(agentId, clientId);
+            const resource = yield conversationService.findByParticipantIds(platformId, clientId);
             if (!resource) {
                 const newConversation = yield conversationService.create({
-                    agentId: agentId,
-                    messagingProduct: messagingProduct,
                     clientId: clientId,
                     handoff: false,
                     title: null,
-                    platform: platform
+                    platformId: platformId
                 });
                 return newConversation.conversation_id;
             }

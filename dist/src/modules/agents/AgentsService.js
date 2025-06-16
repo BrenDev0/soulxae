@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const error_service_1 = require("../../core/errors/error.service");
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
-class AgentService {
+class AgentsService {
     constructor(repository) {
         this.block = "agents.service";
         this.repository = repository;
@@ -106,4 +106,4 @@ class AgentService {
         };
     }
 }
-exports.default = AgentService;
+exports.default = AgentsService;

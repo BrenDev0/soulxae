@@ -10,7 +10,8 @@ const Container_1 = __importDefault(require("../../core/dependencies/Container")
 function configureWhatsappDependencies() {
     const service = new WhatsappService_1.default();
     const httpService = Container_1.default.resolve("HttpService");
-    const controller = new WhatsappController_1.default(httpService);
+    const webhookService = Container_1.default.resolve("WebhookService");
+    const controller = new WhatsappController_1.default(httpService, webhookService);
     Container_1.default.register("WhatsappService", service);
     Container_1.default.register("WhatsappController", controller);
     return;

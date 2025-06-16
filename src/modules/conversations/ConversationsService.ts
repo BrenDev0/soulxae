@@ -98,9 +98,7 @@ export default class ConversationsService {
     mapToDb(conversation: ConversationData): Conversation {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
-           agent_id: conversation.agentId,
-           messaging_product: conversation.messagingProduct,
-           platform: conversation.platform,
+           platform_id: conversation.platformId,
            client_id: conversation.clientId,
            title: conversation.title,
            handoff: conversation.handoff
@@ -111,14 +109,11 @@ export default class ConversationsService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             conversationId: conversation.conversation_id,
-            agentId: conversation.agent_id,
-            messagingProduct: conversation.messaging_product,
-            platform: conversation.platform,
+            
+            platformId: conversation.platform_id,
             clientId: conversation.client_id,
             title: conversation.title,
             handoff: conversation.handoff,
-            platformIdentifier: conversation.platform_identifier && encryptionService.decryptData(conversation.platform_identifier),
-            clientIdentifier: conversation.client_identifier && encryptionService.decryptData(conversation.client_identifier) 
         }
     }
 
@@ -127,12 +122,8 @@ export default class ConversationsService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             conversationId: conversation.conversation_id!,
-            agentId: conversation.agent_id,
-             messagingProduct: conversation.messaging_product,
             platform: conversation.platform,
             clientId: conversation.client_id,
-            title: conversation.title,
-            handoff: conversation.handoff,
             platformIdentifier: encryptionService.decryptData(conversation.platform_identifier),
             clientIdentifier: encryptionService.decryptData(conversation.client_identifier),
             token: encryptionService.decryptData(conversation.token)

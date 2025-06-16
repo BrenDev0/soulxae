@@ -58,7 +58,7 @@ class DirectMessagagingController {
                     throw new errors_1.NotFoundError("conversation not found");
                 }
                 let productService;
-                switch (conversation.messagingProduct) {
+                switch (conversation.platform) {
                     case 'whatsapp':
                         productService = Container_1.default.resolve("WhatsappService");
                         break;

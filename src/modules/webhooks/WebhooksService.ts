@@ -9,6 +9,7 @@ import ClientsService from "../clients/ClientsService";
 import WhatsappService from "../whatsapp/WhatsappService";
 import { WhatsappContact,  } from "../whatsapp/whatsapp.interface";
 import EncryptionService from "../../core/services/EncryptionService";
+import AgentsService from "../agents/AgentsService";
 
 export default class WebhooksService {
     private httpService: HttpService;
@@ -52,7 +53,7 @@ export default class WebhooksService {
         try {
             const messagesService = Container.resolve<MessagesService>("MessagesService");
             const agentId = this.httpService.encryptionService.decryptData(req.params.id);
-            const platformData = await this.platformsService.getAgentPlatform(agentId, platform);
+            const platformData = await this.platformsService.getAgentPlatform(agentId, platform)
             if(!platformData) {
                 throw new BadRequestError("Agent platform configuratin error")
             }
@@ -78,7 +79,7 @@ export default class WebhooksService {
 
             const clientContact = productService.getClientInfo(req);
             const clientId = await this.handleClient(agentId, clientContact);
-            const conversationId = await this.handleConversaton(agentId, clientId, platform, messagingProduct);
+            const conversationId = await this.handleConversaton(clientId, platformData.platformId!);
             const messageData = await productService.handleIncomingMessage(req, platformData.identifier, platformData.token, conversationId);
           
             await messagesService.create(messageData)
@@ -108,19 +109,17 @@ export default class WebhooksService {
         return resource.clientId!
     }
 
-    async handleConversaton(agentId: string, clientId: string, platform: string, messagingProduct: string): Promise<string> {
+    async handleConversaton(clientId: string, platformId: string): Promise<string> {
         const conversationService = Container.resolve<ConversationsService>("ConversationsService");
 
-        const resource = await conversationService.findByParticipantIds(agentId, clientId);
+        const resource = await conversationService.findByParticipantIds(platformId, clientId);
     
         if(!resource) {
             const newConversation = await conversationService.create({
-                agentId: agentId,
-                messagingProduct: messagingProduct,
                 clientId: clientId,
                 handoff: false,
                 title: null,
-                platform: platform
+                platformId: platformId
             })
 
             return newConversation.conversation_id!
