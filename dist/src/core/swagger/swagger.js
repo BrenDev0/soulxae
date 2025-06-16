@@ -83,7 +83,7 @@ const doc = {
             sendDirectMessage: {
                 message: {
                     conversationId: "conversationId",
-                    type: "image, text",
+                    type: "image, text, audio, document",
                     content: {
                         body: "See interfaces at bottom of docs for proper structures"
                     }
@@ -92,17 +92,11 @@ const doc = {
             TextContent: {
                 body: "message text"
             },
-            ImageContent: {
+            mediaContent: {
                 url: "image url",
                 caption: "optional message"
             }
         },
-        examples: {
-            imageContent: {
-                url: "media url",
-                caption: "optional message text"
-            }
-        }
     },
 };
 const outputFile = './swagger.json';
