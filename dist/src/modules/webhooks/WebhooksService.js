@@ -79,7 +79,6 @@ class WebhooksService {
                 return;
             }
             catch (error) {
-                console.log(error, "error:::::::::::");
                 throw error;
             }
         });
@@ -88,12 +87,12 @@ class WebhooksService {
         return __awaiter(this, void 0, void 0, function* () {
             const encryptionService = Container_1.default.resolve("EncryptionService");
             const clientsService = Container_1.default.resolve("ClientsService");
-            const resource = yield clientsService.resource("contact_identifier", encryptionService.encryptData(client.wa_id));
+            const resource = yield clientsService.resource("contact_identifier", encryptionService.encryptData(client.id));
             if (!resource) {
                 const newClient = yield clientsService.create({
                     agentId: agentId,
-                    name: client.profile.name ? client.profile.name : null,
-                    contactIdentifier: client.wa_id
+                    name: client.name ? client.name : null,
+                    contactIdentifier: client.id
                 });
                 return newClient.client_id;
             }

@@ -11,6 +11,7 @@ import { WhatsappContact,  } from "../whatsapp/whatsapp.interface";
 import EncryptionService from "../../core/services/EncryptionService";
 import AgentsService from "../agents/AgentsService";
 import MessengerService from "../messenger/MessengerService";
+import { ClientContact } from "../clients/clients.interface";
 
 export default class WebhooksService {
     private httpService: HttpService;
@@ -84,22 +85,21 @@ export default class WebhooksService {
 
            return;
         } catch (error) {
-            console.log(error, "error:::::::::::")
             throw error;
         }
     }
 
-    async handleClient(agentId: string, client: any): Promise<string> {
+    async handleClient(agentId: string, client: ClientContact): Promise<string> {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         const clientsService = Container.resolve<ClientsService>("ClientsService");
         
 
-        const resource = await clientsService.resource("contact_identifier", encryptionService.encryptData(client.wa_id));
+        const resource = await clientsService.resource("contact_identifier", encryptionService.encryptData(client.id));
         if(!resource) {
             const newClient = await clientsService.create({
                 agentId: agentId,
-                name: client.profile.name ? client.profile.name : null,
-                contactIdentifier: client.wa_id
+                name: client.name ? client.name : null,
+                contactIdentifier: client.id
             })
 
             return newClient.client_id!

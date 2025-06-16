@@ -11,3 +11,8 @@ export interface ClientData {
   name: string | null;
   contactIdentifier: string;
 }
+
+export interface ClientContact {
+  name:  string | null;
+  id: string;
+}

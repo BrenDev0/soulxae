@@ -5,6 +5,7 @@ import { ButtonsContent, MessageData, StandarMediaContent, TextContent } from '.
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
 import { Request } from 'express';
 import AppError from '../../core/errors/AppError';
+import { ClientContact } from '../clients/clients.interface';
 
 export default class MessengerService {
     private readonly block = "messenger.service";
@@ -119,16 +120,18 @@ export default class MessengerService {
         }
     }
 
-    async getClientInfo(req: Request, token: string) {
+    async getClientInfo(req: Request, token: string): Promise<ClientContact> {
         const message = req.body.entry[0].messaging[0].message;
-        const clientInfo = await axios.get(`https://graph.facebook.com/${process.env.MESSENGER_VERSION}/${message.mid}?fields=id,created_time,from,to,message&access_token=${token}`);
-        console.log(clientInfo.data, "REspinse::::::::::")
-        
-        if(!clientInfo) {
+        const response = await axios.get(`https://graph.facebook.com/${process.env.MESSENGER_VERSION}/${message.mid}?fields=id,created_time,from,to,message&access_token=${token}`);
+    
+        if(!response) {
             throw new BadRequestError("Meta data not found");
         }
 
-        return clientInfo;
+        return {
+            name: response.data.from.name || null,
+            id: response.data.from.id
+        };
     }
 
     textMessage(message: TextContent, to: string): MessengerObject {

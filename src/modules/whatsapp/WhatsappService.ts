@@ -6,6 +6,7 @@ import { Request } from 'express';
 import Container from '../../core/dependencies/Container';
 import AppError from '../../core/errors/AppError';
 import S3Service from '../media/S3Service';
+import { ClientContact } from '../clients/clients.interface';
 
 export default class WhatsappService {
     private readonly block = "whatsapp.service";
@@ -152,13 +153,16 @@ export default class WhatsappService {
         }
     }
 
-    getClientInfo(req: Request): WhatsappContact {
+    getClientInfo(req: Request): ClientContact {
         const clientInfo = req.body.entry[0]?.changes[0]?.value?.contacts[0];
         if(!clientInfo) {
             throw new BadRequestError("Meta data not found");
         }
 
-        return clientInfo;
+        return {
+            name: clientInfo.prfile.name || null,
+            id: clientInfo.wa_id
+        }
     }
 
     async sendReadRecipt(messageId: string, fromId: string, token: string): Promise<void> {

@@ -151,7 +151,10 @@ class WhatsappService {
         if (!clientInfo) {
             throw new errors_1.BadRequestError("Meta data not found");
         }
-        return clientInfo;
+        return {
+            name: clientInfo.prfile.name || null,
+            id: clientInfo.wa_id
+        };
     }
     sendReadRecipt(messageId, fromId, token) {
         return __awaiter(this, void 0, void 0, function* () {
