@@ -197,6 +197,7 @@ export default class WhatsappService {
         
             return response;
         } catch (error) {
+            console.log(error)
             throw new ExternalAPIError(undefined, {
                 service: "whatsapp",
                 originalError: (error as Error).message
