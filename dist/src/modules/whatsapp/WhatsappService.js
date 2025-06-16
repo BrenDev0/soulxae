@@ -233,18 +233,25 @@ class WhatsappService {
         return __awaiter(this, void 0, void 0, function* () {
             const url = yield this.getMedia(message.id, token, conversationId, agentId);
             const messageContent = {
-                url: url
+                url: url,
+                caption: null
             };
             return messageContent;
         });
     }
     documentMessage(message, to) {
+        const documentContent = {
+            link: message.url,
+        };
+        if (message.caption) {
+            documentContent.caption = message.caption;
+        }
         const messageObject = {
             messaging_product: "whatsapp",
             recipient_type: "individual",
             to: to,
             type: "document",
-            document: message
+            document: documentContent
         };
         return messageObject;
     }

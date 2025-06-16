@@ -1,8 +1,8 @@
-import { DocumentContent, Header } from "../messages/messages.interface";
+import { Header } from "../messages/messages.interface";
 
 export interface ReadReceipt{
-  "messaging_product": string;
-  "status": string;
+  messaging_product: string;
+  status: string;
   message_id: string;
 }
 
@@ -24,28 +24,12 @@ export interface WhatsappContact{
   wa_id: string;
 }
 
-export interface WhatsAppAudio {
-
-  mime_type: string;
-  sha256: string;
-  id: string;
-  voice: boolean;
-
-}
-
-export interface WhatsappDocument {
-  id: string;
+export interface IncommingWhatsappMedia {
+  id: string; 
   sha256: string;
   filename: string;
   mime_type: string;
-  caption?: string;
-}
-
-export interface WhatsappImage {
-  caption?: string;
-  mime_type: string;
-  sha256: string;
-  id: string;
+  caption: string;
 }
 
 export interface TextObject {
@@ -53,11 +37,8 @@ export interface TextObject {
   body: string;
 }
 
-export interface AudioObject  {
-  id?: string;
-  link: string; 
-}
-export interface ImageObject {
+
+export interface StandardObject {
   link: string;
   caption?: string; 
 }
@@ -78,8 +59,8 @@ export interface MessageObject {
   to: string;
   type: string;
   interactive?: InteractiveObject;
-  image?: ImageObject;
+  image?: StandardObject;
   text?: TextObject;
-  audio?: AudioObject;
-  document?: DocumentContent;
+  audio?: StandardObject;
+  document?: StandardObject;
 }

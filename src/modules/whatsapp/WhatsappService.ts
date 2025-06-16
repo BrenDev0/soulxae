@@ -1,9 +1,8 @@
-import { AudioObject, ImageObject, InteractiveObject, MessageObject, ReadReceipt, WhatsAppAudio, WhatsappContact, WhatsappDocument, WhatsappImage, WhatsappMediaResponse } from '../whatsapp/whatsapp.interface'
-import { AudioContent, ButtonsContent, DocumentContent, ImageContent, Message, MessageData, TextContent } from '../messages/messages.interface';
+import { StandardObject, InteractiveObject, MessageObject, ReadReceipt, WhatsappContact, WhatsappMediaResponse, IncommingWhatsappMedia, } from '../whatsapp/whatsapp.interface'
+import { ButtonsContent,  MessageData, StandarMediaContent, TextContent } from '../messages/messages.interface';
 import axios from 'axios';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
 import { Request } from 'express';
-import { Conversation, ConversationData } from '../conversations/conversations.interface';
 import Container from '../../core/dependencies/Container';
 import ConversationsService from '../conversations/ConversationsService';
 import AppError from '../../core/errors/AppError';
@@ -20,13 +19,13 @@ export default class WhatsappService {
 
             switch(message.type) {
                 case "audio":
-                    messageObject = this.audioMessage(message.content as AudioContent, to);
+                    messageObject = this.audioMessage(message.content as StandarMediaContent, to);
                     break;
                 case "document":
-                    messageObject = this.documentMessage(message.content as DocumentContent, to);
+                    messageObject = this.documentMessage(message.content as StandarMediaContent, to);
                     break;
                 case "image":
-                    messageObject = this.imageMessage(message.content as ImageContent, to);
+                    messageObject = this.imageMessage(message.content as StandarMediaContent, to);
                     break;
                 case "buttons":
                     messageObject = this.buttonsMessage(message.content as ButtonsContent, to);
@@ -237,8 +236,8 @@ export default class WhatsappService {
         return messageObject;
     }
 
-    audioMessage(message: AudioContent, to: string): MessageObject {
-        let audioObject: AudioObject =  {
+    audioMessage(message: StandarMediaContent, to: string): MessageObject {
+        let audioObject: StandardObject =  {
             link: message.url
         }
 
@@ -253,33 +252,41 @@ export default class WhatsappService {
         return messageObject;
     }
 
-    async getAudioContent(message: WhatsAppAudio, conversationId: string, token: string, agentId: string): Promise<AudioContent> {
+    async getAudioContent(message: IncommingWhatsappMedia, conversationId: string, token: string, agentId: string): Promise<StandarMediaContent> {
         const url = await this.getMedia(message.id, token, conversationId, agentId);
 
-        const messageContent: AudioContent = {
-            url: url
+        const messageContent: StandarMediaContent = {
+            url: url,
+            caption: null
         }
 
         return messageContent;
     }
 
-    documentMessage(message: DocumentContent, to: string): MessageObject {
+    documentMessage(message: StandarMediaContent, to: string): MessageObject {
         
+        const documentContent: StandardObject = {
+            link: message.url,
+        }
+
+        if(message.caption) {
+            documentContent.caption = message.caption
+        }
         const messageObject: MessageObject = {
             messaging_product: "whatsapp",
             recipient_type: "individual",
             to: to,
             type: "document",
-            document: message
+            document: documentContent
         };
 
         return messageObject;
     }
 
-    async getDocumentContent(message: WhatsappDocument, conversationId: string, token: string, agentId: string): Promise<DocumentContent>{
+    async getDocumentContent(message: IncommingWhatsappMedia, conversationId: string, token: string, agentId: string): Promise<StandarMediaContent>{
         const url = await this.getMedia(message.id, token, conversationId, agentId);
 
-        const messageContent: DocumentContent = {
+        const messageContent: StandarMediaContent = {
             url: url,
             caption: message.caption ? message.caption : null
         }
@@ -287,8 +294,8 @@ export default class WhatsappService {
         return messageContent;
     }
 
-    imageMessage(message: ImageContent, to: string): MessageObject {
-        let imageObjcet: ImageObject =  {
+    imageMessage(message: StandarMediaContent, to: string): MessageObject {
+        let imageObjcet: StandardObject =  {
             link: message.url
         }
 
@@ -307,9 +314,9 @@ export default class WhatsappService {
         return messageObject;
     }
 
-    async getImageMessageContent(message: WhatsappImage, conversationId: string, token: string, agentId: string): Promise<ImageContent> {
+    async getImageMessageContent(message: IncommingWhatsappMedia, conversationId: string, token: string, agentId: string): Promise<StandarMediaContent> {
         const url = await this.getMedia(message.id, token, conversationId, agentId);
-        const messageContent: ImageContent = {
+        const messageContent: StandarMediaContent = {
             url: url,
             caption: message.caption ? message.caption : null
         } 
