@@ -174,7 +174,7 @@ class WhatsappService {
     send(messageObject, fromId, token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(messageObject, "OBJECT SENT OT META");
+                console.log(messageObject, "OBJECT SENT OT META", fromId, "FROMID::::", token, "Token::::::");
                 const response = yield axios_1.default.post(`https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`, messageObject, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -183,7 +183,6 @@ class WhatsappService {
                 return response;
             }
             catch (error) {
-                console.log(error);
                 throw new errors_1.ExternalAPIError(undefined, {
                     service: "whatsapp",
                     originalError: error.message

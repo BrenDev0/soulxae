@@ -182,7 +182,7 @@ export default class WhatsappService {
 
     async send(messageObject: MessageObject | ReadReceipt, fromId: string, token: string) {
         try {
-            console.log(messageObject, "OBJECT SENT OT META")
+            console.log(messageObject, "OBJECT SENT OT META", fromId, "FROMID::::", token, "Token::::::")
             const response = await axios.post(
                 `https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`,
                 messageObject,
@@ -195,7 +195,6 @@ export default class WhatsappService {
 
             return response;
         } catch (error) {
-            console.log(error)
             throw new ExternalAPIError(undefined, {
                 service: "whatsapp",
                 originalError: (error as Error).message
