@@ -31,7 +31,15 @@ export interface WhatsAppAudio {
   id: string;
   voice: boolean;
 
-  }
+}
+
+export interface WhatsappDocument {
+  id: string;
+  sha256: string;
+  filename: string;
+  mime_type: string;
+  caption?: string;
+}
 
 export interface WhatsappImage {
   caption?: string;

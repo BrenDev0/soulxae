@@ -1,4 +1,4 @@
-import { AudioObject, ImageObject, InteractiveObject, MessageObject, ReadReceipt, WhatsAppAudio, WhatsappContact, WhatsappImage, WhatsappMediaResponse } from '../whatsapp/whatsapp.interface'
+import { AudioObject, ImageObject, InteractiveObject, MessageObject, ReadReceipt, WhatsAppAudio, WhatsappContact, WhatsappDocument, WhatsappImage, WhatsappMediaResponse } from '../whatsapp/whatsapp.interface'
 import { AudioContent, ButtonsContent, DocumentContent, ImageContent, Message, MessageData, TextContent } from '../messages/messages.interface';
 import axios from 'axios';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
@@ -81,7 +81,8 @@ export default class WhatsappService {
                     messageData.content = await this.getAudioContent(message.audio, conversationId, token, agentId);
                     break
                 case "document":
-                    messageData.content = message.document;
+                    messageData.type = "document"
+                    messageData.content = await this.getDocumentContent(message.document, conversationId, token, agentId);
                     break
                 case "image":
                     messageData.type = "image"
@@ -273,6 +274,17 @@ export default class WhatsappService {
         };
 
         return messageObject;
+    }
+
+    async getDocumentContent(message: WhatsappDocument, conversationId: string, token: string, agentId: string): Promise<DocumentContent>{
+        const url = await this.getMedia(message.id, token, conversationId, agentId);
+
+        const messageContent: DocumentContent = {
+            url: url,
+            caption: message.caption ? message.caption : null
+        }
+
+        return messageContent;
     }
 
     imageMessage(message: ImageContent, to: string): MessageObject {

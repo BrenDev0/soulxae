@@ -17,8 +17,7 @@ export interface AudioContent {
 }
 
 export interface DocumentContent {
-  link: string,
-  filename: string,
+  url: string,
   caption: string | null;
 }
 
