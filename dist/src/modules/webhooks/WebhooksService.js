@@ -72,6 +72,7 @@ class WebhooksService {
                 }
                 ;
                 const clientContact = yield productService.getClientInfo(req, platformData.token);
+                console.log(clientContact, "WHATSS APP CLIENT INFO::::::::");
                 const clientId = yield this.handleClient(agentId, clientContact);
                 const conversationId = yield this.handleConversaton(clientId, platformData.platformId);
                 const messageData = yield productService.handleIncomingMessage(req, platformData.identifier, platformData.token, conversationId, agentId);
