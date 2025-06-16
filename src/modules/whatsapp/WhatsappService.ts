@@ -63,7 +63,7 @@ export default class WhatsappService {
            // console.log(message, ":::::::::::::::::::::message");
             
             
-            await this.sendReadRecipt(message.id, fromId, token);
+            message.type !== "unsupported" && await this.sendReadRecipt(message.id, fromId, token);
 
             let messageData: MessageData =  {
                 messageReferenceId: message.id,
