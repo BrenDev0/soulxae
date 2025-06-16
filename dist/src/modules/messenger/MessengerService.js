@@ -53,7 +53,7 @@ class MessengerService {
     handleIncomingMessage(req, fromId, token, conversationId, agentId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const message = req.body.entry[0].messaging[0];
+                const message = req.body.entry[0].messaging[0].message;
                 console.log(message, ":::::::::::::::::::::message");
                 let messageData = {
                     messageReferenceId: message.id,
@@ -120,7 +120,7 @@ class MessengerService {
         });
     }
     getClientInfo(req) {
-        const clientInfo = req.body.entry[0];
+        const clientInfo = req.body.entry[0].messaging[0].sender;
         console.log(clientInfo, "CLinetinfo:::::::::");
         if (!clientInfo) {
             throw new errors_1.BadRequestError("Meta data not found");

@@ -47,7 +47,7 @@ export default class MessengerService {
 
     async handleIncomingMessage(req: Request, fromId: string, token: string, conversationId: string, agentId: string): Promise<MessageData> {
         try {
-            const message = req.body.entry[0].messaging[0];
+            const message = req.body.entry[0].messaging[0].message;
             
             console.log(message, ":::::::::::::::::::::message");
         
@@ -120,7 +120,7 @@ export default class MessengerService {
     }
 
     getClientInfo(req: Request) {
-        const clientInfo = req.body.entry[0];
+        const clientInfo = req.body.entry[0].messaging[0].sender;
         console.log(clientInfo, "CLinetinfo:::::::::")
         if(!clientInfo) {
             throw new BadRequestError("Meta data not found");
