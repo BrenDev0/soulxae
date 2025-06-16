@@ -26,16 +26,22 @@ class WhatsappService {
                 let messageObject;
                 switch (message.type) {
                     case "audio":
-                    case "document":
-                    case "video":
-                    case "image":
-                        messageObject = this.mediaMessage(message.content, to);
+                        messageObject = this.mediaMessage(message.content, to, "audio");
                         break;
                     case "buttons":
                         messageObject = this.buttonsMessage(message.content, to);
                         break;
+                    case "document":
+                        messageObject = this.mediaMessage(message.content, to, "document");
+                        break;
+                    case "image":
+                        messageObject = this.mediaMessage(message.content, to, "image");
+                        break;
                     case "text":
                         messageObject = this.textMessage(message.content, to);
+                        break;
+                    case "video":
+                        messageObject = this.mediaMessage(message.content, to, "video");
                         break;
                     default:
                         break;
@@ -217,19 +223,19 @@ class WhatsappService {
         };
         return messageObject;
     }
-    mediaMessage(message, to) {
-        const documentContent = {
+    mediaMessage(message, to, type) {
+        const mediaObject = {
             link: message.url,
         };
         if (message.caption) {
-            documentContent.caption = message.caption;
+            mediaObject.caption = message.caption;
         }
         const messageObject = {
             messaging_product: "whatsapp",
             recipient_type: "individual",
             to: to,
-            type: "document",
-            document: documentContent
+            type: type,
+            [type]: mediaObject
         };
         return messageObject;
     }

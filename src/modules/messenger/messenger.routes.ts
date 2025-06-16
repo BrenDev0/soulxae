@@ -1,40 +1,41 @@
-// import { Router } from 'express';
-// import Container from '../../core/dependencies/Container';
-// import MiddlewareService from '../../core/middleware/MiddlewareService';
-// import MessengerController from './MessengerController';
+import { Router } from 'express';
+import Container from '../../core/dependencies/Container';
+import MiddlewareService from '../../core/middleware/MiddlewareService';
+import MessengerController from './MessengerController';
 
-// export const initializeMessengerRouter = (customController?: MessengerController) => {
-//     const router = Router();
-//     const secureRouter = Router();
-//     const middlewareService = Container.resolve<MiddlewareService>("MiddlewareService");
-//     const controller = customController ?? Container.resolve<MessengerController>("MessengerController");
+export const initializeMessengerRouter = (customController?: MessengerController) => {
+    const router = Router();
+    const secureRouter = Router();
+    const middlewareService = Container.resolve<MiddlewareService>("MiddlewareService");
+    const controller = customController ?? Container.resolve<MessengerController>("MessengerController");
 
-//     secureRouter.use(middlewareService.auth.bind(middlewareService));
+    secureRouter.use(middlewareService.auth.bind(middlewareService));
 
-//      /*
-//         #swagger.tags = ['Messenger']
-//         #swagger.path =  '/messenger/secure'
-//         #swagger.security = [{ "bearerAuth": [] }] 
-//         #swagger.description = 'Update messenger'
-//         #swagger.requestBody = {
-//             required: true,
-//             content: {
-//                 "application/json": {
-//                     schema: { $ref: "#/components/schemas/updateMessenger" }
-//                 }
-//             }
-//         }
-//         */
+     /*
+        #swagger.tags = ['Messenger']
+        #swagger.path =  '/messenger/secure'
+        #swagger.security = [{ "bearerAuth": [] }] 
+        #swagger.description = 'Update messenger'
+        #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: { $ref: "#/components/schemas/updateMessenger" }
+                }
+            }
+        }
+        */
 
-//     // protected Routes //
+    // protected Routes //
 
+    // unprotected routes //
+    router.post("/:id/webhook", controller.handleIncommingMessage.bind(controller));
+    router.get('/:id/webhook', controller.verifyWebhook.bind(controller));
 
-  
+    // mounts //
 
-//     // mounts //
+    router.use("/secure", secureRouter);
 
-//     router.use("/secure", secureRouter);
-
-//     console.log("Messenger router initialized.");
-//     return router;
-// }
+    console.log("Messenger router initialized.");
+    return router;
+}

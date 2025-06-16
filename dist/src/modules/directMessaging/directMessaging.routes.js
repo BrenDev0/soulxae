@@ -30,8 +30,6 @@ const initializeDirectMessageingRouter = (customController) => {
    */
     controller.send.bind(controller));
     // unprotected Routes //
-    router.post("/:id/webhook", controller.handleIncommingMessage.bind(controller));
-    router.get('/:id/webhook', controller.verifyWebhook.bind(controller));
     // mounts //
     router.use("/secure", secureRouter);
     console.log("Direct Messaging router initialized.");

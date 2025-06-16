@@ -1,17 +1,18 @@
 "use strict";
-// import { Pool } from "pg";
-// import BaseRepository from "../../core/repository/BaseRepository";
-// import { Messenger } from "./messenger.interface";
-// import MessengerService from "./MessengerService";
-// import MessengerController from "./MessengerController";
-// import Container from "../../core/dependencies/Container";
-// import HttpService from "../../core/services/HttpService";
-// export function configureMessengerDependencies(pool: Pool): void {
-//     const repository = new BaseRepository<Messenger>(pool, "messenger");
-//     const service = new MessengerService(repository);
-//     const httpService = Container.resolve<HttpService>("HttpService");
-//     const controller = new MessengerController(httpService, service);
-//     Container.register<MessengerService>("MessengerService", service);
-//     Container.register<MessengerController>("MessengerController", controller);
-//     return;
-// }
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.configureMessengerDependencies = configureMessengerDependencies;
+const Container_1 = __importDefault(require("../../core/dependencies/Container"));
+const MessengerController_1 = __importDefault(require("./MessengerController"));
+const MessengerService_1 = __importDefault(require("./MessengerService"));
+function configureMessengerDependencies() {
+    const service = new MessengerService_1.default();
+    const httpService = Container_1.default.resolve("HttpService");
+    const webhookService = Container_1.default.resolve("WebhookService");
+    const controller = new MessengerController_1.default(httpService, webhookService);
+    Container_1.default.register("MessengerService", service);
+    Container_1.default.register("MessengerController", controller);
+    return;
+}

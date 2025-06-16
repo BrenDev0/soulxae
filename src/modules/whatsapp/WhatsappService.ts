@@ -4,11 +4,8 @@ import axios from 'axios';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
 import { Request } from 'express';
 import Container from '../../core/dependencies/Container';
-import ConversationsService from '../conversations/ConversationsService';
 import AppError from '../../core/errors/AppError';
 import S3Service from '../media/S3Service';
-import { read } from 'fs';
-
 
 export default class WhatsappService {
     private readonly block = "whatsapp.service";
@@ -19,16 +16,22 @@ export default class WhatsappService {
 
             switch(message.type) {
                 case "audio":
-                case "document":
-                case "video":
-                case "image":
-                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to);
+                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "audio");
                     break;
                 case "buttons":
                     messageObject = this.buttonsMessage(message.content as ButtonsContent, to);
                     break;
+                case "document":
+                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "document");
+                    break;
+                case "image":
+                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "image");
+                    break;
                 case "text":
                     messageObject = this.textMessage(message.content as TextContent, to);
+                    break;
+                case "video":
+                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "video");
                     break;
                 default: 
                     break;
@@ -238,21 +241,21 @@ export default class WhatsappService {
     }
 
 
-    mediaMessage(message: StandarMediaContent, to: string): MessageObject {
+    mediaMessage(message: StandarMediaContent, to: string, type: string): MessageObject {
         
-        const documentContent: StandardObject = {
+        const mediaObject: StandardObject = {
             link: message.url,
         }
 
         if(message.caption) {
-            documentContent.caption = message.caption
+            mediaObject.caption = message.caption
         }
         const messageObject: MessageObject = {
             messaging_product: "whatsapp",
             recipient_type: "individual",
             to: to,
-            type: "document",
-            document: documentContent
+            type: type,
+            [type]: mediaObject
         };
 
         return messageObject;

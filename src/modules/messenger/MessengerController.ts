@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import HttpService from '../../core/services/HttpService';
 import WebhooksService from '../webhooks/WebhooksService';
 
-export default class WhatsappController {
+export default class MessengerController {
     private httpService: HttpService;
     private webhookService: WebhooksService;
 

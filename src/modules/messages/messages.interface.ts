@@ -22,7 +22,7 @@ export interface ButtonsContent {
   header: Header | null;
   body: string;
   footer: string | null;
-  buttons: Button[] | null
+  buttons: Button[]
 }
 
 export interface TextContent {

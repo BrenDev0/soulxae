@@ -13,6 +13,7 @@ import { initializeDirectMessageingRouter } from './modules/directMessaging/dire
 import { initializeClientsRouter } from './modules/clients/clients.routes';
 import { initializeConversationsRouter } from './modules/conversations/conversations.routes';
 import { initializeWhatsappRouter } from './modules/whatsapp/whatsapp.routes';
+import { initializeMessengerRouter } from './modules/messenger/messenger.routes';
 
 
 const server = async() => {
@@ -26,6 +27,7 @@ const server = async() => {
     const clientsRouter = initializeClientsRouter();
     const conversationsRouter = initializeConversationsRouter();
     const directMessagingRouter = initializeDirectMessageingRouter();
+    const messengerRouter = initializeMessengerRouter();
     const platformsRouter = initializePlatformsRouter();
     const usersRouter = initializeUsersRouter();
     const whatsappRouter = initializeWhatsappRouter();
@@ -41,6 +43,7 @@ const server = async() => {
     app.use("/clients", clientsRouter);
     app.use("/conversatations", conversationsRouter);
     app.use("/direct", directMessagingRouter);
+    app.use("/messenger", messengerRouter);
     app.use("/platforms", platformsRouter);
     app.use("/users", usersRouter);
     app.use("/whatsapp", whatsappRouter);

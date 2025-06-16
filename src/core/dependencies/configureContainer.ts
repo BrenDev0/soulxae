@@ -24,6 +24,7 @@ import { configureMessagesDependencies } from '../../modules/messages/messages.d
 import { configureDirectMessagingDependencies } from '../../modules/directMessaging/directMessaging.dependencies';
 import { configureWebhooksDependencies } from '../../modules/webhooks/webhooks.dependencies';
 import { configureMediaDependencies } from '../../modules/media/media.dependencies';
+import { configureMessengerDependencies } from '../../modules/messenger/messenger.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -90,12 +91,15 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
     // webhooks //
     configureWebhooksDependencies();
 
-    
     // workspaces //
     configureWorkspacesDependencies(pool);
 
 
     // messaging services  --- must configure webhooks above this block //
+
+    // messenger //
+    configureMessengerDependencies();
+
     // whatsapp //
     configureWhatsappDependencies();
 

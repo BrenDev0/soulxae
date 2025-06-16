@@ -8,8 +8,7 @@ const Container_1 = __importDefault(require("../../core/dependencies/Container")
 const DirectMessagingController_1 = __importDefault(require("./DirectMessagingController"));
 function configureDirectMessagingDependencies() {
     const httpService = Container_1.default.resolve("HttpService");
-    const webhookService = Container_1.default.resolve("WebhookService");
-    const controller = new DirectMessagingController_1.default(httpService, webhookService);
+    const controller = new DirectMessagingController_1.default(httpService);
     Container_1.default.register("DirectMessagingController", controller);
     return;
 }

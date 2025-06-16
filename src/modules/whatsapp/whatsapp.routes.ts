@@ -31,7 +31,7 @@ export const initializeWhatsappRouter = (customController?: WhatsappController) 
 
     // unprotected routes //
     router.post("/:id/webhook", controller.handleIncommingMessage.bind(controller));
-     router.get('/:id/webhook', controller.verifyWebhook.bind(controller));
+    router.get('/:id/webhook', controller.verifyWebhook.bind(controller));
 
     // mounts //
     

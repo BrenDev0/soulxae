@@ -12,32 +12,9 @@ import { MessageData } from "../messages/messages.interface";
 export default class DirectMessagagingController {
     private readonly block = "directMessaging.controller"
     private httpService: HttpService;
-    private webhookService: WebhooksService;
-    constructor(httpService: HttpService, webhookService: WebhooksService) {
+    constructor(httpService: HttpService) {
         this.httpService = httpService;
-        this.webhookService = webhookService
     }
-
-    async verifyWebhook(req: Request, res: Response): Promise<void> {
-        try {
-            const challenge = await this.webhookService.verifyWebhook(req, "direct");
-           
-            console.log('WEBHOOK_VERIFIED')
-            res.status(200).send(challenge);
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    async handleIncommingMessage(req: Request, res: Response): Promise<void> {
-        try {
-            await this.webhookService.incomingMessage(req, "direct");
-            res.status(200).send()
-        } catch (error) {
-            throw error;
-        }
-    }
-
     async send(req: Request, res: Response): Promise<void> {
         const block = `${this.block}.send`
         try { 

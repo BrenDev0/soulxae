@@ -1,241 +1,198 @@
 "use strict";
-// import { MessengerData, MessengerTemplateElements } from '../interface/app';
-// import axios from 'axios';
-// import Redis from './Redis';
-// import ConversationsService from '../services/ConversationsService';
-// import { Message } from '../interface/models/conversations';
-// class Messenger {
-//   private state: any;
-//   private redis: Redis;
-//   private redisKey: string;
-//   private conversationsService: ConversationsService;
-//   constructor(conversationsService: ConversationsService, redisKey: string) {
-//     this.redis = new Redis();
-//     this.redisKey = redisKey;
-//     this.conversationsService = conversationsService;
-//     this.state = null
-//   }
-//   async init() {
-//     try {
-//       if(this.state === null) {
-//         const state = await this.redis.get(this.redisKey);
-//         this.state = JSON.parse(state)
-//       }
-//       return;
-//     } catch (error) {
-//       console.log(error);
-//       throw error;
-//     }
-//   }
-//   async send(messageObject: any) {
-//     try {
-//       if(this.state === null) {
-//         await this.init();
-//       }
-//       await axios.post(
-//         `https://graph.facebook.com/${process.env.MESSENGER_VERSION}/${this.state.agent.agentid}/messages?access_token=${this.state.token}`,
-//         messageObject,
-//         {
-//           headers: {
-//             Authorization: `Bearer ${this.state.agent.token}`,
-//             'Content-Type': 'application/json'
-//           }
-//         }
-//       );   
-//       console.log("message sent");
-//       return;  
-//     } catch (error) {
-//       throw error;
-//     }
-//   }
-//   async simpleMessage(message: any) {
-//     try {
-//       await this.init();
-//       const agentReply: Message = {
-//         conversation_id: this.state.conversation.conversation_id,
-//         sender: this.state.agent.name,
-//         content: {
-//           header: "",
-//           body: message.text,
-//           footer: "",
-//           buttons: []
-//         },type: "agent"
-//       }
-//       const messageData = {
-//         recipient:{
-//           id: this.state.client.contact_identifier
-//         },
-//         messaging_type: "RESPONSE",
-//         message: {
-//         text: message.text
-//         }
-//       }
-//       await this.send(messageData);
-//       await this.conversationsService.createMessage(agentReply);
-//       return;
-//     } catch (error) {
-//       console.log(error);
-//       throw error;
-//     }
-//   }
-//   async buttonsMessage(data: any[]) {
-//     if(this.state === null) {
-//       await this.init();
-//     }
-//     const messageBody = data[0];
-//     const buttons = data[1];
-//     let messageObject: MessengerData = {
-//       recipient: {
-//         id: this.state.client.contact_identifier
-//       },
-//       messaging_type: "RESPONSE",
-//       message: {
-//         text: messageBody,
-//         quick_replies: []
-//       }
-//     }
-//     for(let i = 0; i < buttons.length; i++) {
-//       if(!this.state[buttons[i].name.toUpperCase()]) {
-//         this.state[buttons[i].name.toUpperCase()] = buttons[i].request
-//       }
-//       //console.log(message.buttons[i].request.payload.actions) web url fro buttons
-//       messageObject.message.quick_replies.push({
-//         content_type:"text",
-//         title: buttons[i].name,
-//         payload: i
-//       })
-//     } 
-//     const messageData: Message = {
-//       conversation_id: this.state.conversation.conversation_id,
-//       sender: this.state.agent.name,
-//       content: {
-//         header: "",
-//         body: messageObject.message.text,
-//         footer: "",
-//         buttons: messageObject.message.quick_replies,
-//       },
-//       type: "agent"
-//     }
-//     await this.conversationsService.createMessage(messageData);
-//     await this.redis.set(this.redisKey, JSON.stringify(this.state))
-//     await this.send(messageObject);
-//     return;
-//   }
-//   async cardMessage(card: any) {
-//     if(this.state === null) {
-//       await this.init();
-//     }
-//     let elementsArray: any = []
-//     let elements: MessengerTemplateElements  = {
-//       title: "",
-//       buttons: []
-//     }
-//     let messageObject = {
-//       recipient: {
-//         id: this.state.client.contact_identifier
-//       },
-//       message: {
-//         attachment: {
-//           type: "template",
-//           payload: {
-//             template_type: "generic",
-//             elements: {}
-//           }
-//         }
-//       }
-//     }
-//     if(card.header.length > 0 && card.footer.length >0){
-//       elements = {
-//         title: card.body,
-//         image_url: card.header,
-//         subtitle: card.footer,
-//         buttons: []
-//       }
-//     } else if(card.header.length > 0 && card.footer.length < 1) {
-//       elements = {
-//         title: card.body,
-//         image_url: card.header,
-//         buttons: []
-//       }
-//     } else if(card.header.length < 1 && card.footer.length > 0) {
-//       elements = {
-//         title: card.body,
-//         subtitle: card.footer,
-//         buttons: []
-//       }
-//     }
-//     for(let i = 0; i < card.buttons.length; i++) {
-//       if(!this.state[card.buttons[i].name.toUpperCase()]) {
-//         this.state[card.buttons[i].name.toUpperCase()] = card.buttons[i].request
-//       }
-//       const url = card.buttons[i]?.request?.payload?.actions?.[0]?.payload?.url;
-//       if (url) {
-//         elements.buttons!.push({
-//           type: "web_url",
-//           url,
-//           title: card.buttons[i].name
-//         });
-//       } else {
-//         elements.buttons!.push({
-//           type: "postback",
-//           title: card.buttons[i].name,
-//           payload: card.buttons[i].name.toUpperCase()
-//         });
-// }
-//     }
-//       //console.log(message.buttons[i].request.payload.actions) web url fro buttons
-//     const messageData: Message = {
-//       conversation_id: this.state.conversation.conversation_id,
-//       sender: this.state.agent.name,
-//       content: {
-//         header: elements.image_url ? elements.image_url :  "",
-//         body: elements.title,
-//         footer: elements.subtitle ? elements.subtitle : "",
-//         buttons: elements.buttons ? elements.buttons : []
-//       },
-//       type: "agent"
-//     }
-//     await this.conversationsService.createMessage(messageData);
-//     await this.redis.set(this.redisKey, JSON.stringify(this.state));
-//     elementsArray.push(elements)
-//     messageObject.message.attachment.payload.elements = elementsArray;
-//     await this.send(messageObject);
-//     return;
-//   }
-//   async imageMessage(image: any) {
-//     if(this.state === null) {
-//       await this.init()
-//     }
-//     let messageObject = {
-//       recipient: {
-//           id: this.state.client.contact_identifier
-//       },
-//       messaging_type: "RESPONSE",
-//       message: {
-//           attachment: {
-//             type: "image",
-//             payload: {
-//               url: image.link,
-//               is_reusable: true
-//             }
-//           }
-//       }
-//     }
-//     const messageData: Message = {
-//       conversation_id: this.state.conversation.conversation_id,
-//       sender: this.state.agent.name,
-//       content: {
-//         header: "",
-//         body: image.link,
-//         footer: "",
-//         buttons: []
-//       },
-//        type: "agent"
-//     }
-//     await this.conversationsService.createMessage(messageData);
-//     await this.redis.set(this.redisKey, JSON.stringify(this.state))
-//     await this.send(messageObject);
-//     return;
-//   }
-// }
-// export default Messenger;
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const axios_1 = __importDefault(require("axios"));
+const errors_1 = require("../../core/errors/errors");
+const AppError_1 = __importDefault(require("../../core/errors/AppError"));
+class MessengerService {
+    constructor() {
+        this.block = "messenger.service";
+    }
+    handleOutgoingMessage(message, fromId, to, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let messageObject;
+                switch (message.type) {
+                    case "buttons":
+                        messageObject = this.buttonsMessage(message.content, to);
+                        break;
+                    case "image":
+                        messageObject = this.imageMessage(message.content, to);
+                        break;
+                    case "text":
+                        messageObject = this.textMessage(message.content, to);
+                        break;
+                    default:
+                        break;
+                }
+                if (!messageObject) {
+                    throw new errors_1.BadRequestError("Unsupported message type");
+                }
+                const response = yield this.send(messageObject, fromId, token);
+                if (!response || !response.data.messages || !response.data.messages[0].id) {
+                    throw new errors_1.ExternalAPIError();
+                }
+                return response.data.messages[0].id;
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    handleIncomingMessage(req, fromId, token, conversationId, agentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const message = req.body.entry[0].messaging[0];
+                console.log(message, ":::::::::::::::::::::message");
+                let messageData = {
+                    messageReferenceId: message.id,
+                    conversationId: conversationId,
+                    sender: "client",
+                    type: "text",
+                    content: {
+                        body: `Unsupported Message type ${message.type}`
+                    }
+                };
+                // switch(message.type) {
+                //     case "audio":
+                //         messageData.type = "audio";
+                //         messageData.content = await this.getMediaContent(message.audio, conversationId, token, agentId);
+                //         break
+                //     case "document":
+                //         messageData.type = "document"
+                //         messageData.content = await this.getMediaContent(message.document, conversationId, token, agentId);
+                //         break
+                //     case "image":
+                //         messageData.type = "image"
+                //         messageData.content = await this.getMediaContent(message.image, conversationId, token, agentId)
+                //         break;
+                //     case "text":
+                //         messageData.content = {
+                //             body: message.text.body
+                //         } 
+                //         break;
+                //     case "video":
+                //         messageData.type = "video"
+                //         messageData.content = await this.getMediaContent(message.image, conversationId, token, agentId)
+                //         break;
+                //     default: 
+                //         break;
+                // }
+                return messageData;
+            }
+            catch (error) {
+                console.log(error, ":::::::::error");
+                if (error instanceof AppError_1.default) {
+                    throw error;
+                }
+                throw new errors_1.ExternalAPIError(undefined, {
+                    service: "whatsapp",
+                    block: `${this.block}.getMessageContent`,
+                    originalError: error.message
+                });
+            }
+        });
+    }
+    send(messageObject, fromId, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield axios_1.default.post(`https://graph.facebook.com/${process.env.MESSENGER_VERSION}/${fromId}/messages?access_token=${token}`, messageObject);
+                console.log(response);
+                return response;
+            }
+            catch (error) {
+                throw new errors_1.ExternalAPIError(undefined, {
+                    service: "messenger",
+                    originalError: error.message
+                });
+            }
+        });
+    }
+    textMessage(message, to) {
+        const messengerObject = {
+            recipient: {
+                id: to
+            },
+            messaging_type: "RESPONSE",
+            message: {
+                text: message.body
+            }
+        };
+        return messengerObject;
+    }
+    buttonsMessage(message, to) {
+        let elements = {
+            subtitle: "Unsuported message type",
+            buttons: []
+        };
+        if (message.header) {
+            switch (message.header.type) {
+                case "image":
+                    elements.image_url = message.header.image;
+                    break;
+                case "text":
+                    elements.title = message.header.text;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (message.body) {
+            elements.subtitle = message.body;
+        }
+        if (message.buttons) {
+            elements.buttons = message.buttons.map((button) => {
+                return {
+                    type: "postback",
+                    title: button.reply.title,
+                    payload: button.reply.id
+                };
+            });
+        }
+        let messengerObject = {
+            recipient: {
+                id: to
+            },
+            message: {
+                attachment: {
+                    type: "template",
+                    payload: {
+                        template_type: "generic",
+                        elements: elements
+                    }
+                }
+            }
+        };
+        return messengerObject;
+    }
+    imageMessage(message, to) {
+        let messengerObject = {
+            recipient: {
+                id: to
+            },
+            messaging_type: "RESPONSE",
+            message: {
+                attachment: {
+                    type: "image",
+                    payload: {
+                        url: message.url,
+                        is_reusable: true
+                    }
+                }
+            }
+        };
+        return messengerObject;
+    }
+}
+exports.default = MessengerService;

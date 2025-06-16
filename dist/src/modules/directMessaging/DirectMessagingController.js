@@ -15,33 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 const errors_1 = require("../../core/errors/errors");
 class DirectMessagagingController {
-    constructor(httpService, webhookService) {
+    constructor(httpService) {
         this.block = "directMessaging.controller";
         this.httpService = httpService;
-        this.webhookService = webhookService;
-    }
-    verifyWebhook(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const challenge = yield this.webhookService.verifyWebhook(req, "direct");
-                console.log('WEBHOOK_VERIFIED');
-                res.status(200).send(challenge);
-            }
-            catch (error) {
-                throw error;
-            }
-        });
-    }
-    handleIncommingMessage(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.webhookService.incomingMessage(req, "direct");
-                res.status(200).send();
-            }
-            catch (error) {
-                throw error;
-            }
-        });
     }
     send(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
