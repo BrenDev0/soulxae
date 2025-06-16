@@ -93,6 +93,8 @@ class WhatsappService {
                             body: message.text.body
                         };
                         break;
+                    case "unsupported":
+                        break;
                     case "video":
                         messageData.type = "video";
                         messageData.content = yield this.getMediaContent(message.image, conversationId, token, agentId);

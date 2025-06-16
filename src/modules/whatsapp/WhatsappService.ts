@@ -92,6 +92,8 @@ export default class WhatsappService {
                         body: message.text.body
                     } 
                     break;
+                case "unsupported":
+                    break;
                 case "video":
                     messageData.type = "video"
                     messageData.content = await this.getMediaContent(message.image, conversationId, token, agentId)
