@@ -10,6 +10,7 @@ import WhatsappService from "../whatsapp/WhatsappService";
 import { WhatsappContact,  } from "../whatsapp/whatsapp.interface";
 import EncryptionService from "../../core/services/EncryptionService";
 import AgentsService from "../agents/AgentsService";
+import MessengerService from "../messenger/MessengerService";
 
 export default class WebhooksService {
     private httpService: HttpService;
@@ -59,7 +60,7 @@ export default class WebhooksService {
             }
     
             let productService;
-            console.log(req.body)
+            console.log(req.body.entry[0] ,"logging error::::::::")
 
             const messagingProduct = req.body.entry[0]?.changes[0]?.value?.messaging_product;
 
@@ -68,6 +69,9 @@ export default class WebhooksService {
             }
 
             switch(messagingProduct) {
+                case "messenger":
+                    productService = Container.resolve<MessengerService>("MessengerService");
+                    break;
                 case "whatsapp":
                     productService = Container.resolve<WhatsappService>("WhatsappService");
                 default:
