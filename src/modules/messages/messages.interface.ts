@@ -14,7 +14,7 @@ export interface Button {
 
 
 export interface StandarMediaContent {
-  url: string;
+  url: string | string[];
   caption: string | null
 }
 

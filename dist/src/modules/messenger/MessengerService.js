@@ -76,7 +76,8 @@ class MessengerService {
                     };
                 }
                 else if (message.attachments) {
-                    console.log(message.attachments);
+                    messageData.type = message.attachments[0].type;
+                    messageData.content = this.getMediaContent(message.attachments);
                 }
                 return messageData;
             }
@@ -197,9 +198,10 @@ class MessengerService {
         return messengerObject;
     }
     getMediaContent(message) {
+        const urls = message.map((attachment) => attachment.payload.url);
         const mediaContent = {
-            url: message.url,
-            caption: message.payload ? message.payload : null
+            url: urls,
+            caption: null
         };
         return mediaContent;
     }

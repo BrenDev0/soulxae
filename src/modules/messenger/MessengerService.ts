@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import { MessengerObject, MessengerTemplateElements } from './messenger.interface';
+import { IncommingMessengerAttachment, MessengerObject, MessengerTemplateElements } from './messenger.interface';
 import { ButtonsContent, MessageData, StandarMediaContent, TextContent } from '../messages/messages.interface';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
 import { Request } from 'express';
@@ -73,7 +73,8 @@ export default class MessengerService {
                 body: message.text
             }
             } else if(message.attachments) {
-                console.log(message.attachments)
+                messageData.type =  message.attachments[0].type;
+                messageData.content = this.getMediaContent(message.attachments);
             }
 
             return messageData;
@@ -200,7 +201,7 @@ export default class MessengerService {
                 attachment: {
                     type: type,
                     payload: {
-                        url: message.url,
+                        url: message.url as string,
                         is_reusable: true
                     }
                 }
@@ -209,10 +210,11 @@ export default class MessengerService {
         return messengerObject;
     }
 
-    getMediaContent(message: any): StandarMediaContent {
+    getMediaContent(message: IncommingMessengerAttachment[]): StandarMediaContent {
+        const urls = message.map((attachment: IncommingMessengerAttachment) => attachment.payload.url)
         const mediaContent: StandarMediaContent = {
-            url: message.url,
-            caption: message.payload ? message.payload : null
+            url: urls,
+            caption: null
         }
 
         return mediaContent

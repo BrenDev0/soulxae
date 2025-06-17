@@ -21,6 +21,13 @@ export interface MediaPayload {
   is_reusable: Boolean
 }
 
+export interface IncommingMessengerAttachment {
+  type: string;
+  payload: {
+    url: string;
+  }
+}
+
 export interface MessengerObject {
   recipient:{
     id: string
