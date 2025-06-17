@@ -37,6 +37,7 @@ const directMessaging_dependencies_1 = require("../../modules/directMessaging/di
 const webhooks_dependencies_1 = require("../../modules/webhooks/webhooks.dependencies");
 const media_dependencies_1 = require("../../modules/media/media.dependencies");
 const messenger_dependencies_1 = require("../../modules/messenger/messenger.dependencies");
+const subscriptions_dependencies_1 = require("../../modules/subscriptions/subscriptions.dependencies");
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -80,6 +81,8 @@ function configureContainer(testPool, testRedis) {
         (0, platforms_dependencies_1.configurePlatformsDependencies)(pool);
         // sessions //
         (0, sessions_dependencies_1.configureSessionsDependencies)(redisClient);
+        // subscriptions //
+        (0, subscriptions_dependencies_1.configureSubscriptionsDependencies)(pool);
         // users //
         (0, users_dependencies_1.configureUsersDependencies)(pool);
         // webhooks //

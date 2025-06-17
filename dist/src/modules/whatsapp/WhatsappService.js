@@ -62,8 +62,14 @@ class WhatsappService {
     }
     handleIncomingMessage(req, fromId, token, conversationId) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b, _c;
             try {
-                const message = req.body.entry[0].changes[0].value.messages[0];
+                const message = (_c = (_b = (_a = req.body.entry[0]) === null || _a === void 0 ? void 0 : _a.changes[0]) === null || _b === void 0 ? void 0 : _b.value) === null || _c === void 0 ? void 0 : _c.messages[0];
+                if (!message) {
+                    throw new errors_1.BadRequestError(undefined, {
+                        req: req.body
+                    });
+                }
                 console.log(message, ":::::::::::::::::::::message");
                 message.type !== "unsupported" && (yield this.sendReadRecipt(message.id, fromId, token));
                 let messageData = {

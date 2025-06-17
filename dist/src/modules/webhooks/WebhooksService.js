@@ -50,6 +50,7 @@ class WebhooksService {
     }
     incomingMessage(req, platform) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log(req.body, "request to webhook:::::::::::::");
             try {
                 const messagesService = Container_1.default.resolve("MessagesService");
                 const agentId = this.httpService.encryptionService.decryptData(req.params.id);
