@@ -25,7 +25,6 @@ const WebtokenService_1 = __importDefault(require("../services/WebtokenService")
 const PasswordService_1 = __importDefault(require("../services/PasswordService"));
 const HttpRequestValidationService_1 = __importDefault(require("../services/HttpRequestValidationService"));
 const RedisService_1 = __importDefault(require("../services/RedisService"));
-const workspaces_dependencies_1 = require("../../modules/workspaces/workspaces.dependencies");
 const agents_dependencies_1 = require("../../modules/agents/agents.dependencies");
 const platforms_dependencies_1 = require("../../modules/platforms/platforms.dependencies");
 const conversations_dependencies_1 = require("../../modules/conversations/conversations.dependencies");
@@ -87,8 +86,6 @@ function configureContainer(testPool, testRedis) {
         (0, users_dependencies_1.configureUsersDependencies)(pool);
         // webhooks //
         (0, webhooks_dependencies_1.configureWebhooksDependencies)();
-        // workspaces //
-        (0, workspaces_dependencies_1.configureWorkspacesDependencies)(pool);
         // messaging services  --- must configure webhooks above this block //
         // messenger //
         (0, messenger_dependencies_1.configureMessengerDependencies)();

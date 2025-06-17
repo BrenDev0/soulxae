@@ -3,12 +3,11 @@ import BaseRepository from "../../core/repository/BaseRepository";
 import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
 import EncryptionService from '../../core/services/EncryptionService';
-import { AgentsRepository } from './AgentsRepository';
 
 export default class AgentsService {
-    private repository: AgentsRepository;
+    private repository: BaseRepository<Agent>
     private block = "agents.service"
-    constructor(repository: AgentsRepository) {
+    constructor(repository: BaseRepository<Agent>) {
         this.repository = repository
     }
 
@@ -24,7 +23,7 @@ export default class AgentsService {
 
     async resource(agentId: string): Promise<AgentData | null> {
         try {
-            const result = await this.repository.resource(agentId);
+            const result = await this.repository.selectOne("agent_id", agentId);
             if(!result) {
                 return null
             }
@@ -35,15 +34,15 @@ export default class AgentsService {
         }
     }
 
-     async collection(workspaceId: string): Promise<AgentData[]> {
+     async collection(userId: string): Promise<AgentData[]> {
         try {
-            const result = await this.repository.collection(workspaceId);
+            const result = await this.repository.select("user_id", userId);
 
             const data = result.map((agent) => this.mapFromDb(agent));
             
             return data
         } catch (error) {
-            handleServiceError(error as Error, this.block, "resource", {workspaceId})
+            handleServiceError(error as Error, this.block, "resource", {userId})
             throw error;
         }
     }
@@ -73,11 +72,13 @@ export default class AgentsService {
     mapToDb(agent: AgentData): Agent {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
-            agent_type: agent.agentType.toLowerCase(),
-           workspace_id: agent.workspaceId,
-           api_key: agent.apiKey && encryptionService.encryptData(agent.apiKey),
-           name: agent.name,
-           description: agent.description
+            user_id: agent.userId,
+            system_promt: agent.systemPromt,
+            greeting_message: agent.greetingMessage,
+            max_tokens: agent.maxTokens,
+            temperature: agent.temperature,
+            name: agent.name,
+            description: agent.description
         }
     }
 
@@ -85,12 +86,13 @@ export default class AgentsService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             agentId: agent.agent_id,
-            agentType: agent.agent_type.toLowerCase(),
-            workspaceId: agent.workspace_id,
-            apiKey: agent.api_key === null ? null : encryptionService.decryptData(agent.api_key),
+            userId: agent.user_id,
+            systemPromt: agent.system_promt,
+            greetingMessage: agent.greeting_message,
+            maxTokens: agent.max_tokens,
+            temperature: agent.temperature,
             name: agent.name,
-            description: agent.description,
-            userId: agent.user_id
+            description: agent.description
         }
     }
 }

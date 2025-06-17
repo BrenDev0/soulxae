@@ -34,7 +34,7 @@ class AgentsService {
     resource(agentId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.resource(agentId);
+                const result = yield this.repository.selectOne("agent_id", agentId);
                 if (!result) {
                     return null;
                 }
@@ -46,15 +46,15 @@ class AgentsService {
             }
         });
     }
-    collection(workspaceId) {
+    collection(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.collection(workspaceId);
+                const result = yield this.repository.select("user_id", userId);
                 const data = result.map((agent) => this.mapFromDb(agent));
                 return data;
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "resource", { workspaceId });
+                (0, error_service_1.handleServiceError)(error, this.block, "resource", { userId });
                 throw error;
             }
         });
@@ -86,9 +86,11 @@ class AgentsService {
     mapToDb(agent) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
-            agent_type: agent.agentType.toLowerCase(),
-            workspace_id: agent.workspaceId,
-            api_key: agent.apiKey && encryptionService.encryptData(agent.apiKey),
+            user_id: agent.userId,
+            system_promt: agent.systemPromt,
+            greeting_message: agent.greetingMessage,
+            max_tokens: agent.maxTokens,
+            temperature: agent.temperature,
             name: agent.name,
             description: agent.description
         };
@@ -97,12 +99,13 @@ class AgentsService {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
             agentId: agent.agent_id,
-            agentType: agent.agent_type.toLowerCase(),
-            workspaceId: agent.workspace_id,
-            apiKey: agent.api_key === null ? null : encryptionService.decryptData(agent.api_key),
+            userId: agent.user_id,
+            systemPromt: agent.system_promt,
+            greetingMessage: agent.greeting_message,
+            maxTokens: agent.max_tokens,
+            temperature: agent.temperature,
             name: agent.name,
-            description: agent.description,
-            userId: agent.user_id
+            description: agent.description
         };
     }
 }

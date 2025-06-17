@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { Pool } from "pg";
-import { AgentsRepository } from "../../src/modules/agents/AgentsRepository";
 import ConversationsRepositoy from '../../src/modules/conversations/ConversationsRepository';
 import ConversationsService from '../../src/modules/conversations/ConversationsService';
 import { serveWithOptions } from 'swagger-ui-express';

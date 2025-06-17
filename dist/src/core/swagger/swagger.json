@@ -67,7 +67,7 @@
                 ]
             }
         },
-        "/agents/secure/collection/{workspaceId}": {
+        "/agents/secure/collection/{userId}": {
             "get": {
                 "tags": [
                     "Agents"
@@ -75,7 +75,7 @@
                 "description": "get agents by workspace",
                 "parameters": [
                     {
-                        "name": "workspaceId",
+                        "name": "userId",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -341,24 +341,6 @@
                                 "$ref": "#/components/schemas/sendDirectMessage"
                             }
                         }
-                    }
-                }
-            }
-        },
-        "/{id}/webhook": {
-            "post": {
-                "description": "",
-                "responses": {
-                    "default": {
-                        "description": ""
-                    }
-                }
-            },
-            "get": {
-                "description": "",
-                "responses": {
-                    "default": {
-                        "description": ""
                     }
                 }
             }
@@ -709,144 +691,6 @@
                     }
                 }
             }
-        },
-        "/workspaces/secure/create": {
-            "post": {
-                "tags": [
-                    "Workspaces"
-                ],
-                "description": "create workspaces",
-                "responses": {
-                    "default": {
-                        "description": ""
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/createWorkspace"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/workspaces/secure/resource/{workspaceId}": {
-            "get": {
-                "tags": [
-                    "Workspaces"
-                ],
-                "description": "get workspace by id",
-                "parameters": [
-                    {
-                        "name": "workspaceId",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "default": {
-                        "description": ""
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/workspaces/secure/collection": {
-            "get": {
-                "tags": [
-                    "Workspaces"
-                ],
-                "description": "get workspace by user",
-                "responses": {
-                    "default": {
-                        "description": ""
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/workspaces/secure/{workspaceId}": {
-            "put": {
-                "tags": [
-                    "Workspaces"
-                ],
-                "description": "update workspace",
-                "parameters": [
-                    {
-                        "name": "workspaceId",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "default": {
-                        "description": ""
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/updateWorkspace"
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Workspaces"
-                ],
-                "description": "delete workspace by id",
-                "parameters": [
-                    {
-                        "name": "workspaceId",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "default": {
-                        "description": ""
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
         }
     },
     "components": {
@@ -938,24 +782,6 @@
                     "email": {
                         "type": "string",
                         "example": "new email"
-                    }
-                }
-            },
-            "createWorkspace": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "example": "name"
-                    }
-                }
-            },
-            "updateWorkspace": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "example": "new name"
                     }
                 }
             },

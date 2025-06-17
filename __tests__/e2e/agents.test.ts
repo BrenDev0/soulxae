@@ -7,7 +7,6 @@ import Container from '../../src/core/dependencies/Container';
 import MiddlewareService from '../../src/core/middleware/MiddlewareService';
 import { configureContainer } from '../../src/core/dependencies/configureContainer';
 import { RedisClientType } from 'redis';
-import { initializeWorkspacesRouter } from '../../src/modules/workspaces/workspaces.routes';
 import { initializeAgentsRouter } from '../../src/modules/agents/agents.routes';
 dotenv.config();
 describe("USERS ROUTES", () => {

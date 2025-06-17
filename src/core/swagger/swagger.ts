@@ -49,12 +49,6 @@ const doc = {
       verifyEmail: {
         email: "new email"
       },
-      createWorkspace: {
-        name: "name"
-      },
-      updateWorkspace: {
-        name: "new name"
-      },
       createAgent: {
         apiKey: "required for type flow",
         description: "required",
@@ -106,8 +100,7 @@ const endpointsFiles = [
   '../../modules/conversations/conversations.routes.ts',
   '../../modules/directMessaging/directMessaging.routes.ts',
   '../../modules/platforms/platforms.routes.ts',
-  '../../modules/users/users.routes.ts',
-  '../../modules/workspaces/workspaces.routes.ts'
+  '../../modules/users/users.routes.ts'
   
 ];    
 

@@ -8,7 +8,6 @@ import MiddlewareService from './core/middleware/MiddlewareService';
 import { initializeAgentsRouter } from './modules/agents/agents.routes';
 import { initializePlatformsRouter } from './modules/platforms/platforms.routes';
 import { initializeUsersRouter } from './modules/users/users.routes';
-import { initializeWorkspacesRouter } from './modules/workspaces/workspaces.routes';
 import { initializeDirectMessageingRouter } from './modules/directMessaging/directMessaging.routes';
 import { initializeClientsRouter } from './modules/clients/clients.routes';
 import { initializeConversationsRouter } from './modules/conversations/conversations.routes';
@@ -31,7 +30,6 @@ const server = async() => {
     const platformsRouter = initializePlatformsRouter();
     const usersRouter = initializeUsersRouter();
     const whatsappRouter = initializeWhatsappRouter();
-    const workspacesRouter = initializeWorkspacesRouter();
 
    
     
@@ -47,7 +45,6 @@ const server = async() => {
     app.use("/platforms", platformsRouter);
     app.use("/users", usersRouter);
     app.use("/whatsapp", whatsappRouter);
-    app.use("/workspaces", workspacesRouter)
 
     app.use((req: Request, res: Response) => {
         res.status(404).json({ message: "Route not found." });

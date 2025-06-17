@@ -8,12 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = require("../../core/errors/errors");
-const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 class AgentsController {
     constructor(httpService, agentsService) {
         this.block = "agents.controller";
@@ -26,32 +22,10 @@ class AgentsController {
             const block = `${this.block}.createRequest`;
             try {
                 const user = req.user;
-                const requiredFields = ["description", "name", "workspaceId", "agentType"];
+                const requiredFields = ["systemPrompt", "name", "maxTokens", "temperature", "description"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-                const { workspaceId, agentType } = req.body;
-                this.httpService.requestValidation.validateUuid(workspaceId, "workspaceId", block);
-                const workspaceService = Container_1.default.resolve("WorkspacesService");
-                const resource = yield workspaceService.resource(workspaceId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError("No workspce found", {
-                        block: `${block}.workspaceExistsCheck`,
-                        workspaceId: workspaceId
-                    });
-                }
-                if (resource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError(undefined, {
-                        block: `${block}.userCheck`,
-                        workspaceUserId: resource.userId,
-                        userId: user.user_id
-                    });
-                }
-                if (!this.allowedAgentTypes.includes(agentType)) {
-                    throw new errors_1.BadRequestError("Invalid agent type", {
-                        allowedAgentTypes: this.allowedAgentTypes,
-                        type: agentType
-                    });
-                }
-                yield this.agentsService.create(req.body);
+                const agentData = Object.assign(Object.assign({}, req.body), { userId: user.user_id });
+                yield this.agentsService.create(agentData);
                 res.status(200).json({ message: "Agent added." });
             }
             catch (error) {
@@ -89,21 +63,7 @@ class AgentsController {
             const block = `${this.block}.collectionRequest`;
             try {
                 const user = req.user;
-                const workspaceId = req.params.workspaceId;
-                this.httpService.requestValidation.validateUuid(workspaceId, "workspaceId", block);
-                const workspaceService = Container_1.default.resolve("WorkspacesService");
-                const resource = yield workspaceService.resource(workspaceId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError("workspace not found");
-                }
-                if (resource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError(undefined, {
-                        block: `${block}.userCheck`,
-                        workspaceUserId: resource.userId,
-                        user: user.user_id
-                    });
-                }
-                const data = yield this.agentsService.collection(workspaceId);
+                const data = yield this.agentsService.collection(user.user_id);
                 res.status(200).json({ data: data });
             }
             catch (error) {
@@ -131,16 +91,10 @@ class AgentsController {
                         userId: user.user_id
                     });
                 }
-                const allowedChanges = ["name", "description", "apiKey", "agentType"];
+                const allowedChanges = ["name", "description", "systemPrompt", "greetingMessage", "maxTokens", "temperature"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
-                if (filteredChanges.agentType && !this.allowedAgentTypes.includes(filteredChanges.agentType)) {
-                    throw new errors_1.BadRequestError("Invalid agent type", {
-                        allowedAgentTypes: this.allowedAgentTypes,
-                        type: filteredChanges.agentType
-                    });
-                }
                 yield this.agentsService.update(agentId, filteredChanges);
-                res.status(200).json({ message: "updated" });
+                res.status(200).json({ message: "Agent updated" });
             }
             catch (error) {
                 throw error;

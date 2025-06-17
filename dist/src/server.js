@@ -20,7 +20,6 @@ const Container_1 = __importDefault(require("./core/dependencies/Container"));
 const agents_routes_1 = require("./modules/agents/agents.routes");
 const platforms_routes_1 = require("./modules/platforms/platforms.routes");
 const users_routes_1 = require("./modules/users/users.routes");
-const workspaces_routes_1 = require("./modules/workspaces/workspaces.routes");
 const directMessaging_routes_1 = require("./modules/directMessaging/directMessaging.routes");
 const clients_routes_1 = require("./modules/clients/clients.routes");
 const conversations_routes_1 = require("./modules/conversations/conversations.routes");
@@ -39,7 +38,6 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const platformsRouter = (0, platforms_routes_1.initializePlatformsRouter)();
     const usersRouter = (0, users_routes_1.initializeUsersRouter)();
     const whatsappRouter = (0, whatsapp_routes_1.initializeWhatsappRouter)();
-    const workspacesRouter = (0, workspaces_routes_1.initializeWorkspacesRouter)();
     // Routes //
     process.env.NODE_ENV === "production" && app.use(middlewareService.verifyHMAC);
     process.env.NODE_ENV !== 'production' && app.use('/docs/endpoints', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
@@ -51,7 +49,6 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     app.use("/platforms", platformsRouter);
     app.use("/users", usersRouter);
     app.use("/whatsapp", whatsappRouter);
-    app.use("/workspaces", workspacesRouter);
     app.use((req, res) => {
         res.status(404).json({ message: "Route not found." });
     });

@@ -37,10 +37,10 @@ const initializeAgentsRouter = (customController) => {
    #swagger.description = 'get agent by id'
    */
     controller.resourceRequest.bind(controller));
-    secureRouter.get("/collection/:workspaceId", 
+    secureRouter.get("/collection/:userId", 
     /*
    #swagger.tags = ['Agents']
-   #swagger.path =  '/agents/secure/collection/{workspaceId}'
+   #swagger.path =  '/agents/secure/collection/{userId}'
    #swagger.security = [{ "bearerAuth": [] }]
    #swagger.description = 'get agents by workspace'
    */

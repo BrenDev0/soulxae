@@ -7,9 +7,9 @@ exports.configureAgentsDependencies = configureAgentsDependencies;
 const AgentsService_1 = __importDefault(require("./AgentsService"));
 const AgentsController_1 = __importDefault(require("./AgentsController"));
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
-const AgentsRepository_1 = require("./AgentsRepository");
+const BaseRepository_1 = __importDefault(require("../../core/repository/BaseRepository"));
 function configureAgentsDependencies(pool) {
-    const repository = new AgentsRepository_1.AgentsRepository(pool);
+    const repository = new BaseRepository_1.default(pool, "agents");
     const service = new AgentsService_1.default(repository);
     const httpService = Container_1.default.resolve("HttpService");
     const controller = new AgentsController_1.default(httpService, service);

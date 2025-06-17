@@ -13,7 +13,6 @@ import WebTokenService from '../services/WebtokenService';
 import PasswordService from '../services/PasswordService';
 import HttpRequestValidationService from '../services/HttpRequestValidationService';
 import RedisService from '../services/RedisService';
-import { configureWorkspacesDependencies } from '../../modules/workspaces/workspaces.dependencies';
 import { configureAgentsDependencies } from '../../modules/agents/agents.dependencies';
 import { configurePlatformsDependencies } from '../../modules/platforms/platforms.dependencies';
 import { configureConversationsDependencies } from '../../modules/conversations/conversations.dependencies';
@@ -94,9 +93,6 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
     // webhooks //
     configureWebhooksDependencies();
-
-    // workspaces //
-    configureWorkspacesDependencies(pool);
 
 
     // messaging services  --- must configure webhooks above this block //

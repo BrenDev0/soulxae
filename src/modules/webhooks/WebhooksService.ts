@@ -7,7 +7,6 @@ import MessagesService from "../messages/MessagesService";
 import ConversationsService from "../conversations/ConversationsService";
 import ClientsService from "../clients/ClientsService";
 import WhatsappService from "../whatsapp/WhatsappService";
-import { WhatsappContact,  } from "../whatsapp/whatsapp.interface";
 import EncryptionService from "../../core/services/EncryptionService";
 import AgentsService from "../agents/AgentsService";
 import MessengerService from "../messenger/MessengerService";
