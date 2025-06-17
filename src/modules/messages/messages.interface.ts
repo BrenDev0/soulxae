@@ -12,9 +12,8 @@ export interface Button {
   }
 }
 
-
 export interface StandarMediaContent {
-  url: string | string[];
+  urls: string[];
   caption: string | null
 }
 

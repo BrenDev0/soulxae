@@ -229,7 +229,7 @@ class WhatsappService {
     }
     mediaMessage(message, to, type) {
         const mediaObject = {
-            link: message.url,
+            link: message.urls[0],
         };
         if (message.caption) {
             mediaObject.caption = message.caption;
@@ -247,7 +247,7 @@ class WhatsappService {
         return __awaiter(this, void 0, void 0, function* () {
             const url = yield this.getMedia(message.id, token, conversationId, agentId);
             const messageContent = {
-                url: url,
+                urls: [url],
                 caption: message.caption ? message.caption : null
             };
             return messageContent;

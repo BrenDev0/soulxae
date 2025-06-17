@@ -180,19 +180,22 @@ class MessengerService {
         return messengerObject;
     }
     mediaMessage(message, to, type) {
+        const attachments = message.urls.map((url) => {
+            return {
+                type: type,
+                payload: {
+                    url: url,
+                    is_reusable: true
+                }
+            };
+        });
         let messengerObject = {
             recipient: {
                 id: to
             },
             messaging_type: "RESPONSE",
             message: {
-                attachment: {
-                    type: type,
-                    payload: {
-                        url: message.url,
-                        is_reusable: true
-                    }
-                }
+                attachment: attachments
             }
         };
         return messengerObject;
@@ -200,7 +203,7 @@ class MessengerService {
     getMediaContent(message) {
         const urls = message.map((attachment) => attachment.payload.url);
         const mediaContent = {
-            url: urls,
+            urls: urls,
             caption: null
         };
         return mediaContent;

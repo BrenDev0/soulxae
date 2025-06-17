@@ -12,13 +12,19 @@ export interface MessengerTemplateElements {
 }
 
 export interface TemplatePayload {
-  template_type: string,
-  elements: MessengerTemplateElements
+  type: string
+  payload: {
+    template_type: string,
+    elements: MessengerTemplateElements
+  }
 }
 
-export interface MediaPayload {
-  url: string,
-  is_reusable: Boolean
+export interface MediaAttachment {
+  type: string;
+  payload: {
+    url: string,
+    is_reusable: Boolean
+  }
 }
 
 export interface IncommingMessengerAttachment {
@@ -36,10 +42,7 @@ export interface MessengerObject {
   message: {
     text?: string,
     quickReplies?: [];
-    attachment?: {
-      type: string,
-      payload: TemplatePayload | MediaPayload
-    }
+    attachment?: MediaAttachment[] | TemplatePayload
   }
 }
 

@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import { IncommingMessengerAttachment, MessengerObject, MessengerTemplateElements } from './messenger.interface';
+import { IncommingMessengerAttachment, MessengerObject, MessengerTemplateElements, TemplatePayload } from './messenger.interface';
 import { ButtonsContent, MessageData, StandarMediaContent, TextContent } from '../messages/messages.interface';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
 import { Request } from 'express';
@@ -172,17 +172,18 @@ export default class MessengerService {
             })
         }
 
+
         let messengerObject: MessengerObject = {
         recipient: {
             id: to
         },
         message: {
             attachment: {
-            type: "template",
-            payload: {
-                template_type: "generic",
-                elements: elements
-            }
+                type: "template",
+                payload: {
+                    template_type: "generic",
+                    elements: elements
+                }
             }
         }
         } 
@@ -191,6 +192,16 @@ export default class MessengerService {
     }
     
     mediaMessage(message: StandarMediaContent, to: string, type: string): MessengerObject {
+
+        const attachments = message.urls.map((url) => {
+            return {
+                type: type,
+                payload: {
+                    url: url,
+                    is_reusable: true
+                }
+            }
+        })
  
         let messengerObject: MessengerObject = {
             recipient: {
@@ -198,13 +209,7 @@ export default class MessengerService {
             },
             messaging_type: "RESPONSE",
             message: {
-                attachment: {
-                    type: type,
-                    payload: {
-                        url: message.url as string,
-                        is_reusable: true
-                    }
-                }
+                attachment: attachments
             }
         }
         return messengerObject;
@@ -213,7 +218,7 @@ export default class MessengerService {
     getMediaContent(message: IncommingMessengerAttachment[]): StandarMediaContent {
         const urls = message.map((attachment: IncommingMessengerAttachment) => attachment.payload.url)
         const mediaContent: StandarMediaContent = {
-            url: urls,
+            urls: urls,
             caption: null
         }
 

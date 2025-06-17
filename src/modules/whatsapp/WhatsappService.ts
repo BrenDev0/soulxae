@@ -249,7 +249,7 @@ export default class WhatsappService {
     mediaMessage(message: StandarMediaContent, to: string, type: string): MessageObject {
         
         const mediaObject: StandardObject = {
-            link: message.url as string,
+            link: message.urls[0],
         }
 
         if(message.caption) {
@@ -270,7 +270,7 @@ export default class WhatsappService {
         const url = await this.getMedia(message.id, token, conversationId, agentId);
 
         const messageContent: StandarMediaContent = {
-            url: url,
+            urls: [url],
             caption: message.caption ? message.caption : null
         }
 
