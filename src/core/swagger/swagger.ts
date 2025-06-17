@@ -113,6 +113,7 @@ const endpointsFiles = [
   '../../modules/clients/clients.routes.ts',
   '../../modules/conversations/conversations.routes.ts',
   '../../modules/directMessaging/directMessaging.routes.ts',
+  '../../modules/employees/employees.routes.ts',
   '../../modules/platforms/platforms.routes.ts',
   '../../modules/users/users.routes.ts'
   
