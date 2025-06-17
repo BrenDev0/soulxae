@@ -14,88 +14,91 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const error_service_1 = require("../../core/errors/error.service");
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
-class UsersService {
+class EmployeesService {
     constructor(repository) {
-        this.block = "users.service";
+        this.block = "employees.service";
         this.repository = repository;
     }
-    create(user) {
+    create(employees) {
         return __awaiter(this, void 0, void 0, function* () {
-            const mappedUser = this.mapToDb(user);
+            const mappedEmployee = this.mapToDb(employees);
             try {
-                // from parent class ../../core/repository/BaseRepository
-                return this.repository.create(mappedUser);
+                return this.repository.create(mappedEmployee);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "create", mappedUser);
+                (0, error_service_1.handleServiceError)(error, this.block, "create", mappedEmployee);
                 throw error;
             }
         });
     }
-    // do not map user for internal use, handle mapping in controller for frontend use
-    resource(whereCol, identifier) {
+    resource(employeeId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // from parent class ../../core/repository/BaseRepository
-                const result = yield this.repository.selectOne(whereCol, identifier);
+                const result = yield this.repository.selectOne("employee_id", employeeId);
                 if (!result) {
                     return null;
                 }
-                return result;
+                return this.mapFromDb(result);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "resource", { whereCol, identifier });
+                (0, error_service_1.handleServiceError)(error, this.block, "resource", { employeeId });
                 throw error;
             }
         });
     }
-    update(userId, changes) {
+    collection(agentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.select("agent_id", agentId);
+                return result.map((employee) => this.mapFromDb(employee));
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "collection", { agentId });
+                throw error;
+            }
+        });
+    }
+    update(employeeId, changes) {
         return __awaiter(this, void 0, void 0, function* () {
             const mappedChanges = this.mapToDb(changes);
             const cleanedChanges = Object.fromEntries(Object.entries(mappedChanges).filter(([_, value]) => value !== undefined));
             try {
-                // from parent class ../../core/repository/BaseRepository
-                return yield this.repository.update("user_id", userId, cleanedChanges);
+                return yield this.repository.update("employee_id", employeeId, cleanedChanges);
             }
             catch (error) {
-                console.log(error, "PUT::::");
                 (0, error_service_1.handleServiceError)(error, this.block, "update", cleanedChanges);
                 throw error;
             }
         });
     }
-    delete(userId) {
+    delete(employeeId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // from parent class ../../core/repository/BaseRepository
-                return yield this.repository.delete("user_id", userId);
+                return yield this.repository.delete("employee_id", employeeId);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "delete", { userId });
+                (0, error_service_1.handleServiceError)(error, this.block, "delete", { employeeId });
                 throw error;
             }
         });
     }
-    mapToDb(user) {
+    mapToDb(employee) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
-            email: user.email && encryptionService.encryptData(user.email),
-            password: user.password,
-            name: user.name && encryptionService.encryptData(user.name),
-            is_admin: user.isAdmin,
-            subscription_id: user.subscriptionId
+            agent_id: employee.agentId,
+            user_id: employee.userId
         };
     }
-    mapFromDb(user) {
+    mapFromDb(employee) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
-            userId: user.user_id,
-            email: encryptionService.decryptData(user.email),
-            name: encryptionService.decryptData(user.name),
-            createdAt: user.created_at,
-            subscriptionId: user.subscription_id,
-            isAdmin: user.is_admin
+            employeeId: employee.employee_id,
+            agentId: employee.agent_id,
+            userId: employee.user_id,
+            name: employee.name && encryptionService.decryptData(employee.name),
+            email: employee.email && encryptionService.decryptData(employee.email),
+            password: employee.password && encryptionService.decryptData(employee.password)
         };
     }
 }
-exports.default = UsersService;
+exports.default = EmployeesService;

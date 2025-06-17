@@ -37,6 +37,7 @@ const webhooks_dependencies_1 = require("../../modules/webhooks/webhooks.depende
 const media_dependencies_1 = require("../../modules/media/media.dependencies");
 const messenger_dependencies_1 = require("../../modules/messenger/messenger.dependencies");
 const subscriptions_dependencies_1 = require("../../modules/subscriptions/subscriptions.dependencies");
+const employees_dependencies_1 = require("../../modules/employees/employees.dependencies");
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -72,6 +73,8 @@ function configureContainer(testPool, testRedis) {
         (0, clients_dependencies_1.configureClientsDependencies)(pool);
         // conversations //
         (0, conversations_dependencies_1.configureConversationsDependencies)(pool);
+        // employees //
+        (0, employees_dependencies_1.configureEmployeesDependencies)(pool);
         // media //
         (0, media_dependencies_1.configureMediaDependencies)(pool);
         // messages //

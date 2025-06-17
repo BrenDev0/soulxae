@@ -49,11 +49,11 @@ class UsersController {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.createRequest`;
             try {
-                const { email, password } = req.body;
-                const requiredFields = ["email", "password"];
+                const { password } = req.body;
+                const requiredFields = ["email", "password", "name"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const hashedPassword = yield this.httpService.passwordService.hashPassword(password);
-                const userData = Object.assign(Object.assign({}, req.body), { password: hashedPassword });
+                const userData = Object.assign(Object.assign({}, req.body), { password: hashedPassword, isAdmin: true });
                 yield this.usersService.create(userData);
                 res.status(200).json({ message: "User added." });
             }
@@ -160,7 +160,9 @@ class UsersController {
                     });
                 }
                 ;
-                const correctPassword = yield this.httpService.passwordService.comparePassword(password, userExists.password);
+                const correctPassword = userExists.is_admin
+                    ? yield this.httpService.passwordService.comparePassword(password, userExists.password)
+                    : password === this.httpService.encryptionService.decryptData(userExists.password);
                 if (!correctPassword) {
                     throw new errors_1.BadRequestError("Incorrect email or password", {
                         block: `${block}.passwordValidation`,

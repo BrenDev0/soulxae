@@ -69,6 +69,18 @@ export default class MiddlewareService {
         }
     }
 
+    async adminCheck(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const user = req.user;
+        if(!user.is_admin) {
+            throw new AuthorizationError(undefined, {
+                block: "middleware.admincheck",
+                user 
+            })
+        }
+
+        next()
+    }
+
     async verification(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const token = req.headers.authorization?.split(" ")[1];

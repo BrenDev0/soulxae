@@ -66,7 +66,10 @@ export default class UsersService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
            email: user.email && encryptionService.encryptData(user.email),
-           password: user.password
+           password: user.password,
+           name: user.name && encryptionService.encryptData(user.name),
+           is_admin: user.isAdmin,
+           subscription_id: user.subscriptionId
         }
     }
 
@@ -75,7 +78,10 @@ export default class UsersService {
         return {
             userId: user.user_id,
             email: encryptionService.decryptData(user.email),
-            createdAt: user.created_at
+            name: encryptionService.decryptData(user.name),
+            createdAt: user.created_at,
+            subscriptionId: user.subscription_id,
+            isAdmin: user.is_admin
         }
     }
 }

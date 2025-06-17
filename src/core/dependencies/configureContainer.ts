@@ -25,6 +25,7 @@ import { configureWebhooksDependencies } from '../../modules/webhooks/webhooks.d
 import { configureMediaDependencies } from '../../modules/media/media.dependencies';
 import { configureMessengerDependencies } from '../../modules/messenger/messenger.dependencies';
 import { configureSubscriptionsDependencies } from '../../modules/subscriptions/subscriptions.dependencies';
+import { configureEmployeesDependencies } from '../../modules/employees/employees.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -72,6 +73,9 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
     // conversations //
     configureConversationsDependencies(pool);
+
+    // employees //
+    configureEmployeesDependencies(pool);
 
     // media //
     configureMediaDependencies(pool);

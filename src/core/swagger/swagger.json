@@ -788,10 +788,6 @@
       "createAgent": {
         "type": "object",
         "properties": {
-          "apiKey": {
-            "type": "string",
-            "example": "required for type flow"
-          },
           "description": {
             "type": "string",
             "example": "required"
@@ -800,30 +796,50 @@
             "type": "string",
             "example": "required"
           },
-          "workspaceId": {
+          "systemPrompt": {
             "type": "string",
             "example": "required"
           },
-          "agentType": {
+          "greetingMessage": {
             "type": "string",
-            "example": "direct or flow"
+            "example": "optional"
+          },
+          "maxTokens": {
+            "type": "number",
+            "example": 200
+          },
+          "temperature": {
+            "type": "number",
+            "example": 0.2
           }
         }
       },
       "updateAgent": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string",
-            "example": "new name"
-          },
           "description": {
             "type": "string",
-            "example": "new description"
+            "example": "optional"
           },
-          "apiKey": {
+          "name": {
             "type": "string",
-            "example": "new api key"
+            "example": "optional"
+          },
+          "systemPrompt": {
+            "type": "string",
+            "example": "optional"
+          },
+          "greetingMessage": {
+            "type": "string",
+            "example": "optional"
+          },
+          "maxTokens": {
+            "type": "number",
+            "example": 200
+          },
+          "temperature": {
+            "type": "number",
+            "example": 0.2
           }
         }
       },
@@ -858,6 +874,40 @@
           "platform": {
             "type": "string",
             "example": "new platform"
+          }
+        }
+      },
+      "createEmployee": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "required"
+          },
+          "email": {
+            "type": "string",
+            "example": "required"
+          },
+          "agentId": {
+            "type": "string",
+            "example": "required"
+          }
+        }
+      },
+      "updateEmployee": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "optional"
+          },
+          "email": {
+            "type": "string",
+            "example": "optional"
+          },
+          "agentId": {
+            "type": "string",
+            "example": "optional"
           }
         }
       },

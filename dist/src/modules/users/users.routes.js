@@ -10,12 +10,14 @@ const initializeUsersRouter = (customController) => {
     const router = (0, express_1.Router)();
     const secureRouter = (0, express_1.Router)();
     const verifiedRouter = (0, express_1.Router)();
+    const adminOnlyRouter = (0, express_1.Router)();
     const middlewareService = Container_1.default.resolve("MiddlewareService");
     const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("UsersController");
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     verifiedRouter.use(middlewareService.verification.bind(middlewareService));
+    adminOnlyRouter.use(middlewareService.adminCheck);
     // protected Routes //
-    secureRouter.get("/resource", 
+    adminOnlyRouter.get("/resource", 
     /*
    #swagger.tags = ['Users']
    #swagger.path =  '/users/secure/resource'
@@ -23,7 +25,7 @@ const initializeUsersRouter = (customController) => {
    #swagger.description = 'Get current user'
    */
     controller.resourceRequest.bind(controller));
-    secureRouter.put("/account", 
+    adminOnlyRouter.put("/account", 
     /*
     #swagger.tags = ['Users']
     #swagger.path =  '/users/secure/account'
@@ -39,7 +41,7 @@ const initializeUsersRouter = (customController) => {
     }
     */
     controller.updateRequest.bind(controller));
-    secureRouter.delete("/delete", 
+    adminOnlyRouter.delete("/delete", 
     /*
     #swagger.tags = ['Users']
     #swagger.path =  '/users/secure/delete'
@@ -127,6 +129,7 @@ const initializeUsersRouter = (customController) => {
    */
     controller.verifyEmail.bind(controller));
     // mounts //
+    secureRouter.use(adminOnlyRouter);
     router.use("/secure", secureRouter);
     router.use("/verified", verifiedRouter);
     console.log("Users router initialized.");

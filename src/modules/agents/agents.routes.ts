@@ -6,13 +6,15 @@ import AgentsController from './AgentsController';
 export const initializeAgentsRouter = (customController?: AgentsController) => {
     const router = Router();
     const secureRouter = Router();
+    const adminOnlyRouter = Router();
     const middlewareService = Container.resolve<MiddlewareService>("MiddlewareService");
     const controller = customController ?? Container.resolve<AgentsController>("AgentsController");
 
     secureRouter.use(middlewareService.auth.bind(middlewareService));
+    adminOnlyRouter.use(middlewareService.adminCheck)
 
     // protected Routes //
-    secureRouter.post("/create",
+    adminOnlyRouter.post("/create",
          /*
         #swagger.tags = ['Agents']
         #swagger.path =  '/agents/secure/create'
@@ -30,7 +32,7 @@ export const initializeAgentsRouter = (customController?: AgentsController) => {
         controller.createRequest.bind(controller)
     )
 
-    secureRouter.get("/resource/:agentId", 
+    adminOnlyRouter.get("/resource/:agentId", 
          /*
         #swagger.tags = ['Agents']
         #swagger.path =  '/agents/secure/resource/{agentId}'
@@ -40,7 +42,7 @@ export const initializeAgentsRouter = (customController?: AgentsController) => {
         controller.resourceRequest.bind(controller)
     )
 
-    secureRouter.get("/collection/:userId", 
+    adminOnlyRouter.get("/collection/:userId", 
          /*
         #swagger.tags = ['Agents']
         #swagger.path =  '/agents/secure/collection/{userId}'
@@ -50,7 +52,7 @@ export const initializeAgentsRouter = (customController?: AgentsController) => {
         controller.collectionRequest.bind(controller)
     )
 
-    secureRouter.put("/:agentId", 
+    adminOnlyRouter.put("/:agentId", 
          /*
         #swagger.tags = ['Agents']
         #swagger.path =  '/agents/secure/{agentId}'
@@ -60,7 +62,7 @@ export const initializeAgentsRouter = (customController?: AgentsController) => {
         controller.updateRequest.bind(controller)
     )
 
-    secureRouter.delete("/:agentId", 
+    adminOnlyRouter.delete("/:agentId", 
         /*
         #swagger.tags = ['Agents']
         #swagger.path =  '/agents/secure/{agentId}'
@@ -72,7 +74,7 @@ export const initializeAgentsRouter = (customController?: AgentsController) => {
   
 
     // mounts //
-
+    secureRouter.use(adminOnlyRouter);
     router.use("/secure", secureRouter);
 
     console.log("Agents router initialized.");

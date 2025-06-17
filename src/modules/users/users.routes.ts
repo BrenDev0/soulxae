@@ -7,16 +7,18 @@ export const initializeUsersRouter = (customController?: UsersController) => {
     const router = Router();
     const secureRouter = Router();
     const verifiedRouter = Router();
+    const adminOnlyRouter = Router();
     const middlewareService = Container.resolve<MiddlewareService>("MiddlewareService");
     const controller = customController ?? Container.resolve<UsersController>("UsersController");
 
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     verifiedRouter.use(middlewareService.verification.bind(middlewareService))
+    adminOnlyRouter.use(middlewareService.adminCheck);
 
      
     // protected Routes //
 
-    secureRouter.get("/resource", 
+    adminOnlyRouter.get("/resource", 
          /*
         #swagger.tags = ['Users']
         #swagger.path =  '/users/secure/resource'
@@ -26,7 +28,7 @@ export const initializeUsersRouter = (customController?: UsersController) => {
         controller.resourceRequest.bind(controller)
     );
 
-    secureRouter.put("/account", 
+    adminOnlyRouter.put("/account", 
         /*
         #swagger.tags = ['Users']
         #swagger.path =  '/users/secure/account'
@@ -44,7 +46,7 @@ export const initializeUsersRouter = (customController?: UsersController) => {
         controller.updateRequest.bind(controller)
     );
 
-    secureRouter.delete("/delete", 
+    adminOnlyRouter.delete("/delete", 
         /*
         #swagger.tags = ['Users']
         #swagger.path =  '/users/secure/delete'
@@ -146,7 +148,7 @@ export const initializeUsersRouter = (customController?: UsersController) => {
     );
     
     // mounts //
-
+    secureRouter.use(adminOnlyRouter);
     router.use("/secure", secureRouter);
     router.use("/verified", verifiedRouter)
 

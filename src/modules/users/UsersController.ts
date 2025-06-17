@@ -54,8 +54,8 @@ export default class UsersController {
   async createRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.createRequest`;
     try {
-      const { email, password } = req.body;
-      const requiredFields =  ["email", "password"]
+      const { password } = req.body;
+      const requiredFields =  ["email", "password", "name"]
      
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
@@ -64,7 +64,7 @@ export default class UsersController {
       const userData = {
         ...req.body,
         password: hashedPassword,
-       
+        isAdmin: true 
       };
 
       await this.usersService.create(userData);
@@ -180,7 +180,9 @@ export default class UsersController {
             })
         };
 
-        const correctPassword = await this.httpService.passwordService.comparePassword(password, userExists.password!);
+        const correctPassword = userExists.is_admin 
+        ? await this.httpService.passwordService.comparePassword(password, userExists.password!)
+        : password === this.httpService.encryptionService.decryptData(userExists.password)
 
         if(!correctPassword) {
             throw new BadRequestError("Incorrect email or password", {

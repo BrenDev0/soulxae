@@ -50,16 +50,20 @@ const doc = {
         email: "new email"
       },
       createAgent: {
-        apiKey: "required for type flow",
         description: "required",
         name: "required",
-        workspaceId: "required",
-        agentType: "direct or flow"
+        systemPrompt: "required",
+        greetingMessage: "optional",
+        maxTokens: 200,
+        temperature: 0.2
       },
       updateAgent:{
-        name: "new name",
-        description: "new description",
-        apiKey: "new api key"
+        description: "optional",
+        name: "optional",
+        systemPrompt: "optional",
+        greetingMessage: "optional",
+        maxTokens: 200,
+        temperature: 0.2
       },
       createPlatform: {
         agentId: "required",
@@ -70,6 +74,16 @@ const doc = {
       updatePlatform: {
         token: "new token",
         platform: "new platform"
+      },
+      createEmployee: {
+        name: "required",
+        email: "required",
+        agentId: "required"
+      },
+      updateEmployee: {
+        name: "optional",
+        email: "optional",
+        agentId: "optional"
       },
 
       sendDirectMessage: {

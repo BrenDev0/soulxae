@@ -68,6 +68,18 @@ class MiddlewareService {
             }
         });
     }
+    adminCheck(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = req.user;
+            if (!user.is_admin) {
+                throw new errors_1.AuthorizationError(undefined, {
+                    block: "middleware.admincheck",
+                    user
+                });
+            }
+            next();
+        });
+    }
     verification(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
