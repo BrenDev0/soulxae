@@ -9,7 +9,7 @@ export default class ConversationsRepositoy extends BaseRepository<Conversation>
 
     async getAPIData(conversationId: string): Promise<ConversationForAPI | null> {
         const sqlRead = `
-            SELECT conversations.conversation_id, platforms.identifier AS platform_identifier, platforms.token, platforms.platform AS platform clients.contact_identifier AS client_identifier
+            SELECT conversations.conversation_id, platforms.identifier AS platform_identifier, platforms.token, platforms.platform AS platform, clients.contact_identifier AS client_identifier
             FROM conversations
             JOIN platforms ON conversations.platform_id = platforms.platform_id
             JOIN clients ON conversations.client_id = clients.client_id

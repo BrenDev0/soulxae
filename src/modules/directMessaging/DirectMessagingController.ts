@@ -7,6 +7,7 @@ import WhatsappService from "../whatsapp/WhatsappService";
 import MessagesService from "../messages/MessagesService";
 import ConversationsService from "../conversations/ConversationsService";
 import { MessageData } from "../messages/messages.interface";
+import MessengerService from "../messenger/MessengerService";
 
 
 export default class DirectMessagagingController {
@@ -35,6 +36,9 @@ export default class DirectMessagagingController {
 
             let productService;
             switch(conversation.platform) {
+                case "messenger":
+                    productService = Container.resolve<MessengerService>("MessengerService");
+                    break;
                 case 'whatsapp':
                     productService = Container.resolve<WhatsappService>("WhatsappService");
                     break;

@@ -24,11 +24,17 @@ class MessengerService {
             try {
                 let messageObject;
                 switch (message.type) {
+                    case "audio":
+                        messageObject = this.mediaMessage(message.content, to, "audio");
+                        break;
                     case "buttons":
                         messageObject = this.buttonsMessage(message.content, to);
                         break;
+                    case "document":
+                        messageObject = this.mediaMessage(message.content, to, "files");
+                        break;
                     case "image":
-                        messageObject = this.imageMessage(message.content, to);
+                        messageObject = this.mediaMessage(message.content, to, "image");
                         break;
                     case "text":
                         messageObject = this.textMessage(message.content, to);
@@ -40,10 +46,10 @@ class MessengerService {
                     throw new errors_1.BadRequestError("Unsupported message type");
                 }
                 const response = yield this.send(messageObject, fromId, token);
-                if (!response || !response.data.messages || !response.data.messages[0].id) {
+                if (!response.data || !response.data.message_id) {
                     throw new errors_1.ExternalAPIError();
                 }
-                return response.data.messages[0].id;
+                return response.data.message_id;
             }
             catch (error) {
                 throw error;
@@ -70,7 +76,7 @@ class MessengerService {
                     };
                 }
                 else if (message.attachments) {
-                    console.log(message.attachment);
+                    console.log(message.attachments);
                 }
                 return messageData;
             }
@@ -91,7 +97,7 @@ class MessengerService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const response = yield axios_1.default.post(`https://graph.facebook.com/${process.env.MESSENGER_VERSION}/${fromId}/messages?access_token=${token}`, messageObject);
-                console.log(response);
+                console.log(response.data);
                 return response;
             }
             catch (error) {
@@ -172,7 +178,7 @@ class MessengerService {
         };
         return messengerObject;
     }
-    imageMessage(message, to) {
+    mediaMessage(message, to, type) {
         let messengerObject = {
             recipient: {
                 id: to
@@ -180,7 +186,7 @@ class MessengerService {
             messaging_type: "RESPONSE",
             message: {
                 attachment: {
-                    type: "image",
+                    type: type,
                     payload: {
                         url: message.url,
                         is_reusable: true

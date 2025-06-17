@@ -63,7 +63,7 @@ export default class WhatsappService {
            // console.log(message, ":::::::::::::::::::::message");
             
             
-            message.type !== "unsupported" && await this.sendReadRecipt(message.id, fromId, token);
+            //message.type !== "unsupported" && await this.sendReadRecipt(message.id, fromId, token);
 
             let messageData: MessageData =  {
                 messageReferenceId: message.id,
@@ -182,7 +182,6 @@ export default class WhatsappService {
 
     async send(messageObject: MessageObject | ReadReceipt, fromId: string, token: string) {
         try {
-            console.log(messageObject, "OBJECT SENT OT META", fromId, "FROMID::::", token, "Token::::::")
             const response = await axios.post(
                 `https://graph.facebook.com/${process.env.WHATSAPP_VID}/${fromId}/messages`,
                 messageObject,

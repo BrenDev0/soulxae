@@ -15,11 +15,17 @@ export default class MessengerService {
             let messageObject: MessengerObject | undefined;
 
             switch(message.type) {
+                case "audio":
+                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "audio");
+                    break;
                 case "buttons":
                     messageObject = this.buttonsMessage(message.content as ButtonsContent, to);
                     break;
+                case "document":
+                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "files");
+                    break;
                 case "image":
-                    messageObject = this.imageMessage(message.content as StandarMediaContent, to);
+                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "image");
                     break;
                 case "text":
                     messageObject = this.textMessage(message.content as TextContent, to);
@@ -35,11 +41,11 @@ export default class MessengerService {
 
             const response = await this.send(messageObject, fromId, token);
 
-
-            if(!response || !response.data.messages || !response.data.messages[0].id) {
-                throw new ExternalAPIError();
+            if(!response.data || !response.data.message_id) {
+                throw new ExternalAPIError()
             }
-            return response.data.messages[0].id;
+           
+            return response.data.message_id;
             
         } catch (error) {
             throw error
@@ -67,7 +73,7 @@ export default class MessengerService {
                 body: message.text
             }
             } else if(message.attachments) {
-                console.log(message.attachment)
+                console.log(message.attachments)
             }
 
             return messageData;
@@ -92,7 +98,9 @@ export default class MessengerService {
             `https://graph.facebook.com/${process.env.MESSENGER_VERSION}/${fromId}/messages?access_token=${token}`,
             messageObject
         );   
-        console.log(response);
+
+        console.log(response.data)
+   
         return response  
         } catch (error) {
             throw new ExternalAPIError(undefined, {
@@ -118,13 +126,13 @@ export default class MessengerService {
 
     textMessage(message: TextContent, to: string): MessengerObject {
         const messengerObject = {
-        recipient:{
-            id: to
-        },
-        messaging_type: "RESPONSE",
-        message: {
-        text: message.body
-        }
+            recipient:{
+                id: to
+            },
+            messaging_type: "RESPONSE",
+            message: {
+                text: message.body
+            }
         }
 
         return messengerObject;
@@ -181,7 +189,7 @@ export default class MessengerService {
         return messengerObject;
     }
     
-    imageMessage(message: StandarMediaContent, to: string): MessengerObject {
+    mediaMessage(message: StandarMediaContent, to: string, type: string): MessengerObject {
  
         let messengerObject: MessengerObject = {
             recipient: {
@@ -190,7 +198,7 @@ export default class MessengerService {
             messaging_type: "RESPONSE",
             message: {
                 attachment: {
-                    type: "image",
+                    type: type,
                     payload: {
                         url: message.url,
                         is_reusable: true

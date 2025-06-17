@@ -35,6 +35,9 @@ class DirectMessagagingController {
                 }
                 let productService;
                 switch (conversation.platform) {
+                    case "messenger":
+                        productService = Container_1.default.resolve("MessengerService");
+                        break;
                     case 'whatsapp':
                         productService = Container_1.default.resolve("WhatsappService");
                         break;

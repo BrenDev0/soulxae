@@ -71,16 +71,84 @@ describe("USERS ROUTES", () => {
 
       // });
 
-      it('should send audio message', async () => {
+      // it('should send audio message', async () => {
+      //   const res = await request(app)
+      //     .post('/direct/secure/send')
+      //     .set('Authorization', token)
+      //     .send({
+      //       message: {
+      //           conversationId: "9c00d775-c78f-496c-aad5-2814fdef0ff0",
+      //           type: "audio",
+      //           content: {
+      //               url: "https://soulxae-imagenes.s3.us-east-1.amazonaws.com/66f8048e-bb28-4d42-ba36-53bbc19dbe3a/audio/ogg/1360710618544424"
+      //           }
+      //       }
+      //     });
+
+      //     console.log(res.body)
+    
+      //   expect(res.status).toBe(200);
+      //   expect(res.body.message).toBe('Message sent');
+
+        
+      // });
+
+      // it('should send text message ', async () => {
+      //   const res = await request(app)
+      //     .post('/direct/secure/send')
+      //     .set('Authorization', token)
+      //     .send({
+      //       message: {
+      //           conversationId: "a5d8993c-321d-4a86-a6f3-86fcd13a1a78",
+      //           type: "text",
+      //           content: {
+      //               body: "Hello from jest"
+      //           }
+      //       }
+      //     });
+
+      //     console.log(res.body)
+    
+      //   expect(res.status).toBe(200);
+      //   expect(res.body.message).toBe('Message sent');
+
+        
+      // });
+
+      // it('should send image message ', async () => {
+      //   const res = await request(app)
+      //     .post('/direct/secure/send')
+      //     .set('Authorization', token)
+      //     .send({
+      //       message: {
+      //           conversationId: "a5d8993c-321d-4a86-a6f3-86fcd13a1a78",
+      //           type: "image",
+      //           content: {
+      //               url: "https://brokers-app-public.s3.us-east-1.amazonaws.com/logos/5/broker_logo.png",
+      //               caption: "hello from jest with image"
+      //           }
+      //       }
+      //     });
+
+      //     console.log(res.body)
+    
+      //   expect(res.status).toBe(200);
+      //   expect(res.body.message).toBe('Message sent');
+
+        
+      // });
+
+
+        it('should send audio message ', async () => {
         const res = await request(app)
           .post('/direct/secure/send')
           .set('Authorization', token)
           .send({
             message: {
-                conversationId: "9c00d775-c78f-496c-aad5-2814fdef0ff0",
+                conversationId: "a5d8993c-321d-4a86-a6f3-86fcd13a1a78",
                 type: "audio",
                 content: {
-                    url: "https://soulxae-imagenes.s3.us-east-1.amazonaws.com/66f8048e-bb28-4d42-ba36-53bbc19dbe3a/audio/ogg/1360710618544424"
+                    url: "https://soulxae-imagenes.s3.us-east-1.amazonaws.com/c352ab7c-94af-4944-9e3f-ea47b5515906/5abee705-7bef-498e-98a5-60884059b624/audio/ogg/717841141189213",
                 }
             }
           });
@@ -92,6 +160,7 @@ describe("USERS ROUTES", () => {
 
         
       });
+
   })
 })
 
