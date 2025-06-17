@@ -25,6 +25,7 @@ import { configureDirectMessagingDependencies } from '../../modules/directMessag
 import { configureWebhooksDependencies } from '../../modules/webhooks/webhooks.dependencies';
 import { configureMediaDependencies } from '../../modules/media/media.dependencies';
 import { configureMessengerDependencies } from '../../modules/messenger/messenger.dependencies';
+import { configureSubscriptionsDependencies } from '../../modules/subscriptions/subscriptions.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -84,6 +85,9 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
     // sessions //
     configureSessionsDependencies(redisClient);
+
+    // subscriptions //
+    configureSubscriptionsDependencies(pool);
 
     // users //
     configureUsersDependencies(pool);
