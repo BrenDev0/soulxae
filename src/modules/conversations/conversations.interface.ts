@@ -36,7 +36,16 @@ export interface ConversationForAPIData {
   token: string;
 }
 
+export interface ConversationS3Key {
+  conversation_id: string;
+  platform_id: string;
+  agent_id: string;
+  workspace_id: string;
+  user_id: string;
+}
+
 export interface IConversationsRepository extends IRepository<Conversation> {
   getAPIData(conversationId: string): Promise<ConversationForAPI | null>;
-  findByIds(agentId: string, clientId: string): Promise<Conversation | null>
+  findByIds(agentId: string, clientId: string): Promise<Conversation | null>;
+  getS3BucketKeyData(conversationId: string): Promise<ConversationS3Key | null>;
 }

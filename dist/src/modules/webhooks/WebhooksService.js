@@ -74,7 +74,7 @@ class WebhooksService {
                 const clientContact = yield productService.getClientInfo(req, platformData.token);
                 const clientId = yield this.handleClient(agentId, clientContact);
                 const conversationId = yield this.handleConversaton(clientId, platformData.platformId);
-                const messageData = yield productService.handleIncomingMessage(req, platformData.identifier, platformData.token, conversationId, agentId);
+                const messageData = yield productService.handleIncomingMessage(req, platformData.identifier, platformData.token, conversationId);
                 yield messagesService.create(messageData);
                 return;
             }

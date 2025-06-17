@@ -23,7 +23,7 @@ export interface MediaAttachment {
   type: string;
   payload: {
     url: string,
-    is_reusable: Boolean
+    is_reusable?: Boolean
   }
 }
 
@@ -42,7 +42,8 @@ export interface MessengerObject {
   message: {
     text?: string,
     quickReplies?: [];
-    attachment?: MediaAttachment[] | TemplatePayload
+    attachments?: MediaAttachment[],
+    attachment?: TemplatePayload
   }
 }
 

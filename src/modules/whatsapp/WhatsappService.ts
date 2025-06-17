@@ -56,14 +56,14 @@ export default class WhatsappService {
         }
     }
 
-    async handleIncomingMessage(req: Request, fromId: string, token: string, conversationId: string, agentId: string): Promise<MessageData> {
+    async handleIncomingMessage(req: Request, fromId: string, token: string, conversationId: string): Promise<MessageData> {
         try {
             const message = req.body.entry[0].changes[0].value.messages[0];
           
-           // console.log(message, ":::::::::::::::::::::message");
+           console.log(message, ":::::::::::::::::::::message");
             
             
-            //message.type !== "unsupported" && await this.sendReadRecipt(message.id, fromId, token);
+            message.type !== "unsupported" && await this.sendReadRecipt(message.id, fromId, token);
 
             let messageData: MessageData =  {
                 messageReferenceId: message.id,
@@ -78,15 +78,15 @@ export default class WhatsappService {
             switch(message.type) {
                 case "audio":
                     messageData.type = "audio";
-                    messageData.content = await this.getMediaContent(message.audio, conversationId, token, agentId);
+                    messageData.content = await this.getMediaContent(message.audio, conversationId, token);
                     break
                 case "document":
                     messageData.type = "document"
-                    messageData.content = await this.getMediaContent(message.document, conversationId, token, agentId);
+                    messageData.content = await this.getMediaContent(message.document, conversationId, token);
                     break;
                 case "image":
                     messageData.type = "image"
-                    messageData.content = await this.getMediaContent(message.image, conversationId, token, agentId)
+                    messageData.content = await this.getMediaContent(message.image, conversationId, token)
                     break;
                 case "text":
                     messageData.content = {
@@ -97,7 +97,7 @@ export default class WhatsappService {
                     break;
                 case "video":
                     messageData.type = "video"
-                    messageData.content = await this.getMediaContent(message.image, conversationId, token, agentId)
+                    messageData.content = await this.getMediaContent(message.image, conversationId, token)
                     break;
                 default: 
                     break;
@@ -117,7 +117,7 @@ export default class WhatsappService {
         }
     }
 
-    async getMedia(mediaId: string, token: string, conversarionId: string, agentId: string): Promise<string> {
+    async getMedia(mediaId: string, token: string, conversarionId: string): Promise<string> {
         try {
             const responseUrl: WhatsappMediaResponse = await axios.get(
                 `https://graph.facebook.com/v23.0/${mediaId}`,
@@ -142,10 +142,9 @@ export default class WhatsappService {
                 }
             );
             const contentType = responseData.headers['content-type']
-            const key = `${agentId}/${conversarionId}/${contentType}/${mediaId}`
-
+           
             const mediaService = Container.resolve<S3Service>("S3Service");
-            const url = await mediaService.uploadBuffer(key, responseData.data, contentType)
+            const url = await mediaService.uploadBuffer(conversarionId, mediaId, responseData.data, contentType)
             return url;
         } catch (error) {
             throw error;
@@ -266,8 +265,8 @@ export default class WhatsappService {
         return messageObject;
     }
 
-    async getMediaContent(message: IncommingWhatsappMedia, conversationId: string, token: string, agentId: string): Promise<StandarMediaContent>{
-        const url = await this.getMedia(message.id, token, conversationId, agentId);
+    async getMediaContent(message: IncommingWhatsappMedia, conversationId: string, token: string): Promise<StandarMediaContent>{
+        const url = await this.getMedia(message.id, token, conversationId);
 
         const messageContent: StandarMediaContent = {
             urls: [url],

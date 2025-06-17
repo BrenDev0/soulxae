@@ -30,6 +30,9 @@ export default class MessengerService {
                 case "text":
                     messageObject = this.textMessage(message.content as TextContent, to);
                     break;
+                case "video":
+                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "video");
+                    break;
                 default: 
                     break;
 
@@ -52,7 +55,7 @@ export default class MessengerService {
         }
     }
 
-    async handleIncomingMessage(req: Request, fromId: string, token: string, conversationId: string, agentId: string): Promise<MessageData> {
+    async handleIncomingMessage(req: Request, fromId: string, token: string, conversationId: string): Promise<MessageData> {
         try {
             const message = req.body.entry[0].messaging[0].message;
 
@@ -198,7 +201,6 @@ export default class MessengerService {
                 type: type,
                 payload: {
                     url: url,
-                    is_reusable: true
                 }
             }
         })
@@ -207,11 +209,12 @@ export default class MessengerService {
             recipient: {
                 id: to
             },
-            messaging_type: "RESPONSE",
             message: {
-                attachment: attachments
+                attachments: attachments
             }
         }
+
+        console.log(messengerObject, "object:::::::::")
         return messengerObject;
     }
 

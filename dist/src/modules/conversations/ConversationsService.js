@@ -88,6 +88,18 @@ class ConversationsService {
             }
         });
     }
+    getConversationS3KeyData(conversationId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.getS3BucketKeyData(conversationId);
+                return result;
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "getS3key", { conversationId });
+                throw error;
+            }
+        });
+    }
     update(conversationId, changes) {
         return __awaiter(this, void 0, void 0, function* () {
             const mappedChanges = this.mapToDb(changes);

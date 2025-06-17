@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 import BaseRepository from "../../core/repository/BaseRepository";
-import { Conversation, ConversationData, ConversationForAPI, IConversationsRepository } from "./conversations.interface";
+import { Conversation, ConversationData, ConversationForAPI, ConversationS3Key, IConversationsRepository } from "./conversations.interface";
 
 export default class ConversationsRepositoy extends BaseRepository<Conversation> implements IConversationsRepository {
     constructor(pool: Pool) {
@@ -17,7 +17,7 @@ export default class ConversationsRepositoy extends BaseRepository<Conversation>
         `
         const result = await this.pool.query(sqlRead, [conversationId]);
 
-        return result.rows[0] as ConversationForAPI || null;
+        return result.rows[0] || null;
     }
 
     async findByIds(agentId: string, clientId: string): Promise<Conversation | null> {
@@ -29,5 +29,21 @@ export default class ConversationsRepositoy extends BaseRepository<Conversation>
         const result = await this.pool.query(sqlRead, [agentId, clientId]);
 
         return result.rows[0] as Conversation || null;
+    }
+
+    async getS3BucketKeyData(conversationId: string): Promise<ConversationS3Key | null> {
+        const sqlRead = `
+            SELECT conversations.conversation_id, platforms.platform_id, agents.agent_id, workspaces.workspace_id, users.user_id
+            FROM conversations
+            JOIN platforms ON conversations.platform_id = platforms.platform_id
+            JOIN agents ON platforms.agent_id = agents.agent_id
+            JOIN workspaces ON agents.workspace_id = workspaces.workspace_id
+            JOIN users ON workspaces.user_id = users.user_id
+            WHERE conversations.conversation_id = $1;
+        `
+
+        const result = await this.pool.query(sqlRead, [conversationId]);
+
+        return result.rows[0] || null;
     }
 }

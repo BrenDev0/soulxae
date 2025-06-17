@@ -8,15 +8,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const client_s3_1 = require("@aws-sdk/client-s3");
 const errors_1 = require("../../core/errors/errors");
 const media_errors_1 = require("./media.errors");
+const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 class S3Service {
     constructor(client, bucket) {
         this.block = "S3Service";
         this.client = client;
         this.bucket = bucket;
+    }
+    getKeyByConversationid(conversationId, contentType, mediaId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const conversationsService = Container_1.default.resolve("ConversationsService");
+                const dataForKey = yield conversationsService.getConversationS3KeyData(conversationId);
+                if (!dataForKey) {
+                    throw new errors_1.NotFoundError("No data found for building media key");
+                }
+                const key = `/${dataForKey.user_id}/${dataForKey.workspace_id}/${dataForKey.agent_id}/${dataForKey.platform_id}/${dataForKey.conversation_id}/${contentType}/${mediaId}`;
+                return key;
+            }
+            catch (error) {
+                throw error;
+            }
+        });
     }
     upload(key, file) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -42,8 +62,9 @@ class S3Service {
             }
         });
     }
-    uploadBuffer(key, buffer, contentType) {
+    uploadBuffer(conversarionId, mediaId, buffer, contentType) {
         return __awaiter(this, void 0, void 0, function* () {
+            const key = yield this.getKeyByConversationid(conversarionId, contentType, mediaId);
             const uploadParams = {
                 Bucket: this.bucket,
                 Key: key,

@@ -1,6 +1,9 @@
 import { S3Client, PutObjectCommand, ListObjectsV2Command, DeleteObjectsCommand } from '@aws-sdk/client-s3'
 import { NotFoundError} from '../../core/errors/errors';
 import { S3Error } from './media.errors';
+import Container from '../../core/dependencies/Container';
+import ConversationsService from '../conversations/ConversationsService';
+import { ConversationS3Key } from '../conversations/conversations.interface';
 
 export default class S3Service {
     private client: S3Client;
@@ -10,6 +13,21 @@ export default class S3Service {
     constructor(client: S3Client, bucket: string) {
         this.client = client;
         this.bucket = bucket
+    }
+
+    async getKeyByConversationid(conversationId: string, contentType: string, mediaId: string): Promise<string> {
+        try {
+            const conversationsService = Container.resolve<ConversationsService>("ConversationsService");
+            const dataForKey = await conversationsService.getConversationS3KeyData(conversationId);
+            if(!dataForKey) {
+                throw new NotFoundError("No data found for building media key")
+            }
+            const key = `/${dataForKey.user_id}/${dataForKey.workspace_id}/${dataForKey.agent_id}/${dataForKey.platform_id}/${dataForKey.conversation_id}/${contentType}/${mediaId}`;
+
+            return key;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async upload(key: string, file: Express.Multer.File): Promise<string> {
@@ -38,28 +56,30 @@ export default class S3Service {
         }
     }
 
-    async uploadBuffer(key: string, buffer: Buffer, contentType: string): Promise<string> {
-    const uploadParams = {
-        Bucket: this.bucket,
-        Key: key,
-        Body: buffer,
-        ContentType: contentType,
-    };
+    async uploadBuffer(conversarionId: string, mediaId: string, buffer: Buffer, contentType: string): Promise<string> {
+        const key = await this.getKeyByConversationid(conversarionId, contentType, mediaId);
+        
+        const uploadParams = {
+            Bucket: this.bucket,
+            Key: key,
+            Body: buffer,
+            ContentType: contentType,
+        };
 
-    const imageUrl = `https://${this.bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+        const imageUrl = `https://${this.bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
 
-    try {
-        const command = new PutObjectCommand(uploadParams);
-        await this.client.send(command);
-        return imageUrl;
-    } catch (error) {
-        throw new S3Error("Unable to upload buffer to bucket", {
-            originalError: (error as Error).message,
-            block: `${this.block}.uploadBuffer`,
-            key,
-        });
+        try {
+            const command = new PutObjectCommand(uploadParams);
+            await this.client.send(command);
+            return imageUrl;
+        } catch (error) {
+            throw new S3Error("Unable to upload buffer to bucket", {
+                originalError: (error as Error).message,
+                block: `${this.block}.uploadBuffer`,
+                key,
+            });
+        }
     }
-}
 
 
     async delete(key: string): Promise<void> {

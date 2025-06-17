@@ -139,16 +139,17 @@ describe("USERS ROUTES", () => {
       // });
 
 
-        it('should send audio message ', async () => {
+        it('should send image message ', async () => {
         const res = await request(app)
           .post('/direct/secure/send')
           .set('Authorization', token)
           .send({
             message: {
-                conversationId: "a5d8993c-321d-4a86-a6f3-86fcd13a1a78",
-                type: "audio",
+                conversationId: "88991a6c-bfd9-4f40-9515-ab81caa78ca0",
+                type: "image",
                 content: {
-                    url: "https://soulxae-imagenes.s3.us-east-1.amazonaws.com/c352ab7c-94af-4944-9e3f-ea47b5515906/5abee705-7bef-498e-98a5-60884059b624/audio/ogg/717841141189213",
+                    urls: ["https://brokers-app-public.s3.us-east-1.amazonaws.com/logos/5/broker_logo.png"],
+
                 }
             }
           });

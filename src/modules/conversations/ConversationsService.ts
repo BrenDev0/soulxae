@@ -1,4 +1,4 @@
-import { Conversation, ConversationForAPI, ConversationData, ConversationForAPIData } from './conversations.interface'
+import { Conversation, ConversationForAPI, ConversationData, ConversationForAPIData, ConversationS3Key } from './conversations.interface'
 import BaseRepository from "../../core/repository/BaseRepository";
 import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
@@ -70,6 +70,16 @@ export default class ConversationsService {
             return this.mapForAPI(result)
         } catch (error) {
             handleServiceError(error as Error, this.block, "getAPIdata", { conversationId })
+            throw error;
+        }
+    }
+
+    async getConversationS3KeyData(conversationId: string): Promise<ConversationS3Key | null> {
+        try {
+            const result = await this.repository.getS3BucketKeyData(conversationId);
+            return result
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "getS3key", { conversationId })
             throw error;
         }
     }

@@ -79,7 +79,7 @@ export default class WebhooksService {
             const clientContact = await  productService.getClientInfo(req, platformData.token);
             const clientId = await this.handleClient(agentId, clientContact);
             const conversationId = await this.handleConversaton(clientId, platformData.platformId!);
-            const messageData = await productService.handleIncomingMessage(req, platformData.identifier, platformData.token, conversationId, agentId);
+            const messageData = await productService.handleIncomingMessage(req, platformData.identifier, platformData.token, conversationId);
           
             await messagesService.create(messageData)
 

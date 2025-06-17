@@ -39,6 +39,9 @@ class MessengerService {
                     case "text":
                         messageObject = this.textMessage(message.content, to);
                         break;
+                    case "video":
+                        messageObject = this.mediaMessage(message.content, to, "video");
+                        break;
                     default:
                         break;
                 }
@@ -56,7 +59,7 @@ class MessengerService {
             }
         });
     }
-    handleIncomingMessage(req, fromId, token, conversationId, agentId) {
+    handleIncomingMessage(req, fromId, token, conversationId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const message = req.body.entry[0].messaging[0].message;
@@ -185,7 +188,6 @@ class MessengerService {
                 type: type,
                 payload: {
                     url: url,
-                    is_reusable: true
                 }
             };
         });
@@ -193,11 +195,11 @@ class MessengerService {
             recipient: {
                 id: to
             },
-            messaging_type: "RESPONSE",
             message: {
-                attachment: attachments
+                attachments: attachments
             }
         };
+        console.log(messengerObject, "object:::::::::");
         return messengerObject;
     }
     getMediaContent(message) {

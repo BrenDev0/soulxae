@@ -60,12 +60,12 @@ class WhatsappService {
             }
         });
     }
-    handleIncomingMessage(req, fromId, token, conversationId, agentId) {
+    handleIncomingMessage(req, fromId, token, conversationId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const message = req.body.entry[0].changes[0].value.messages[0];
-                // console.log(message, ":::::::::::::::::::::message");
-                //message.type !== "unsupported" && await this.sendReadRecipt(message.id, fromId, token);
+                console.log(message, ":::::::::::::::::::::message");
+                message.type !== "unsupported" && (yield this.sendReadRecipt(message.id, fromId, token));
                 let messageData = {
                     messageReferenceId: message.id,
                     conversationId: conversationId,
@@ -78,15 +78,15 @@ class WhatsappService {
                 switch (message.type) {
                     case "audio":
                         messageData.type = "audio";
-                        messageData.content = yield this.getMediaContent(message.audio, conversationId, token, agentId);
+                        messageData.content = yield this.getMediaContent(message.audio, conversationId, token);
                         break;
                     case "document":
                         messageData.type = "document";
-                        messageData.content = yield this.getMediaContent(message.document, conversationId, token, agentId);
+                        messageData.content = yield this.getMediaContent(message.document, conversationId, token);
                         break;
                     case "image":
                         messageData.type = "image";
-                        messageData.content = yield this.getMediaContent(message.image, conversationId, token, agentId);
+                        messageData.content = yield this.getMediaContent(message.image, conversationId, token);
                         break;
                     case "text":
                         messageData.content = {
@@ -97,7 +97,7 @@ class WhatsappService {
                         break;
                     case "video":
                         messageData.type = "video";
-                        messageData.content = yield this.getMediaContent(message.image, conversationId, token, agentId);
+                        messageData.content = yield this.getMediaContent(message.image, conversationId, token);
                         break;
                     default:
                         break;
@@ -116,7 +116,7 @@ class WhatsappService {
             }
         });
     }
-    getMedia(mediaId, token, conversarionId, agentId) {
+    getMedia(mediaId, token, conversarionId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseUrl = yield axios_1.default.get(`https://graph.facebook.com/v23.0/${mediaId}`, {
@@ -134,9 +134,8 @@ class WhatsappService {
                     responseType: 'arraybuffer'
                 });
                 const contentType = responseData.headers['content-type'];
-                const key = `${agentId}/${conversarionId}/${contentType}/${mediaId}`;
                 const mediaService = Container_1.default.resolve("S3Service");
-                const url = yield mediaService.uploadBuffer(key, responseData.data, contentType);
+                const url = yield mediaService.uploadBuffer(conversarionId, mediaId, responseData.data, contentType);
                 return url;
             }
             catch (error) {
@@ -243,9 +242,9 @@ class WhatsappService {
         };
         return messageObject;
     }
-    getMediaContent(message, conversationId, token, agentId) {
+    getMediaContent(message, conversationId, token) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = yield this.getMedia(message.id, token, conversationId, agentId);
+            const url = yield this.getMedia(message.id, token, conversationId);
             const messageContent = {
                 urls: [url],
                 caption: message.caption ? message.caption : null
