@@ -57,7 +57,12 @@ export default class MessengerService {
 
     async handleIncomingMessage(req: Request, fromId: string, token: string, conversationId: string): Promise<MessageData> {
         try {
-            const message = req.body.entry[0].messaging[0].message;
+            const message = req.body.entry[0]?.messaging[0]?.message;
+            if(!message) {
+                throw new BadRequestError(undefined, {
+                    req: req.body
+                })
+            }
 
             console.log(message, ":::::::::::::::::::::message");
 
