@@ -156,6 +156,7 @@ class WhatsappService {
     getClientInfo(req) {
         var _a, _b, _c, _d;
         const clientInfo = (_c = (_b = (_a = req.body.entry[0]) === null || _a === void 0 ? void 0 : _a.changes[0]) === null || _b === void 0 ? void 0 : _b.value) === null || _c === void 0 ? void 0 : _c.contacts[0];
+        console.log(clientInfo, "CLIENTINFO");
         if (!clientInfo) {
             throw new errors_1.BadRequestError("Meta data not found");
         }
