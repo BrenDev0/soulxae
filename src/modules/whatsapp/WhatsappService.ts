@@ -82,13 +82,13 @@ export default class WhatsappService {
                 case "audio":
                     messageData.type = "audio";
                     messageData.mediaType = message.audio.mime_type
-                    message.image.caption && (messageData.text = message.audio.caption)
+                    message.audio.caption && (messageData.text = message.audio.caption)
                     messageData.media = await this.getMediaContent(message.audio, conversationId, token);
                     break
                 case "document":
                     messageData.type = "document"
                     messageData.mediaType = message.document.mime_type
-                    message.image.caption && (messageData.text = message.document.caption)
+                    message.document.caption && (messageData.text = message.document.caption)
                     messageData.media = await this.getMediaContent(message.document, conversationId, token);
                     break;
                 case "image":
@@ -106,7 +106,7 @@ export default class WhatsappService {
                 case "video":
                     messageData.type = "video"
                     messageData.mediaType = message.video.mime_type
-                    message.image.caption && (messageData.text = message.video.caption)
+                    message.video.caption && (messageData.text = message.video.caption)
                     messageData.media = await this.getMediaContent(message.image, conversationId, token)
                     break;
                 default: 
