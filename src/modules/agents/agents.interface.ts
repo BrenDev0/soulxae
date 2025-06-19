@@ -4,7 +4,7 @@ export interface Agent {
   agent_id?: string;
   name: string;
   description: string;
-  system_promt: string;
+  system_prompt: string;
   greeting_message: string | null;
   max_tokens: number;
   temperature: number;
