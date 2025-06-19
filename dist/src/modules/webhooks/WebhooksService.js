@@ -80,6 +80,7 @@ class WebhooksService {
                 return;
             }
             catch (error) {
+                console.log(error);
                 throw error;
             }
         });

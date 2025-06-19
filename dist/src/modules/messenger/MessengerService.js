@@ -67,6 +67,7 @@ class MessengerService {
                     });
                 }
                 console.log(message, ":::::::::::::::::::::message");
+                console.log(req.headers["content-type"], "TYPE:::::::");
                 let messageData = {
                     messageReferenceId: message.mid,
                     conversationId: conversationId,

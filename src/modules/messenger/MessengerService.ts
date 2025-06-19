@@ -62,6 +62,7 @@ export default class MessengerService {
             }
 
             console.log(message, ":::::::::::::::::::::message");
+            console.log(req.headers["content-type"], "TYPE:::::::")
 
             let messageData: MessageData =  {
                 messageReferenceId: message.mid,
