@@ -23,12 +23,8 @@ export default class WhatsappController {
     }
 
     async handleIncommingMessage(req: Request, res: Response): Promise<void> {
-        try {
-            res.status(200).send()
-            await this.webhookService.incomingMessage(req, "whatsapp");
-        } catch (error) {
-            throw error;
-        }
+        res.status(200).send()
+        await this.webhookService.incomingMessage(req, "whatsapp");
     }
     
 }

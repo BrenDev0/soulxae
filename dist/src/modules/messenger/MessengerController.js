@@ -28,13 +28,8 @@ class MessengerController {
     }
     handleIncommingMessage(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                res.status(200).send();
-                yield this.webhookService.incomingMessage(req, "messenger");
-            }
-            catch (error) {
-                throw error;
-            }
+            res.status(200).send();
+            yield this.webhookService.incomingMessage(req, "messenger");
         });
     }
 }

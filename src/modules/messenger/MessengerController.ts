@@ -23,12 +23,8 @@ export default class MessengerController {
     }
 
     async handleIncommingMessage(req: Request, res: Response): Promise<void> {
-        try {
-            res.status(200).send()
-            await this.webhookService.incomingMessage(req, "messenger");
-        } catch (error) {
-            throw error;
-        }
+        res.status(200).send()
+        await this.webhookService.incomingMessage(req, "messenger");
     }
     
 }
