@@ -108,7 +108,6 @@ class MessengerService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const response = yield axios_1.default.post(`https://graph.facebook.com/${process.env.MESSENGER_VERSION}/${fromId}/messages?access_token=${token}`, messageObject);
-                console.log(response.data);
                 return response;
             }
             catch (error) {
@@ -190,25 +189,33 @@ class MessengerService {
         return messengerObject;
     }
     mediaMessage(message, to, type) {
-        const attachments = message.media.map((url) => {
-            return {
+        const media = type === "image"
+            ? message.media.map((url) => {
+                return {
+                    type: type,
+                    payload: {
+                        url: url,
+                        is_reusable: true
+                    }
+                };
+            })
+            : {
                 type: type,
                 payload: {
-                    url: url,
+                    url: message.media[0],
                     is_reusable: true
                 }
             };
-        });
         let messengerObject = {
             recipient: {
                 id: to
             },
             messaging_type: "RESPONSE",
-            message: {
-                attachments: attachments
-            }
+            message: {}
         };
-        console.log(messengerObject, "object:::::::::");
+        type === "image"
+            ? messengerObject.message["attachments"] = media
+            : messengerObject.message["attachment"] = media;
         return messengerObject;
     }
 }

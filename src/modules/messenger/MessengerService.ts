@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import { IncommingMessengerAttachment, MessengerObject, MessengerTemplateElements, TemplatePayload } from './messenger.interface';
+import { IncommingMessengerAttachment, MediaAttachment, MessengerObject, MessengerTemplateElements, TemplatePayload } from './messenger.interface';
 import { ButtonsContent, Message, MessageData } from '../messages/messages.interface';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
 import { Request } from 'express';
@@ -110,10 +110,8 @@ export default class MessengerService {
         const response = await axios.post(
             `https://graph.facebook.com/${process.env.MESSENGER_VERSION}/${fromId}/messages?access_token=${token}`,
             messageObject
-        );   
-
-        console.log(response.data)
-   
+        ); 
+        
         return response  
         } catch (error) {
             throw new ExternalAPIError(undefined, {
@@ -204,7 +202,8 @@ export default class MessengerService {
     }
     
     mediaMessage(message: MessageData, to: string, type: string): MessengerObject {
-        const attachments = message.media!.map((url) => {
+        const media = type === "image" 
+        ? message.media!.map((url) => {
             return {
                 type: type,
                 payload: {
@@ -213,18 +212,26 @@ export default class MessengerService {
                 }
             }
         })
+        : {
+            type: type,
+            payload: {
+                url: message.media![0],
+                is_reusable: true
+            }
+        }
 
         let messengerObject: MessengerObject = {
             recipient: {
                 id: to
             },
             messaging_type: "RESPONSE",
-            message: {
-                attachments: attachments
-            }
+            message: {}
         }
 
-        console.log(messengerObject, "object:::::::::")
+        type === "image" 
+        ? messengerObject.message["attachments"] = media as MediaAttachment[]
+        : messengerObject.message["attachment"] = media as MediaAttachment
+
         return messengerObject;
     }
 }

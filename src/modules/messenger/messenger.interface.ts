@@ -43,7 +43,7 @@ export interface MessengerObject {
     text?: string,
     quickReplies?: [];
     attachments?: MediaAttachment[],
-    attachment?: TemplatePayload
+    attachment?: TemplatePayload | MediaAttachment
   }
 }
 

@@ -206,7 +206,7 @@ export default class WhatsappService {
                     },
                 }
             );
-
+           
             return response;
         } catch (error) {
             throw new ExternalAPIError(undefined, {
