@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 import HttpService from '../../core/services/HttpService';
 import WebhooksService from '../webhooks/WebhooksService';
+import Container from '../../core/dependencies/Container';
+import ErrorHandler from '../../core/errors/ErrorHandler';
 
 export default class WhatsappController {
     private httpService: HttpService;
@@ -23,8 +25,13 @@ export default class WhatsappController {
     }
 
     async handleIncommingMessage(req: Request, res: Response): Promise<void> {
-        res.status(200).send()
-        await this.webhookService.incomingMessage(req, "whatsapp");
+         try {
+            res.status(200).send()
+            await this.webhookService.incomingMessage(req, "whatsapp");
+        } catch (error) {
+            const errorHandler = Container.resolve<ErrorHandler>("ErrorHandler")
+            errorHandler.handleError(error)
+        }
     }
     
 }
