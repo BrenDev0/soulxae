@@ -165,6 +165,9 @@ export default class WhatsappService {
         const clientInfo = req.body.entry?.[0]?.changes?.[0]?.value?.contacts?.[0];
         console.log(req.body.entry, "ENTRY:::::::")
         console.log(req.body.entry?.[0]?.changes, "CHANGES:::::::")
+        console.log(req.body.entry?.[0]?.changes?.[0]?.value.statuses, "STATUSES::::::::")
+        console.log(req.body.entry?.[0]?.changes?.[0]?.value.metadata, "METADATA::::::::")
+       
        console.log(clientInfo, "CLIENTINFO")
        
         if(!clientInfo) {
