@@ -107,7 +107,7 @@ class WhatsappService {
                         messageData.type = "video";
                         messageData.mediaType = message.video.mime_type;
                         message.video.caption && (messageData.text = message.video.caption);
-                        messageData.media = yield this.getMediaContent(message.image, conversationId, token);
+                        messageData.media = yield this.getMediaContent(message.video, conversationId, token);
                         break;
                     default:
                         break;

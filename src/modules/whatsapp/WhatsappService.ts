@@ -107,7 +107,7 @@ export default class WhatsappService {
                     messageData.type = "video"
                     messageData.mediaType = message.video.mime_type
                     message.video.caption && (messageData.text = message.video.caption)
-                    messageData.media = await this.getMediaContent(message.image, conversationId, token)
+                    messageData.media = await this.getMediaContent(message.video, conversationId, token)
                     break;
                 default: 
                     break;
