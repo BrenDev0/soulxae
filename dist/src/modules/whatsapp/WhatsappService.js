@@ -154,14 +154,16 @@ class WhatsappService {
         });
     }
     getClientInfo(req) {
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         const clientInfo = (_f = (_e = (_d = (_c = (_b = (_a = req.body.entry) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.changes) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.value) === null || _e === void 0 ? void 0 : _e.contacts) === null || _f === void 0 ? void 0 : _f[0];
+        console.log(req.body.entry, "ENTRY:::::::");
+        console.log((_h = (_g = req.body.entry) === null || _g === void 0 ? void 0 : _g[0]) === null || _h === void 0 ? void 0 : _h.changes, "CHANGES:::::::");
         console.log(clientInfo, "CLIENTINFO");
         if (!clientInfo) {
             throw new errors_1.BadRequestError("Meta data not found");
         }
         return {
-            name: ((_g = clientInfo.profile) === null || _g === void 0 ? void 0 : _g.name) || null,
+            name: ((_j = clientInfo.profile) === null || _j === void 0 ? void 0 : _j.name) || null,
             id: clientInfo.wa_id
         };
     }
