@@ -29,8 +29,8 @@ class WhatsappController {
     handleIncommingMessage(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.webhookService.incomingMessage(req, "whatsapp");
                 res.status(200).send();
+                yield this.webhookService.incomingMessage(req, "whatsapp");
             }
             catch (error) {
                 throw error;
