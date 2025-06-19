@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import { IncommingMessengerAttachment, MessengerObject, MessengerTemplateElements, TemplatePayload } from './messenger.interface';
-import { ButtonsContent, MessageData, StandarMediaContent, TextContent } from '../messages/messages.interface';
+import { ButtonsContent, Message, MessageData } from '../messages/messages.interface';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
 import { Request } from 'express';
 import AppError from '../../core/errors/AppError';
@@ -15,23 +15,11 @@ export default class MessengerService {
             let messageObject: MessengerObject | undefined;
 
             switch(message.type) {
-                case "audio":
-                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "audio");
-                    break;
-                case "buttons":
-                    messageObject = this.buttonsMessage(message.content as ButtonsContent, to);
-                    break;
-                case "document":
-                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "files");
-                    break;
-                case "image":
-                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "image");
+                case "media":
+                    messageObject = this.mediaMessage(message, to);
                     break;
                 case "text":
-                    messageObject = this.textMessage(message.content as TextContent, to);
-                    break;
-                case "video":
-                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "video");
+                    messageObject = this.textMessage(message, to);
                     break;
                 default: 
                     break;
@@ -71,18 +59,17 @@ export default class MessengerService {
                 conversationId: conversationId,
                 sender: "client",
                 type: "text",
-                content: {
-                    body: `Unsupported Message type`
-                }
+                text: "unsupported message type",
+                media: null,
+                mediaType: null
+
             }
 
             if(message.text) {
-            messageData.content = {
-                body: message.text
-            }
+                messageData.text =  message.text
             } else if(message.attachments) {
-                messageData.type =  message.attachments[0].type;
-                messageData.content = this.getMediaContent(message.attachments);
+                messageData.mediaType =  message.attachments[0].type;
+                messageData.media = this.getMediaContent(message.attachments);
             }
 
             return messageData;
@@ -133,14 +120,14 @@ export default class MessengerService {
         };
     }
 
-    textMessage(message: TextContent, to: string): MessengerObject {
+    textMessage(message: MessageData, to: string): MessengerObject {
         const messengerObject = {
             recipient:{
                 id: to
             },
             messaging_type: "RESPONSE",
             message: {
-                text: message.body
+                text: message.text!
             }
         }
 
@@ -199,11 +186,11 @@ export default class MessengerService {
         return messengerObject;
     }
     
-    mediaMessage(message: StandarMediaContent, to: string, type: string): MessengerObject {
+    mediaMessage(message: MessageData, to: string): MessengerObject {
 
-        const attachments = message.urls.map((url) => {
+        const attachments =  message.media!.map((url) => {
             return {
-                type: type,
+                type: "media",
                 payload: {
                     url: url,
                 }
@@ -223,9 +210,9 @@ export default class MessengerService {
         return messengerObject;
     }
 
-    getMediaContent(message: IncommingMessengerAttachment[]): StandarMediaContent {
+    getMediaContent(message: IncommingMessengerAttachment[]): string[] {
         const urls = message.map((attachment: IncommingMessengerAttachment) => attachment.payload.url)
-        const mediaContent: StandarMediaContent = {
+        const mediaContent: any = {
             urls: urls,
             caption: null
         }

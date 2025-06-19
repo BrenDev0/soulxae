@@ -12,11 +12,6 @@ export interface Button {
   }
 }
 
-export interface StandarMediaContent {
-  urls: string[];
-  caption: string | null
-}
-
 export interface ButtonsContent {
   header: Header | null;
   body: string;
@@ -34,7 +29,9 @@ export interface Message {
   conversation_id: string;
   sender: string;
   type: string;
-  content: StandarMediaContent | ButtonsContent | TextContent  ;
+  text: string | null;
+  media: string[] | null;
+  media_type: string | null;
   timeStamp?:  Date 
 }
 
@@ -43,7 +40,9 @@ export interface MessageData {
   messageReferenceId: string;
   conversationId: string;
   sender: string;
-  content: StandarMediaContent | ButtonsContent | TextContent;
+  text: string | null;
+  media: string[] | null;
+  mediaType: string | null;
   type: string;
   timeStamp?:  Date 
 }
