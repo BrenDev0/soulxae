@@ -33,12 +33,11 @@ export default class ConversationsRepositoy extends BaseRepository<Conversation>
 
     async getS3BucketKeyData(conversationId: string): Promise<ConversationS3Key | null> {
         const sqlRead = `
-            SELECT conversations.conversation_id, platforms.platform_id, agents.agent_id, workspaces.workspace_id, users.user_id
+            SELECT conversations.conversation_id, platforms.platform_id, agents.agent_id, users.user_id
             FROM conversations
             JOIN platforms ON conversations.platform_id = platforms.platform_id
             JOIN agents ON platforms.agent_id = agents.agent_id
-            JOIN workspaces ON agents.workspace_id = workspaces.workspace_id
-            JOIN users ON workspaces.user_id = users.user_id
+            JOIN users ON agents.user_id = users.user_id
             WHERE conversations.conversation_id = $1;
         `
 

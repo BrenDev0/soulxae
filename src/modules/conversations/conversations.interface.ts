@@ -40,7 +40,6 @@ export interface ConversationS3Key {
   conversation_id: string;
   platform_id: string;
   agent_id: string;
-  workspace_id: string;
   user_id: string;
 }
 

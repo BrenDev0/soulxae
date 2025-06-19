@@ -43,12 +43,11 @@ class ConversationsRepositoy extends BaseRepository_1.default {
     getS3BucketKeyData(conversationId) {
         return __awaiter(this, void 0, void 0, function* () {
             const sqlRead = `
-            SELECT conversations.conversation_id, platforms.platform_id, agents.agent_id, workspaces.workspace_id, users.user_id
+            SELECT conversations.conversation_id, platforms.platform_id, agents.agent_id, users.user_id
             FROM conversations
             JOIN platforms ON conversations.platform_id = platforms.platform_id
             JOIN agents ON platforms.agent_id = agents.agent_id
-            JOIN workspaces ON agents.workspace_id = workspaces.workspace_id
-            JOIN users ON workspaces.user_id = users.user_id
+            JOIN users ON agents.user_id = users.user_id
             WHERE conversations.conversation_id = $1;
         `;
             const result = yield this.pool.query(sqlRead, [conversationId]);

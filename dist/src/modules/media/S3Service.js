@@ -30,7 +30,7 @@ class S3Service {
                 if (!dataForKey) {
                     throw new errors_1.NotFoundError("No data found for building media key");
                 }
-                const key = `${dataForKey.user_id}/${dataForKey.workspace_id}/${dataForKey.agent_id}/${dataForKey.platform_id}/${dataForKey.conversation_id}/${contentType}/${mediaId}`;
+                const key = `${dataForKey.user_id}/${dataForKey.agent_id}/${dataForKey.platform_id}/${dataForKey.conversation_id}/${contentType}/${mediaId}`;
                 return key;
             }
             catch (error) {
