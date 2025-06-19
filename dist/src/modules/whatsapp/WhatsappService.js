@@ -154,14 +154,16 @@ class WhatsappService {
         });
     }
     getClientInfo(req) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
         const clientInfo = (_f = (_e = (_d = (_c = (_b = (_a = req.body.entry) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.changes) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.value) === null || _e === void 0 ? void 0 : _e.contacts) === null || _f === void 0 ? void 0 : _f[0];
         console.log((_l = (_k = (_j = (_h = (_g = req.body.entry) === null || _g === void 0 ? void 0 : _g[0]) === null || _h === void 0 ? void 0 : _h.changes) === null || _j === void 0 ? void 0 : _j[0]) === null || _k === void 0 ? void 0 : _k.value) === null || _l === void 0 ? void 0 : _l.contacts, "CLIENTINFO");
+        console.log((_q = (_p = (_o = (_m = req.body.entry) === null || _m === void 0 ? void 0 : _m[0]) === null || _o === void 0 ? void 0 : _o.changes) === null || _p === void 0 ? void 0 : _p[0]) === null || _q === void 0 ? void 0 : _q.value, "CLIENTINFO");
+        console.log((_s = (_r = req.body.entry) === null || _r === void 0 ? void 0 : _r[0]) === null || _s === void 0 ? void 0 : _s.changes, "CLIENTINFO");
         if (!clientInfo) {
             throw new errors_1.BadRequestError("Meta data not found");
         }
         return {
-            name: ((_m = clientInfo.profile) === null || _m === void 0 ? void 0 : _m.name) || null,
+            name: ((_t = clientInfo.profile) === null || _t === void 0 ? void 0 : _t.name) || null,
             id: clientInfo.wa_id
         };
     }
