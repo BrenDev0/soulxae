@@ -22,7 +22,7 @@ class WebhooksService {
     verifyWebhook(req, platform) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const agentId = this.httpService.encryptionService.decryptData(req.params.id);
+                const agentId = req.params.id;
                 const agentPlatform = yield this.platformsService.getAgentPlatform(agentId, platform);
                 // Parse params from the webhook verification request
                 let mode = req.query['hub.mode'];
@@ -53,7 +53,7 @@ class WebhooksService {
             console.log(req.body, "request to webhook:::::::::::::");
             try {
                 const messagesService = Container_1.default.resolve("MessagesService");
-                const agentId = this.httpService.encryptionService.decryptData(req.params.id);
+                const agentId = req.params.id;
                 const platformData = yield this.platformsService.getAgentPlatform(agentId, platform);
                 if (!platformData) {
                     throw new errors_1.BadRequestError("Agent platform configuratin error");

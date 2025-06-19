@@ -42,8 +42,8 @@ export default class PlatformsController {
           secret += characters.charAt(Math.floor(Math.random() * characters.length));
       }
 
-      const encryptedId = this.httpService.encryptionService.encryptData(agentId)
-      const webhookUrl = `https://${process.env.WEBHOOK_URL}/${platform}/${encryptedId}/webhook`;
+  
+      const webhookUrl = `https://${process.env.WEBHOOK_URL}/${platform}/${agentId}/webhook`;
 
       const platformData = {
         ...req.body,

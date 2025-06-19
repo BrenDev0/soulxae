@@ -72,7 +72,7 @@ export default class WhatsappService {
                 conversationId: conversationId,
                 sender: "client",
                 type: "text",
-                text: "unsupported message type",
+                text: null,
                 media: null,
                 mediaType: null
 
@@ -98,6 +98,7 @@ export default class WhatsappService {
                     messageData.text = message.text.body
                     break;
                 case "unsupported":
+                    messageData.text = "Unsupported message type"
                     break;
                 case "video":
                     messageData.type = "video"

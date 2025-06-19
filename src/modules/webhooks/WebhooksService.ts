@@ -23,7 +23,7 @@ export default class WebhooksService {
 
     async verifyWebhook(req: Request, platform: string): Promise<any> {
         try {
-            const agentId = this.httpService.encryptionService.decryptData(req.params.id)
+            const agentId = req.params.id;
             const agentPlatform = await this.platformsService.getAgentPlatform(agentId, platform)
             
             // Parse params from the webhook verification request
@@ -54,7 +54,7 @@ export default class WebhooksService {
         console.log(req.body, "request to webhook:::::::::::::")
         try {
             const messagesService = Container.resolve<MessagesService>("MessagesService");
-            const agentId = this.httpService.encryptionService.decryptData(req.params.id);
+            const agentId = req.params.id;
             const platformData = await this.platformsService.getAgentPlatform(agentId, platform)
             if(!platformData) {
                 throw new BadRequestError("Agent platform configuratin error")

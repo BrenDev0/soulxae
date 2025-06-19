@@ -40,8 +40,7 @@ class PlatformsController {
                 for (let i = 0; i < 13; i++) {
                     secret += characters.charAt(Math.floor(Math.random() * characters.length));
                 }
-                const encryptedId = this.httpService.encryptionService.encryptData(agentId);
-                const webhookUrl = `https://${process.env.WEBHOOK_URL}/${platform}/${encryptedId}/webhook`;
+                const webhookUrl = `https://${process.env.WEBHOOK_URL}/${platform}/${agentId}/webhook`;
                 const platformData = Object.assign(Object.assign({}, req.body), { webhookUrl: webhookUrl, webhookSecret: secret });
                 yield this.platformsService.create(platformData);
                 res.status(200).json({

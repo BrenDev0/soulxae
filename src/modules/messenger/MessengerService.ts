@@ -68,7 +68,7 @@ export default class MessengerService {
                 conversationId: conversationId,
                 sender: "client",
                 type: "text",
-                text: "unsupported message type",
+                text: null,
                 media: null,
                 mediaType: null
 
@@ -79,6 +79,8 @@ export default class MessengerService {
             } else if(message.attachments) {
                 messageData.type =  message.attachments[0].type;
                 messageData.media = this.getMediaContent(message.attachments);
+            } else {
+                messageData.text = "Unsupported message type"
             }
 
             return messageData;
