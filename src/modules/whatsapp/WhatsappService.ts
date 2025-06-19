@@ -55,7 +55,7 @@ export default class WhatsappService {
 
     async handleIncomingMessage(req: Request, fromId: string, token: string, conversationId: string): Promise<MessageData> {
         try {
-            const message = req.body.entry[0]?.changes[0]?.value?.messages[0];
+            const message = req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
             if(!message) {
                 throw new BadRequestError(undefined, {
                     req: req.body
@@ -163,7 +163,7 @@ export default class WhatsappService {
 
     getClientInfo(req: Request): ClientContact {
         const clientInfo = req.body.entry?.[0]?.changes?.[0]?.value?.contacts?.[0];
-       console.log(clientInfo, "CLIENTINFO")
+       console.log(req.body.entry?.[0]?.changes?.[0]?.value?.contacts, "CLIENTINFO")
         if(!clientInfo) {
             throw new BadRequestError("Meta data not found");
         }

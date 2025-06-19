@@ -59,9 +59,9 @@ class WhatsappService {
     }
     handleIncomingMessage(req, fromId, token, conversationId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c;
+            var _a, _b, _c, _d, _e, _f;
             try {
-                const message = (_c = (_b = (_a = req.body.entry[0]) === null || _a === void 0 ? void 0 : _a.changes[0]) === null || _b === void 0 ? void 0 : _b.value) === null || _c === void 0 ? void 0 : _c.messages[0];
+                const message = (_f = (_e = (_d = (_c = (_b = (_a = req.body.entry) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.changes) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.value) === null || _e === void 0 ? void 0 : _e.messages) === null || _f === void 0 ? void 0 : _f[0];
                 if (!message) {
                     throw new errors_1.BadRequestError(undefined, {
                         req: req.body
@@ -154,14 +154,14 @@ class WhatsappService {
         });
     }
     getClientInfo(req) {
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
         const clientInfo = (_f = (_e = (_d = (_c = (_b = (_a = req.body.entry) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.changes) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.value) === null || _e === void 0 ? void 0 : _e.contacts) === null || _f === void 0 ? void 0 : _f[0];
-        console.log(clientInfo, "CLIENTINFO");
+        console.log((_l = (_k = (_j = (_h = (_g = req.body.entry) === null || _g === void 0 ? void 0 : _g[0]) === null || _h === void 0 ? void 0 : _h.changes) === null || _j === void 0 ? void 0 : _j[0]) === null || _k === void 0 ? void 0 : _k.value) === null || _l === void 0 ? void 0 : _l.contacts, "CLIENTINFO");
         if (!clientInfo) {
             throw new errors_1.BadRequestError("Meta data not found");
         }
         return {
-            name: ((_g = clientInfo.profile) === null || _g === void 0 ? void 0 : _g.name) || null,
+            name: ((_m = clientInfo.profile) === null || _m === void 0 ? void 0 : _m.name) || null,
             id: clientInfo.wa_id
         };
     }
