@@ -67,7 +67,6 @@ class MessengerService {
                     });
                 }
                 console.log(message, ":::::::::::::::::::::message");
-                console.log(req.headers["content-type"], "TYPE:::::::");
                 let messageData = {
                     messageReferenceId: message.mid,
                     conversationId: conversationId,
@@ -82,7 +81,7 @@ class MessengerService {
                 }
                 else if (message.attachments) {
                     messageData.type = message.attachments[0].type;
-                    messageData.media = this.getMediaContent(message.attachments);
+                    messageData.media = yield this.getMediaContent(message.attachments);
                 }
                 else {
                     messageData.text = "Unsupported message type";
@@ -210,8 +209,12 @@ class MessengerService {
         return messengerObject;
     }
     getMediaContent(message) {
-        const urls = message.map((attachment) => attachment.payload.url);
-        return urls;
+        return __awaiter(this, void 0, void 0, function* () {
+            const urls = message.map((attachment) => attachment.payload.url);
+            const res = yield axios_1.default.get(`${urls[0]}`);
+            console.log(res.headers["content-type"], "TYPE:::::::");
+            return urls;
+        });
     }
 }
 exports.default = MessengerService;
