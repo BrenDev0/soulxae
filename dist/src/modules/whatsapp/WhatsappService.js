@@ -70,7 +70,7 @@ class WhatsappService {
                 console.log(message, ":::::::::::::::::::::message");
                 message.type !== "unsupported" && (yield this.sendReadRecipt(message.id, fromId, token));
                 let messageData = {
-                    messageReferenceId: message.mid,
+                    messageReferenceId: message.id,
                     conversationId: conversationId,
                     sender: "client",
                     type: "text",
