@@ -25,22 +25,19 @@ class MessengerService {
                 let messageObject;
                 switch (message.type) {
                     case "audio":
-                        messageObject = this.mediaMessage(message.content, to, "audio");
-                        break;
-                    case "buttons":
-                        messageObject = this.buttonsMessage(message.content, to);
+                        messageObject = this.mediaMessage(message, to, "audio");
                         break;
                     case "document":
-                        messageObject = this.mediaMessage(message.content, to, "files");
+                        messageObject = this.mediaMessage(message, to, "files");
                         break;
                     case "image":
-                        messageObject = this.mediaMessage(message.content, to, "image");
+                        messageObject = this.mediaMessage(message, to, "image");
                         break;
                     case "text":
-                        messageObject = this.textMessage(message.content, to);
+                        messageObject = this.textMessage(message, to);
                         break;
                     case "video":
-                        messageObject = this.mediaMessage(message.content, to, "video");
+                        messageObject = this.mediaMessage(message, to, "video");
                         break;
                     default:
                         break;
@@ -75,18 +72,16 @@ class MessengerService {
                     conversationId: conversationId,
                     sender: "client",
                     type: "text",
-                    content: {
-                        body: `Unsupported Message type`
-                    }
+                    text: "unsupported message type",
+                    media: null,
+                    mediaType: null
                 };
                 if (message.text) {
-                    messageData.content = {
-                        body: message.text
-                    };
+                    messageData.text = message.text;
                 }
                 else if (message.attachments) {
                     messageData.type = message.attachments[0].type;
-                    messageData.content = this.getMediaContent(message.attachments);
+                    messageData.media = this.getMediaContent(message.attachments);
                 }
                 return messageData;
             }
@@ -138,7 +133,7 @@ class MessengerService {
             },
             messaging_type: "RESPONSE",
             message: {
-                text: message.body
+                text: message.text
             }
         };
         return messengerObject;
@@ -189,11 +184,12 @@ class MessengerService {
         return messengerObject;
     }
     mediaMessage(message, to, type) {
-        const attachments = message.urls.map((url) => {
+        const attachments = message.media.map((url) => {
             return {
                 type: type,
                 payload: {
                     url: url,
+                    is_reusable: true
                 }
             };
         });
@@ -201,6 +197,7 @@ class MessengerService {
             recipient: {
                 id: to
             },
+            messaging_type: "RESPONSE",
             message: {
                 attachments: attachments
             }
@@ -210,11 +207,7 @@ class MessengerService {
     }
     getMediaContent(message) {
         const urls = message.map((attachment) => attachment.payload.url);
-        const mediaContent = {
-            urls: urls,
-            caption: null
-        };
-        return mediaContent;
+        return urls;
     }
 }
 exports.default = MessengerService;

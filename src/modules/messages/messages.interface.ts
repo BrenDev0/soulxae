@@ -19,10 +19,6 @@ export interface ButtonsContent {
   buttons: Button[]
 }
 
-export interface TextContent {
-  body: string;
-}
-
 export interface Message {
   message_id?: string;
   message_reference_id: string;

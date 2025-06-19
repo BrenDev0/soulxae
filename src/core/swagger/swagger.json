@@ -1073,38 +1073,24 @@
                 "type": "string",
                 "example": "image, text, audio, document"
               },
-              "content": {
-                "type": "object",
-                "properties": {
-                  "body": {
-                    "type": "string",
-                    "example": "See interfaces at bottom of docs for proper structures"
-                  }
+              "text": {
+                "type": "string",
+                "example": "message text, optional"
+              },
+              "media": {
+                "type": "array",
+                "example": [
+                  "media urls optional"
+                ],
+                "items": {
+                  "type": "string"
                 }
+              },
+              "mediaType": {
+                "type": "string",
+                "example": "mime type, optional"
               }
             }
-          }
-        }
-      },
-      "TextContent": {
-        "type": "object",
-        "properties": {
-          "body": {
-            "type": "string",
-            "example": "message text"
-          }
-        }
-      },
-      "mediaContent": {
-        "type": "object",
-        "properties": {
-          "url": {
-            "type": "string",
-            "example": "image url"
-          },
-          "caption": {
-            "type": "string",
-            "example": "optional message"
           }
         }
       }

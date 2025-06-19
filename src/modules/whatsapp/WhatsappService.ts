@@ -1,5 +1,5 @@
-import { StandardObject, InteractiveObject, MessageObject, ReadReceipt, WhatsappContact, WhatsappMediaResponse, IncommingWhatsappMedia, } from '../whatsapp/whatsapp.interface'
-import { ButtonsContent,  MessageData, StandarMediaContent, TextContent } from '../messages/messages.interface';
+import { StandardObject, InteractiveObject, MessageObject, ReadReceipt, WhatsappMediaResponse, IncommingWhatsappMedia, } from '../whatsapp/whatsapp.interface'
+import { ButtonsContent,  MessageData } from '../messages/messages.interface';
 import axios from 'axios';
 import { BadRequestError, ExternalAPIError } from '../../core/errors/errors';
 import { Request } from 'express';
@@ -17,22 +17,19 @@ export default class WhatsappService {
 
             switch(message.type) {
                 case "audio":
-                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "audio");
-                    break;
-                case "buttons":
-                    messageObject = this.buttonsMessage(message.content as ButtonsContent, to);
+                    messageObject = this.mediaMessage(message, to, "audio");
                     break;
                 case "document":
-                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "document");
+                    messageObject = this.mediaMessage(message, to, "document");
                     break;
                 case "image":
-                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "image");
+                    messageObject = this.mediaMessage(message, to, "image");
                     break;
                 case "text":
-                    messageObject = this.textMessage(message.content as TextContent, to);
+                    messageObject = this.textMessage(message, to);
                     break;
                 case "video":
-                    messageObject = this.mediaMessage(message.content as StandarMediaContent, to, "video");
+                    messageObject = this.mediaMessage(message, to, "video");
                     break;
                 default: 
                     break;
@@ -71,38 +68,41 @@ export default class WhatsappService {
             message.type !== "unsupported" && await this.sendReadRecipt(message.id, fromId, token);
 
             let messageData: MessageData =  {
-                messageReferenceId: message.id,
+                messageReferenceId: message.mid,
                 conversationId: conversationId,
                 sender: "client",
                 type: "text",
-                content: {
-                    body: `Unsupported Message type ${message.type}`
-                }
+                text: "unsupported message type",
+                media: null,
+                mediaType: null
+
             }
 
             switch(message.type) {
                 case "audio":
                     messageData.type = "audio";
-                    messageData.content = await this.getMediaContent(message.audio, conversationId, token);
+                    messageData.mediaType = message.audio.mime_type
+                    messageData.media = await this.getMediaContent(message.audio, conversationId, token);
                     break
                 case "document":
                     messageData.type = "document"
-                    messageData.content = await this.getMediaContent(message.document, conversationId, token);
+                    messageData.mediaType = message.document.mime_type
+                    messageData.media = await this.getMediaContent(message.document, conversationId, token);
                     break;
                 case "image":
                     messageData.type = "image"
-                    messageData.content = await this.getMediaContent(message.image, conversationId, token)
+                    messageData.mediaType = message.image.mime_type
+                    messageData.media = await this.getMediaContent(message.image, conversationId, token)
                     break;
                 case "text":
-                    messageData.content = {
-                        body: message.text.body
-                    } 
+                    messageData.text = message.text.body
                     break;
                 case "unsupported":
                     break;
                 case "video":
                     messageData.type = "video"
-                    messageData.content = await this.getMediaContent(message.image, conversationId, token)
+                    messageData.mediaType = message.video.mime_type
+                    messageData.media = await this.getMediaContent(message.image, conversationId, token)
                     break;
                 default: 
                     break;
@@ -205,7 +205,7 @@ export default class WhatsappService {
         }
     }
 
-    textMessage(message: TextContent, to: string): MessageObject  {
+    textMessage(message: MessageData, to: string): MessageObject  {
         const messageObject: MessageObject = {
             messaging_product: "whatsapp",
             recipient_type: "individual",
@@ -213,7 +213,7 @@ export default class WhatsappService {
             type: "text",
             text: {
                 preview_url: true,
-                body: message.body
+                body: message.text!
             }
         } 
         
@@ -250,14 +250,14 @@ export default class WhatsappService {
         return messageObject;
     }
 
-    mediaMessage(message: StandarMediaContent, to: string, type: string): MessageObject {
+    mediaMessage(message: MessageData, to: string, type: string): MessageObject {
         
         const mediaObject: StandardObject = {
-            link: message.urls[0],
+            link: message.media![0],
         }
 
-        if(message.caption) {
-            mediaObject.caption = message.caption
+        if(message.text) {
+            mediaObject.caption = message.text
         }
         const messageObject: MessageObject = {
             messaging_product: "whatsapp",
@@ -270,14 +270,9 @@ export default class WhatsappService {
         return messageObject;
     }
 
-    async getMediaContent(message: IncommingWhatsappMedia, conversationId: string, token: string): Promise<StandarMediaContent>{
+    async getMediaContent(message: IncommingWhatsappMedia, conversationId: string, token: string): Promise<string[]>{
         const url = await this.getMedia(message.id, token, conversationId);
 
-        const messageContent: StandarMediaContent = {
-            urls: [url],
-            caption: message.caption ? message.caption : null
-        }
-
-        return messageContent;
+        return [url];
     }
 }

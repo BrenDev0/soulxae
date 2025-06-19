@@ -24,7 +24,7 @@ export default class DirectMessagagingController {
 
             const message = req.body.message as MessageData;
             
-            const requiredMessageFields = ["conversationId", "content", "type"]
+            const requiredMessageFields = ["conversationId", "type"]
             this.httpService.requestValidation.validateRequestBody(requiredMessageFields, message, `${block}.message`);
             
             const conversationsService = Container.resolve<ConversationsService>("ConversationsService");
@@ -58,7 +58,9 @@ export default class DirectMessagagingController {
                 conversationId: conversation.conversationId!,
                 sender: "agent",
                 type: message.type,
-                content: message.content
+                text: message.text ? message.text : null,
+                media: message.media ? message.media : null,
+                mediaType: message.mediaType ? message.mediaType : null
             })
 
             res.status(200).json({ message: "Message sent" })

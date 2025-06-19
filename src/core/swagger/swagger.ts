@@ -90,18 +90,10 @@ const doc = {
         message: {
           conversationId: "conversationId",
           type: "image, text, audio, document",
-          content: {
-            body: "See interfaces at bottom of docs for proper structures"
-          }
+          text: "message text, optional",
+          media: ["media urls optional"],
+          mediaType: "mime type, optional"
         }
-      },
-
-      TextContent: {
-        body: "message text"
-      },
-      mediaContent: {
-        url: "image url",
-        caption: "optional message"
       }
     },
   },

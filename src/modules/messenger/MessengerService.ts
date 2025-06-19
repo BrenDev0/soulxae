@@ -15,11 +15,20 @@ export default class MessengerService {
             let messageObject: MessengerObject | undefined;
 
             switch(message.type) {
-                case "media":
-                    messageObject = this.mediaMessage(message, to);
+                case "audio":
+                    messageObject = this.mediaMessage(message, to, "audio");
+                    break;
+                case "document":
+                    messageObject = this.mediaMessage(message, to, "files");
+                    break;
+                case "image":
+                    messageObject = this.mediaMessage(message, to, "image");
                     break;
                 case "text":
                     messageObject = this.textMessage(message, to);
+                    break;
+                case "video":
+                    messageObject = this.mediaMessage(message, to, "video");
                     break;
                 default: 
                     break;
@@ -68,7 +77,7 @@ export default class MessengerService {
             if(message.text) {
                 messageData.text =  message.text
             } else if(message.attachments) {
-                messageData.mediaType =  message.attachments[0].type;
+                messageData.type =  message.attachments[0].type;
                 messageData.media = this.getMediaContent(message.attachments);
             }
 
@@ -186,21 +195,22 @@ export default class MessengerService {
         return messengerObject;
     }
     
-    mediaMessage(message: MessageData, to: string): MessengerObject {
-
-        const attachments =  message.media!.map((url) => {
+    mediaMessage(message: MessageData, to: string, type: string): MessengerObject {
+        const attachments = message.media!.map((url) => {
             return {
-                type: "media",
+                type: type,
                 payload: {
                     url: url,
+                    is_reusable: true
                 }
             }
         })
- 
+
         let messengerObject: MessengerObject = {
             recipient: {
                 id: to
             },
+            messaging_type: "RESPONSE",
             message: {
                 attachments: attachments
             }
@@ -212,11 +222,7 @@ export default class MessengerService {
 
     getMediaContent(message: IncommingMessengerAttachment[]): string[] {
         const urls = message.map((attachment: IncommingMessengerAttachment) => attachment.payload.url)
-        const mediaContent: any = {
-            urls: urls,
-            caption: null
-        }
 
-        return mediaContent
+        return urls
     }
 }

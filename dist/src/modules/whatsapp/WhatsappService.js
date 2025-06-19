@@ -26,22 +26,19 @@ class WhatsappService {
                 let messageObject;
                 switch (message.type) {
                     case "audio":
-                        messageObject = this.mediaMessage(message.content, to, "audio");
-                        break;
-                    case "buttons":
-                        messageObject = this.buttonsMessage(message.content, to);
+                        messageObject = this.mediaMessage(message, to, "audio");
                         break;
                     case "document":
-                        messageObject = this.mediaMessage(message.content, to, "document");
+                        messageObject = this.mediaMessage(message, to, "document");
                         break;
                     case "image":
-                        messageObject = this.mediaMessage(message.content, to, "image");
+                        messageObject = this.mediaMessage(message, to, "image");
                         break;
                     case "text":
-                        messageObject = this.textMessage(message.content, to);
+                        messageObject = this.textMessage(message, to);
                         break;
                     case "video":
-                        messageObject = this.mediaMessage(message.content, to, "video");
+                        messageObject = this.mediaMessage(message, to, "video");
                         break;
                     default:
                         break;
@@ -73,37 +70,39 @@ class WhatsappService {
                 console.log(message, ":::::::::::::::::::::message");
                 message.type !== "unsupported" && (yield this.sendReadRecipt(message.id, fromId, token));
                 let messageData = {
-                    messageReferenceId: message.id,
+                    messageReferenceId: message.mid,
                     conversationId: conversationId,
                     sender: "client",
                     type: "text",
-                    content: {
-                        body: `Unsupported Message type ${message.type}`
-                    }
+                    text: "unsupported message type",
+                    media: null,
+                    mediaType: null
                 };
                 switch (message.type) {
                     case "audio":
                         messageData.type = "audio";
-                        messageData.content = yield this.getMediaContent(message.audio, conversationId, token);
+                        messageData.mediaType = message.audio.mime_type;
+                        messageData.media = yield this.getMediaContent(message.audio, conversationId, token);
                         break;
                     case "document":
                         messageData.type = "document";
-                        messageData.content = yield this.getMediaContent(message.document, conversationId, token);
+                        messageData.mediaType = message.document.mime_type;
+                        messageData.media = yield this.getMediaContent(message.document, conversationId, token);
                         break;
                     case "image":
                         messageData.type = "image";
-                        messageData.content = yield this.getMediaContent(message.image, conversationId, token);
+                        messageData.mediaType = message.image.mime_type;
+                        messageData.media = yield this.getMediaContent(message.image, conversationId, token);
                         break;
                     case "text":
-                        messageData.content = {
-                            body: message.text.body
-                        };
+                        messageData.text = message.text.body;
                         break;
                     case "unsupported":
                         break;
                     case "video":
                         messageData.type = "video";
-                        messageData.content = yield this.getMediaContent(message.image, conversationId, token);
+                        messageData.mediaType = message.video.mime_type;
+                        messageData.media = yield this.getMediaContent(message.image, conversationId, token);
                         break;
                     default:
                         break;
@@ -202,7 +201,7 @@ class WhatsappService {
             type: "text",
             text: {
                 preview_url: true,
-                body: message.body
+                body: message.text
             }
         };
         return messageObject;
@@ -234,10 +233,10 @@ class WhatsappService {
     }
     mediaMessage(message, to, type) {
         const mediaObject = {
-            link: message.urls[0],
+            link: message.media[0],
         };
-        if (message.caption) {
-            mediaObject.caption = message.caption;
+        if (message.text) {
+            mediaObject.caption = message.text;
         }
         const messageObject = {
             messaging_product: "whatsapp",
@@ -251,11 +250,7 @@ class WhatsappService {
     getMediaContent(message, conversationId, token) {
         return __awaiter(this, void 0, void 0, function* () {
             const url = yield this.getMedia(message.id, token, conversationId);
-            const messageContent = {
-                urls: [url],
-                caption: message.caption ? message.caption : null
-            };
-            return messageContent;
+            return [url];
         });
     }
 }

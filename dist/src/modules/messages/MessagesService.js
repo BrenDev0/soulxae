@@ -87,7 +87,9 @@ class MessagesService {
             message_reference_id: message.messageReferenceId,
             conversation_id: message.conversationId,
             sender: message.sender,
-            content: message.content,
+            text: message.text,
+            media: message.media,
+            media_type: message.mediaType,
             type: message.type
         };
     }
@@ -98,7 +100,9 @@ class MessagesService {
             messageReferenceId: message.message_reference_id,
             conversationId: message.conversation_id,
             sender: message.sender,
-            content: message.content,
+            text: message.text,
+            media: message.media,
+            mediaType: message.media_type,
             type: message.type
         };
     }
