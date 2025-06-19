@@ -15,7 +15,7 @@ export interface AgentData {
   agentId?: string;
   name: string;
   description: string;
-  systemPromt: string;
+  systemPrompt: string;
   greetingMessage: string | null;
   maxTokens: number;
   temperature: number;
