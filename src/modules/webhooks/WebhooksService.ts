@@ -51,7 +51,6 @@ export default class WebhooksService {
     }
 
     async incomingMessage(req: Request, platform: string): Promise<void> {
-        console.log(req.body, "request to webhook:::::::::::::")
         try {
             const messagesService = Container.resolve<MessagesService>("MessagesService");
             const agentId = req.params.id;
