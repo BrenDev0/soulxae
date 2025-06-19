@@ -79,7 +79,12 @@ export default class MessengerService {
                 messageData.text =  message.text
             } else if(message.attachments) {
                 messageData.type =  message.attachments[0].type;
-                messageData.media = await this.getMediaContent(message.attachments);
+                messageData.media = message.attachments.map((attachment: IncommingMessengerAttachment) => attachment.payload.url)
+
+                const res = await axios.get(`${message.attachments[0].payload.url}`);
+                
+                messageData.mediaType = res.headers["content-type"]
+                messageData.media = message.attachments.map((attachment: IncommingMessengerAttachment) => attachment.payload.url)
             } else {
                 messageData.text = "Unsupported message type"
             }
@@ -221,12 +226,5 @@ export default class MessengerService {
 
         console.log(messengerObject, "object:::::::::")
         return messengerObject;
-    }
-
-    async getMediaContent(message: IncommingMessengerAttachment[]): Promise<string[]> {
-        const urls = message.map((attachment: IncommingMessengerAttachment) => attachment.payload.url)
-        const res = await axios.get(`${urls[0]}`);
-        console.log(res.headers["content-type"], "TYPE:::::::")
-        return urls
     }
 }

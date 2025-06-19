@@ -81,7 +81,10 @@ class MessengerService {
                 }
                 else if (message.attachments) {
                     messageData.type = message.attachments[0].type;
-                    messageData.media = yield this.getMediaContent(message.attachments);
+                    messageData.media = message.attachments.map((attachment) => attachment.payload.url);
+                    const res = yield axios_1.default.get(`${message.attachments[0].payload.url}`);
+                    messageData.mediaType = res.headers["content-type"];
+                    messageData.media = message.attachments.map((attachment) => attachment.payload.url);
                 }
                 else {
                     messageData.text = "Unsupported message type";
@@ -207,14 +210,6 @@ class MessengerService {
         };
         console.log(messengerObject, "object:::::::::");
         return messengerObject;
-    }
-    getMediaContent(message) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const urls = message.map((attachment) => attachment.payload.url);
-            const res = yield axios_1.default.get(`${urls[0]}`);
-            console.log(res.headers["content-type"], "TYPE:::::::");
-            return urls;
-        });
     }
 }
 exports.default = MessengerService;
