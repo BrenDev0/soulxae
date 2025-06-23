@@ -52,7 +52,7 @@ const doc = {
       createAgent: {
         description: "required",
         name: "required",
-        tyep: "ai or flow required"
+        type: "ai or flow required"
       },
       updateAgent:{
         description: "optional",

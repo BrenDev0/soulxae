@@ -944,7 +944,7 @@
                         "type": "string",
                         "example": "required"
                     },
-                    "tyep": {
+                    "type": {
                         "type": "string",
                         "example": "ai or flow required"
                     }
