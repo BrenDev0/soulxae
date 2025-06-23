@@ -51,7 +51,7 @@ export default class MediaController {
         userId: user.user_id
       }, "2m")
 
-      await axios.post(
+      const response = await axios.post(
         "https://soulxae-agent.up.railway.app/api/files/upload",
         {
           agent_id: agentId,
@@ -66,10 +66,13 @@ export default class MediaController {
         }
       );
 
+      console.log("response::::::::::", response)
+
       await this.s3Service.delete(key)
 
       res.status(200).json({ message: "File added to agent references." });
     } catch (error) {
+      console.log("MEDIAUPLOAD ERROR::::::::::", error)
       throw error;
     }
   }

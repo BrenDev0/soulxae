@@ -48,7 +48,7 @@ class MediaController {
                 const token = this.httpService.webtokenService.generateToken({
                     userId: user.user_id
                 }, "2m");
-                yield axios_1.default.post("https://soulxae-agent.up.railway.app/api/files/upload", {
+                const response = yield axios_1.default.post("https://soulxae-agent.up.railway.app/api/files/upload", {
                     agent_id: agentId,
                     s3_key: key,
                     file_type: file === null || file === void 0 ? void 0 : file.mimetype,
@@ -58,10 +58,12 @@ class MediaController {
                         Authorization: token
                     }
                 });
+                console.log("response::::::::::", response);
                 yield this.s3Service.delete(key);
                 res.status(200).json({ message: "File added to agent references." });
             }
             catch (error) {
+                console.log("MEDIAUPLOAD ERROR::::::::::", error);
                 throw error;
             }
         });
