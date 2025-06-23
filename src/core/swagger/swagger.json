@@ -1059,6 +1059,15 @@
           }
         }
       },
+      "uploadAgentDocs": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "example": "formdata type file "
+          }
+        }
+      },
       "sendDirectMessage": {
         "type": "object",
         "properties": {

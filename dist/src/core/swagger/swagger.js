@@ -88,6 +88,9 @@ const doc = {
                 email: "optional",
                 agentId: "optional"
             },
+            uploadAgentDocs: {
+                file: "formdata type file "
+            },
             sendDirectMessage: {
                 message: {
                     conversationId: "conversationId",

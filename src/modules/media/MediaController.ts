@@ -1,37 +1,74 @@
 import { Request, Response } from "express";
 import HttpService from "../../core/services/HttpService"
-import { BadRequestError, NotFoundError } from "../../core/errors/errors";
-import MediaService from "./S3Service";
-import { MediaData } from "./media.interface";
+import { AuthorizationError, BadRequestError, NotFoundError } from "../../core/errors/errors";
+import S3Service from "./S3Service";
+import Container from "../../core/dependencies/Container";
+import AgentsService from "../agents/AgentsService";
+import axios from "axios";
 
 export default class MediaController { 
   private httpService: HttpService;
-  private mediaService: MediaService;  
+  private s3Service: S3Service;  
   private block = "media.controller"; 
   
 
-  constructor(httpService: HttpService, mediaService: MediaService) {
+  constructor(httpService: HttpService, s3Service: S3Service) {
     this.httpService = httpService;
-    this.mediaService = mediaService;
+    this.s3Service = s3Service
   }
 
-  // async createRequest(req: Request, res: Response): Promise<void> {
-  //   const block = `${this.block}.createRequest`;
-  //   try {
-  //     const requiredFields = [""];
+  async uploadReferenceDocs(req: Request, res: Response): Promise<void> {
+    const block = `${this.block}.createRequest`;
+    try {
+      const requiredFields = ["file"];
+      this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block)
+      const file = req.file;
 
+      const user = req.user;
 
-  //     const mediaData = {
-    
-  //     };
+      const agentId = req.params.agentId;
+      this.httpService.requestValidation.validateUuid(agentId, "agentId", block)
 
-  //     await this.mediaService.create(mediaData);
+      const agentService = Container.resolve<AgentsService>("agentsService");
+      const agentResource = await agentService.resource(agentId);
+      if(!agentResource) {
+        throw new NotFoundError("No agent found")
+      }
 
-  //     res.status(200).json({ message: " added." });
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+      if(agentResource.userId !== user.user_id) {
+        throw new AuthorizationError()
+      }
+
+      const key = ""
+
+      const url = await this.s3Service.upload(key, file!)
+
+      const token = this.httpService.webtokenService.generateToken({
+        userId: user.user_id
+      }, "2m")
+
+      await axios.post(
+        "https://soulxae-agent.up.railway.app/api/files/upload",
+        {
+          agent_id: agentId,
+          s3_key: key,
+          file_type: file?.mimetype,
+          filename: file?.originalname
+        },
+        {
+          headers: {
+            Authorization: token
+          }
+        }
+      );
+
+      await this.s3Service.delete(key)
+
+      res.status(200).json({ message: "File added to agent references." });
+    } catch (error) {
+      throw error;
+    }
+  }
 
   // async resourceRequest(req: Request, res: Response): Promise<void> {
   //   const block = `${this.block}.resourceRequest`;

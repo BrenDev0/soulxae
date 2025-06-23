@@ -1,10 +1,66 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const errors_1 = require("../../core/errors/errors");
+const Container_1 = __importDefault(require("../../core/dependencies/Container"));
+const axios_1 = __importDefault(require("axios"));
 class MediaController {
-    constructor(httpService, mediaService) {
+    constructor(httpService, s3Service) {
         this.block = "media.controller";
         this.httpService = httpService;
-        this.mediaService = mediaService;
+        this.s3Service = s3Service;
+    }
+    uploadReferenceDocs(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.createRequest`;
+            try {
+                const requiredFields = ["file"];
+                this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+                const file = req.file;
+                const user = req.user;
+                const agentId = req.params.agentId;
+                this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
+                const agentService = Container_1.default.resolve("agentsService");
+                const agentResource = yield agentService.resource(agentId);
+                if (!agentResource) {
+                    throw new errors_1.NotFoundError("No agent found");
+                }
+                if (agentResource.userId !== user.user_id) {
+                    throw new errors_1.AuthorizationError();
+                }
+                const key = "";
+                const url = yield this.s3Service.upload(key, file);
+                const token = this.httpService.webtokenService.generateToken({
+                    userId: user.user_id
+                }, "2m");
+                yield axios_1.default.post("https://soulxae-agent.up.railway.app/api/files/upload", {
+                    agent_id: agentId,
+                    s3_key: key,
+                    file_type: file === null || file === void 0 ? void 0 : file.mimetype,
+                    filename: file === null || file === void 0 ? void 0 : file.originalname
+                }, {
+                    headers: {
+                        Authorization: token
+                    }
+                });
+                yield this.s3Service.delete(key);
+                res.status(200).json({ message: "File added to agent references." });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
     }
 }
 exports.default = MediaController;
