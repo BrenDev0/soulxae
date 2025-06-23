@@ -38,6 +38,7 @@ const media_dependencies_1 = require("../../modules/media/media.dependencies");
 const messenger_dependencies_1 = require("../../modules/messenger/messenger.dependencies");
 const subscriptions_dependencies_1 = require("../../modules/subscriptions/subscriptions.dependencies");
 const employees_dependencies_1 = require("../../modules/employees/employees.dependencies");
+const aiConfig_dependencies_1 = require("../../modules/aiConfig/aiConfig.dependencies");
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -89,6 +90,8 @@ function configureContainer(testPool, testRedis) {
         (0, users_dependencies_1.configureUsersDependencies)(pool);
         // webhooks //
         (0, webhooks_dependencies_1.configureWebhooksDependencies)();
+        // agent configs --- must configure agents above this block 
+        (0, aiConfig_dependencies_1.configureAiConfigDependencies)(pool);
         // messaging services  --- must configure webhooks above this block //
         // messenger //
         (0, messenger_dependencies_1.configureMessengerDependencies)();

@@ -14,19 +14,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const error_service_1 = require("../../core/errors/error.service");
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
-class AgentsService {
+class AiConfigsService {
     constructor(repository) {
-        this.block = "agents.service";
+        this.block = "aiConfig.service";
         this.repository = repository;
     }
-    create(agents) {
+    create(aiConfig) {
         return __awaiter(this, void 0, void 0, function* () {
-            const mappedAgent = this.mapToDb(agents);
+            const mappedAiConfig = this.mapToDb(aiConfig);
             try {
-                return this.repository.create(mappedAgent);
+                return this.repository.create(mappedAiConfig);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "create", mappedAgent);
+                (0, error_service_1.handleServiceError)(error, this.block, "create", mappedAiConfig);
                 throw error;
             }
         });
@@ -46,25 +46,12 @@ class AgentsService {
             }
         });
     }
-    collection(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const result = yield this.repository.select("user_id", userId);
-                const data = result.map((agent) => this.mapFromDb(agent));
-                return data;
-            }
-            catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "resource", { userId });
-                throw error;
-            }
-        });
-    }
-    update(agentId, changes) {
+    update(aiConfigId, changes) {
         return __awaiter(this, void 0, void 0, function* () {
             const mappedChanges = this.mapToDb(changes);
             const cleanedChanges = Object.fromEntries(Object.entries(mappedChanges).filter(([_, value]) => value !== undefined));
             try {
-                return yield this.repository.update("agent_id", agentId, cleanedChanges);
+                return yield this.repository.update("ai_config_id", aiConfigId, cleanedChanges);
             }
             catch (error) {
                 (0, error_service_1.handleServiceError)(error, this.block, "update", cleanedChanges);
@@ -72,35 +59,35 @@ class AgentsService {
             }
         });
     }
-    delete(agentId) {
+    delete(aiConfigId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield this.repository.delete("agent_id", agentId);
+                return yield this.repository.delete("ai_config_id", aiConfigId);
             }
             catch (error) {
-                (0, error_service_1.handleServiceError)(error, this.block, "delete", { agentId });
+                (0, error_service_1.handleServiceError)(error, this.block, "delete", { aiConfigId });
                 throw error;
             }
         });
     }
-    mapToDb(agent) {
+    mapToDb(aiConfig) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
-            user_id: agent.userId,
-            type: agent.type,
-            name: agent.name,
-            description: agent.description
+            agent_id: aiConfig.agentId,
+            system_prompt: aiConfig.systemPrompt,
+            max_tokens: aiConfig.maxTokens,
+            temperature: aiConfig.temperature
         };
     }
-    mapFromDb(agent) {
+    mapFromDb(aiConfig) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
         return {
-            agentId: agent.agent_id,
-            userId: agent.user_id,
-            type: agent.type,
-            name: agent.name,
-            description: agent.description
+            aiConfigId: aiConfig.agent_id,
+            agentId: aiConfig.agent_id,
+            systemPrompt: aiConfig.system_prompt,
+            maxTokens: aiConfig.max_tokens,
+            temperature: aiConfig.temperature
         };
     }
 }
-exports.default = AgentsService;
+exports.default = AiConfigsService;

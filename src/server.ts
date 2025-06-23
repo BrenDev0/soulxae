@@ -15,6 +15,7 @@ import { initializeWhatsappRouter } from './modules/whatsapp/whatsapp.routes';
 import { initializeMessengerRouter } from './modules/messenger/messenger.routes';
 import { initializeEmployeesRouter } from './modules/employees/employees.routes';
 import { initializeMediaRouter } from './modules/media/media.routes';
+import { initializeAiConfigRouter } from './modules/aiConfig/aiConfig.routes';
 
 
 const server = async() => {
@@ -24,6 +25,7 @@ const server = async() => {
     const middlewareService: MiddlewareService =  Container.resolve("MiddlewareService");
 
     // routers //
+    const aiConfigRouter = initializeAiConfigRouter()
     const agentsRouter = initializeAgentsRouter();
     const clientsRouter = initializeClientsRouter();
     const conversationsRouter = initializeConversationsRouter();
@@ -41,6 +43,7 @@ const server = async() => {
     process.env.NODE_ENV === "production" && app.use(middlewareService.verifyHMAC);
     process.env.NODE_ENV !== 'production' && app.use('/docs/endpoints', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
+    app.use("/ai-config", aiConfigRouter);
     app.use("/agents", agentsRouter);
     app.use("/clients", clientsRouter);
     app.use("/conversatations", conversationsRouter);

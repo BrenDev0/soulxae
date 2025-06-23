@@ -13,7 +13,7 @@ const errors_1 = require("../../core/errors/errors");
 class AgentsController {
     constructor(httpService, agentsService) {
         this.block = "agents.controller";
-        this.allowedAgentTypes = ["flow", "direct"];
+        this.allowedAgentTypes = ["flow", "ai"];
         this.httpService = httpService;
         this.agentsService = agentsService;
     }
@@ -22,8 +22,15 @@ class AgentsController {
             const block = `${this.block}.createRequest`;
             try {
                 const user = req.user;
-                const requiredFields = ["systemPrompt", "name", "maxTokens", "temperature", "description"];
+                const requiredFields = ["type", "name", "description"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+                const { type } = req.body;
+                if (!this.allowedAgentTypes.includes(type)) {
+                    throw new errors_1.BadRequestError("Unsupported agent type", {
+                        allowedTypes: this.allowedAgentTypes,
+                        request: type
+                    });
+                }
                 const agentData = Object.assign(Object.assign({}, req.body), { userId: user.user_id });
                 yield this.agentsService.create(agentData);
                 res.status(200).json({ message: "Agent added." });
@@ -91,7 +98,7 @@ class AgentsController {
                         userId: user.user_id
                     });
                 }
-                const allowedChanges = ["name", "description", "systemPrompt", "greetingMessage", "maxTokens", "temperature"];
+                const allowedChanges = ["name", "description"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 yield this.agentsService.update(agentId, filteredChanges);
                 res.status(200).json({ message: "Agent updated" });

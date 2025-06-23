@@ -73,10 +73,7 @@ export default class AgentsService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             user_id: agent.userId,
-            system_prompt: agent.systemPrompt,
-            greeting_message: agent.greetingMessage,
-            max_tokens: agent.maxTokens,
-            temperature: agent.temperature,
+            type: agent.type,
             name: agent.name,
             description: agent.description
         }
@@ -87,10 +84,7 @@ export default class AgentsService {
         return {
             agentId: agent.agent_id,
             userId: agent.user_id,
-            systemPrompt: agent.system_prompt,
-            greetingMessage: agent.greeting_message,
-            maxTokens: agent.max_tokens,
-            temperature: agent.temperature,
+            type: agent.type,
             name: agent.name,
             description: agent.description
         }

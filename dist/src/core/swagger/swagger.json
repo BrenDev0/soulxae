@@ -944,21 +944,9 @@
                         "type": "string",
                         "example": "required"
                     },
-                    "systemPrompt": {
+                    "tyep": {
                         "type": "string",
-                        "example": "required"
-                    },
-                    "greetingMessage": {
-                        "type": "string",
-                        "example": "optional"
-                    },
-                    "maxTokens": {
-                        "type": "number",
-                        "example": 200
-                    },
-                    "temperature": {
-                        "type": "number",
-                        "example": 0.2
+                        "example": "ai or flow required"
                     }
                 }
             },
@@ -978,6 +966,40 @@
                         "example": "optional"
                     },
                     "greetingMessage": {
+                        "type": "string",
+                        "example": "optional"
+                    },
+                    "maxTokens": {
+                        "type": "number",
+                        "example": 200
+                    },
+                    "temperature": {
+                        "type": "number",
+                        "example": 0.2
+                    }
+                }
+            },
+            "createAiConfig": {
+                "type": "object",
+                "properties": {
+                    "systemPrompt": {
+                        "type": "string",
+                        "example": "required"
+                    },
+                    "maxTokens": {
+                        "type": "number",
+                        "example": 200
+                    },
+                    "temperature": {
+                        "type": "number",
+                        "example": 0.2
+                    }
+                }
+            },
+            "updateAiConfig": {
+                "type": "object",
+                "properties": {
+                    "systemPrompt": {
                         "type": "string",
                         "example": "optional"
                     },

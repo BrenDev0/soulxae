@@ -9,7 +9,7 @@ export default class AgentsController {
   private httpService: HttpService;
   private agentsService: AgentsService;  
   private block = "agents.controller"; 
-  private readonly allowedAgentTypes =  ["flow", "direct"]
+  private readonly allowedAgentTypes =  ["flow", "ai"]
 
   constructor(httpService: HttpService, agentsService: AgentsService) {
     this.httpService = httpService;
@@ -21,8 +21,16 @@ export default class AgentsController {
     const block = `${this.block}.createRequest`;
     try {
       const user = req.user;
-      const requiredFields = ["systemPrompt", "name", "maxTokens", "temperature", "description"];
+      const requiredFields = ["type", "name", "description"];
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+      const { type } = req.body;
+
+      if(!this.allowedAgentTypes.includes(type)) {
+        throw new BadRequestError("Unsupported agent type", {
+          allowedTypes: this.allowedAgentTypes,
+          request: type
+        })
+      }
       
       const agentData: AgentData = {
         ...req.body,
@@ -100,7 +108,7 @@ export default class AgentsController {
       }
 
 
-      const allowedChanges = ["name", "description", "systemPrompt", "greetingMessage", "maxTokens", "temperature"];
+      const allowedChanges = ["name", "description"];
 
       const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<AgentData>(allowedChanges, req.body, block);
 

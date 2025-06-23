@@ -52,10 +52,7 @@ const doc = {
       createAgent: {
         description: "required",
         name: "required",
-        systemPrompt: "required",
-        greetingMessage: "optional",
-        maxTokens: 200,
-        temperature: 0.2
+        tyep: "ai or flow required"
       },
       updateAgent:{
         description: "optional",
@@ -65,6 +62,19 @@ const doc = {
         maxTokens: 200,
         temperature: 0.2
       },
+
+      createAiConfig: {
+        systemPrompt: "required",
+        maxTokens: 200,
+        temperature: 0.2
+      },
+      
+      updateAiConfig: {
+        systemPrompt: "optional",
+        maxTokens: 200,
+        temperature: 0.2
+      },
+
       createPlatform: {
         agentId: "required",
         platform: "whatsapp or  messenger or instagram",

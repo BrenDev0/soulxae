@@ -4,10 +4,7 @@ export interface Agent {
   agent_id?: string;
   name: string;
   description: string;
-  system_prompt: string;
-  greeting_message: string | null;
-  max_tokens: number;
-  temperature: number;
+  type: string;
   user_id: string;
 }
 
@@ -15,10 +12,7 @@ export interface AgentData {
   agentId?: string;
   name: string;
   description: string;
-  systemPrompt: string;
-  greetingMessage: string | null;
-  maxTokens: number;
-  temperature: number;
+  type: string;
   userId: string;
 }
 

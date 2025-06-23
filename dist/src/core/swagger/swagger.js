@@ -55,16 +55,23 @@ const doc = {
             createAgent: {
                 description: "required",
                 name: "required",
-                systemPrompt: "required",
-                greetingMessage: "optional",
-                maxTokens: 200,
-                temperature: 0.2
+                tyep: "ai or flow required"
             },
             updateAgent: {
                 description: "optional",
                 name: "optional",
                 systemPrompt: "optional",
                 greetingMessage: "optional",
+                maxTokens: 200,
+                temperature: 0.2
+            },
+            createAiConfig: {
+                systemPrompt: "required",
+                maxTokens: 200,
+                temperature: 0.2
+            },
+            updateAiConfig: {
+                systemPrompt: "optional",
                 maxTokens: 200,
                 temperature: 0.2
             },
