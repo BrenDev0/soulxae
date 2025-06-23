@@ -43,7 +43,7 @@ export default class MediaController {
         throw new AuthorizationError()
       }
 
-      const key = ""
+      const key = `temp_for_ empbeding:${user.user_id}:${agentId}`
 
       const url = await this.s3Service.upload(key, file!)
 

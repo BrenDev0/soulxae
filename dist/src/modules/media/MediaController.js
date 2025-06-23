@@ -43,7 +43,7 @@ class MediaController {
                 if (agentResource.userId !== user.user_id) {
                     throw new errors_1.AuthorizationError();
                 }
-                const key = "";
+                const key = `temp_for_ empbeding:${user.user_id}:${agentId}`;
                 const url = yield this.s3Service.upload(key, file);
                 const token = this.httpService.webtokenService.generateToken({
                     userId: user.user_id
