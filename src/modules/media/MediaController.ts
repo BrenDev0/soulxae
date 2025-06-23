@@ -52,7 +52,7 @@ export default class MediaController {
       }, "2m")
 
       const response = await axios.post(
-        "https://soulxae-agent.up.railway.app/api/files/upload",
+        `https://${process.env.AGENT_WEBHOOK}/api/files/upload`,
         {
           agent_id: agentId,
           s3_url: url,
