@@ -25,9 +25,13 @@ class MediaController {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.createRequest`;
             try {
-                const requiredFields = ["file"];
-                this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const file = req.file;
+                if (!file) {
+                    throw new errors_1.BadRequestError("All fields required", {
+                        block: block,
+                        reason: "No file in request"
+                    });
+                }
                 const user = req.user;
                 const agentId = req.params.agentId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);

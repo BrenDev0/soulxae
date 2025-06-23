@@ -20,9 +20,13 @@ export default class MediaController {
   async uploadReferenceDocs(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.createRequest`;
     try {
-      const requiredFields = ["file"];
-      this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block)
       const file = req.file;
+      if(!file) {
+        throw new BadRequestError("All fields required", {
+          block: block,
+          reason: "No file in request"
+        })
+      }
 
       const user = req.user;
 
