@@ -11,12 +11,22 @@
         }
     ],
     "paths": {
-        "/ai-config/secure/create": {
+        "/ai-config/secure/create/{agentId}": {
             "post": {
                 "tags": [
                     "AiConfig"
                 ],
                 "description": "create ai configuration",
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "default": {
                         "description": ""

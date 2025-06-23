@@ -13,10 +13,10 @@ const initializeAiConfigRouter = (customController) => {
     const controller = customController !== null && customController !== void 0 ? customController : Container_1.default.resolve("AiConfigController");
     secureRouter.use(middlewareService.auth.bind(middlewareService));
     // protected Routes //
-    secureRouter.post("/create", 
+    secureRouter.post("/create/:agentId", 
     /*
    #swagger.tags = ['AiConfig']
-   #swagger.path =  '/ai-config/secure/create'
+   #swagger.path =  '/ai-config/secure/create/{agentId}'
    #swagger.security = [{ "bearerAuth": [] }]
    #swagger.description = 'create ai configuration'
    #swagger.requestBody = {
