@@ -55,7 +55,7 @@ class MediaController {
                     filename: file === null || file === void 0 ? void 0 : file.originalname
                 }, {
                     headers: {
-                        Authorization: token
+                        Authorization: `Bearer ${token}`
                     }
                 });
                 console.log("response::::::::::", response);

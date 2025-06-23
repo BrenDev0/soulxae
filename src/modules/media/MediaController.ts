@@ -61,7 +61,7 @@ export default class MediaController {
         },
         {
           headers: {
-            Authorization: token
+            Authorization: `Bearer ${token}`
           }
         }
       );
