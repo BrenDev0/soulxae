@@ -11,6 +11,7 @@ import EncryptionService from "../../core/services/EncryptionService";
 import AgentsService from "../agents/AgentsService";
 import MessengerService from "../messenger/MessengerService";
 import { ClientContact } from "../clients/clients.interface";
+import axios from "axios";
 
 export default class WebhooksService {
     private httpService: HttpService;
@@ -33,13 +34,13 @@ export default class WebhooksService {
         
             // Check if a token and mode were sent
             if(mode && token) {
-                if(!agentPlatform || agentPlatform.webhookSecret === null) {
+                if(!agentPlatform || agentPlatform.webhook_secret === null) {
                     throw new BadRequestError("Platform Configuration error", {
                         agentPlatform
                     })
                 }
             
-                if(mode === 'subscribe' && token === agentPlatform.webhookSecret) {
+                if(mode === 'subscribe' && token === agentPlatform.webhook_secret) {
                     return challenge;
                 } else {
                     throw new AuthorizationError();
@@ -77,10 +78,27 @@ export default class WebhooksService {
 
             const clientContact = await  productService.getClientInfo(req, platformData.token);
             const clientId = await this.handleClient(agentId, clientContact);
-            const conversationId = await this.handleConversaton(clientId, platformData.platformId!);
+            const conversationId = await this.handleConversaton(clientId, platformData.platform_id);
             const messageData = await productService.handleIncomingMessage(req, platformData.identifier, platformData.token, conversationId);
           
             await messagesService.create(messageData)
+
+            if(platformData.type === "ai" && messageData.text) {
+                const token = this.httpService.webtokenService.generateToken({userId: platformData.user_id}, "2m")
+                const response = await axios.post(
+                    `${process.env.AGENT_WEBHOOK}/api/agent/interact`,
+                    {
+                        agent_id: agentId,
+                        conversation_id: conversationId,
+                        input: messageData.text
+                    },
+                    {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                    }
+                );
+            }
 
            return;
         } catch (error) {

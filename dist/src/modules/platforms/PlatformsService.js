@@ -53,7 +53,7 @@ class PlatformsService {
                 if (!result) {
                     return null;
                 }
-                return this.mapFromDb(result);
+                return this.mapPrivate(result);
             }
             catch (error) {
                 (0, error_service_1.handleServiceError)(error, this.block, "getAgentPlatform", { agentId, platform });
@@ -119,6 +119,17 @@ class PlatformsService {
             webhookSecret: encryptionService.decryptData(platform.webhook_secret),
             identifier: encryptionService.decryptData(platform.identifier),
             token: encryptionService.decryptData(platform.token)
+        };
+    }
+    mapPrivate(platform) {
+        const encryptionService = Container_1.default.resolve("EncryptionService");
+        return {
+            platform_id: platform.platform_id,
+            user_id: platform.user_id,
+            type: platform.type,
+            token: platform.token && encryptionService.encryptData(platform.token),
+            identifier: platform.identifier && encryptionService.encryptData(platform.identifier),
+            webhook_secret: platform.webhook_secret && encryptionService.decryptData(platform.webhook_secret)
         };
     }
 }

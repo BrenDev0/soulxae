@@ -1,4 +1,4 @@
-import { Platform, PlatformData } from './platforms.interface'
+import { Platform, PlatformData, PlatformPrivate } from './platforms.interface'
 import BaseRepository from "../../core/repository/BaseRepository";
 import { handleServiceError } from '../../core/errors/error.service';
 import Container from '../../core/dependencies/Container';
@@ -36,13 +36,13 @@ export default class PlatformsService {
         }
     }
 
-    async getAgentPlatform(agentId: string, platform: string) {
+    async getAgentPlatform(agentId: string, platform: string): Promise<PlatformPrivate | null> {
         try {
             const result = await this.repository.getPlatformByAgentId(agentId, platform);
             if(!result) {
                 return null
             }
-            return this.mapFromDb(result);
+            return this.mapPrivate(result);
         } catch (error) {
             handleServiceError(error as Error, this.block, "getAgentPlatform", {agentId, platform})
             throw error;
@@ -106,6 +106,18 @@ export default class PlatformsService {
             webhookSecret: encryptionService.decryptData(platform.webhook_secret),
             identifier: encryptionService.decryptData(platform.identifier),
             token: encryptionService.decryptData(platform.token)
+        }
+    }
+
+    mapPrivate(platform: PlatformPrivate): PlatformPrivate {
+        const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
+        return {
+            platform_id: platform.platform_id,
+            user_id: platform.user_id,
+            type: platform.type,
+            token: platform.token && encryptionService.encryptData(platform.token),
+            identifier: platform.identifier && encryptionService.encryptData(platform.identifier),
+            webhook_secret: platform.webhook_secret && encryptionService.decryptData(platform.webhook_secret)
         }
     }
 }

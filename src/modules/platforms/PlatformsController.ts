@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import HttpService from "../../core/services/HttpService"
-import { BadRequestError, NotFoundError } from "../../core/errors/errors";
+import { AuthorizationError, BadRequestError, NotFoundError } from "../../core/errors/errors";
 import PlatformsService from "./PlatformsService";
 import { PlatformData } from "./platforms.interface";
+import Container from "../../core/dependencies/Container";
+import AgenciesService from "../agencies/AgenciesService";
 
 export default class PlatformsController { 
   private httpService: HttpService;
@@ -18,9 +20,25 @@ export default class PlatformsController {
   async createRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.createRequest`;
     try {
-      const requiredFields = ["agentId", "platform", "token", "identifier"];
+      const requiredFields = ["platform", "token", "identifier"];
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-      const { agentId, platform, token } = req.body;
+
+      const user = req.user;
+
+      const agentId = req.params.agentId;
+      this.httpService.requestValidation.validateUuid(agentId, "agentId", block)
+
+      const agentsService = Container.resolve<AgenciesService>("AgentsService");
+      const agentResourcre =  await agentsService.resource(agentId);
+      if(!agentResourcre) {
+        throw new BadRequestError("Agent not found")
+      }
+
+      if(agentResourcre.userId !== user.user_id) {
+        throw new AuthorizationError()
+      }
+      
+      const {  platform, token } = req.body;
       
       if(!this.allowedPlatforms.includes(platform)) {
         throw new BadRequestError("Invalid platform type", {

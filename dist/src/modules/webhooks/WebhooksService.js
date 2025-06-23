@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 const errors_1 = require("../../core/errors/errors");
+const axios_1 = __importDefault(require("axios"));
 class WebhooksService {
     constructor(httpService, platformsService) {
         this.httpService = httpService;
@@ -30,12 +31,12 @@ class WebhooksService {
                 let challenge = req.query['hub.challenge'];
                 // Check if a token and mode were sent
                 if (mode && token) {
-                    if (!agentPlatform || agentPlatform.webhookSecret === null) {
+                    if (!agentPlatform || agentPlatform.webhook_secret === null) {
                         throw new errors_1.BadRequestError("Platform Configuration error", {
                             agentPlatform
                         });
                     }
-                    if (mode === 'subscribe' && token === agentPlatform.webhookSecret) {
+                    if (mode === 'subscribe' && token === agentPlatform.webhook_secret) {
                         return challenge;
                     }
                     else {
@@ -73,9 +74,21 @@ class WebhooksService {
                 ;
                 const clientContact = yield productService.getClientInfo(req, platformData.token);
                 const clientId = yield this.handleClient(agentId, clientContact);
-                const conversationId = yield this.handleConversaton(clientId, platformData.platformId);
+                const conversationId = yield this.handleConversaton(clientId, platformData.platform_id);
                 const messageData = yield productService.handleIncomingMessage(req, platformData.identifier, platformData.token, conversationId);
                 yield messagesService.create(messageData);
+                if (platformData.type === "ai" && messageData.text) {
+                    const token = this.httpService.webtokenService.generateToken({ userId: platformData.user_id }, "2m");
+                    const response = yield axios_1.default.post(`${process.env.AGENT_WEBHOOK}/api/agent/interact`, {
+                        agent_id: agentId,
+                        conversation_id: conversationId,
+                        input: messageData.text
+                    }, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                }
                 return;
             }
             catch (error) {

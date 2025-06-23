@@ -8,8 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = require("../../core/errors/errors");
+const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 class PlatformsController {
     constructor(httpService, platformsService) {
         this.block = "platforms.controller";
@@ -21,9 +25,20 @@ class PlatformsController {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.createRequest`;
             try {
-                const requiredFields = ["agentId", "platform", "token", "identifier"];
+                const requiredFields = ["platform", "token", "identifier"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-                const { agentId, platform, token } = req.body;
+                const user = req.user;
+                const agentId = req.params.agentId;
+                this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
+                const agentsService = Container_1.default.resolve("AgentsService");
+                const agentResourcre = yield agentsService.resource(agentId);
+                if (!agentResourcre) {
+                    throw new errors_1.BadRequestError("Agent not found");
+                }
+                if (agentResourcre.userId !== user.user_id) {
+                    throw new errors_1.AuthorizationError();
+                }
+                const { platform, token } = req.body;
                 if (!this.allowedPlatforms.includes(platform)) {
                     throw new errors_1.BadRequestError("Invalid platform type", {
                         allowedPlatforms: this.allowedPlatforms,

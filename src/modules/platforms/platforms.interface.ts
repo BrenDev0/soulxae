@@ -21,7 +21,15 @@ export interface PlatformData {
   identifier: string;
 }
 
+export interface PlatformPrivate {
+  user_id: string;
+  token: string;
+  identifier: string;
+  type: string;
+  platform_id: string;
+  webhook_secret: string
+}
 
 export interface IPlatformsRepository extends IRepository<Platform> {
-  getPlatformByAgentId(agentId: string, platform: string): Promise<Platform | null>
+  getPlatformByAgentId(agentId: string, platform: string): Promise<PlatformPrivate | null>
 }
