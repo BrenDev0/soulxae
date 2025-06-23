@@ -79,7 +79,7 @@ class WebhooksService {
                 yield messagesService.create(messageData);
                 if (platformData.type === "ai" && messageData.text) {
                     const token = this.httpService.webtokenService.generateToken({ userId: platformData.user_id }, "2m");
-                    const response = yield axios_1.default.post(`${process.env.AGENT_WEBHOOK}/api/agent/interact`, {
+                    const response = yield axios_1.default.post(`https://${process.env.AGENT_WEBHOOK}/api/agent/interact`, {
                         agent_id: agentId,
                         conversation_id: conversationId,
                         input: messageData.text
