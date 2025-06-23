@@ -68,7 +68,6 @@ class WhatsappService {
                     });
                 }
                 console.log(message, ":::::::::::::::::::::message");
-                message.type !== "unsupported" && (yield this.sendReadRecipt(message.id, fromId, token));
                 let messageData = {
                     messageReferenceId: message.id,
                     conversationId: conversationId,
