@@ -33,7 +33,7 @@ export default class MediaController {
       const agentId = req.params.agentId;
       this.httpService.requestValidation.validateUuid(agentId, "agentId", block)
 
-      const agentService = Container.resolve<AgentsService>("agentsService");
+      const agentService = Container.resolve<AgentsService>("AgentsService");
       const agentResource = await agentService.resource(agentId);
       if(!agentResource) {
         throw new NotFoundError("No agent found")

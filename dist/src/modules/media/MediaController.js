@@ -35,7 +35,7 @@ class MediaController {
                 const user = req.user;
                 const agentId = req.params.agentId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
-                const agentService = Container_1.default.resolve("agentsService");
+                const agentService = Container_1.default.resolve("AgentsService");
                 const agentResource = yield agentService.resource(agentId);
                 if (!agentResource) {
                     throw new errors_1.NotFoundError("No agent found");
