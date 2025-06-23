@@ -67,7 +67,6 @@ class WhatsappService {
                         req: req.body
                     });
                 }
-                console.log(message, ":::::::::::::::::::::message");
                 let messageData = {
                     messageReferenceId: message.id,
                     conversationId: conversationId,
@@ -153,18 +152,13 @@ class WhatsappService {
         });
     }
     getClientInfo(req) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
+        var _a, _b, _c, _d, _e, _f, _g;
         const clientInfo = (_f = (_e = (_d = (_c = (_b = (_a = req.body.entry) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.changes) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.value) === null || _e === void 0 ? void 0 : _e.contacts) === null || _f === void 0 ? void 0 : _f[0];
-        console.log(req.body.entry, "ENTRY:::::::");
-        console.log((_h = (_g = req.body.entry) === null || _g === void 0 ? void 0 : _g[0]) === null || _h === void 0 ? void 0 : _h.changes, "CHANGES:::::::");
-        console.log((_m = (_l = (_k = (_j = req.body.entry) === null || _j === void 0 ? void 0 : _j[0]) === null || _k === void 0 ? void 0 : _k.changes) === null || _l === void 0 ? void 0 : _l[0]) === null || _m === void 0 ? void 0 : _m.value.statuses, "STATUSES::::::::");
-        console.log((_r = (_q = (_p = (_o = req.body.entry) === null || _o === void 0 ? void 0 : _o[0]) === null || _p === void 0 ? void 0 : _p.changes) === null || _q === void 0 ? void 0 : _q[0]) === null || _r === void 0 ? void 0 : _r.value.metadata, "METADATA::::::::");
-        console.log(clientInfo, "CLIENTINFO");
         if (!clientInfo) {
             throw new errors_1.BadRequestError("Meta data not found");
         }
         return {
-            name: ((_s = clientInfo.profile) === null || _s === void 0 ? void 0 : _s.name) || null,
+            name: ((_g = clientInfo.profile) === null || _g === void 0 ? void 0 : _g.name) || null,
             id: clientInfo.wa_id
         };
     }

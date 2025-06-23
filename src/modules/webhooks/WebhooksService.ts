@@ -56,6 +56,7 @@ export default class WebhooksService {
             const messagesService = Container.resolve<MessagesService>("MessagesService");
             const agentId = req.params.id;
             const platformData = await this.platformsService.getAgentPlatform(agentId, platform)
+            console.log("platform data::::::::::", platformData)
             if(!platformData) {
                 throw new BadRequestError("Agent platform configuratin error")
             }
@@ -84,6 +85,7 @@ export default class WebhooksService {
             await messagesService.create(messageData)
 
             if(platformData.type === "ai" && messageData.text) {
+                console.log("INrequest")
                 const token = this.httpService.webtokenService.generateToken({userId: platformData.user_id}, "2m")
                 const response = await axios.post(
                     `https://${process.env.AGENT_WEBHOOK}/api/agent/interact`,
@@ -93,11 +95,13 @@ export default class WebhooksService {
                         input: messageData.text
                     },
                     {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
                     }
                 );
+
+                console.log(response)
             }
 
            return;

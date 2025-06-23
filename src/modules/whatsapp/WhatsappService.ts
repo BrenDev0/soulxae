@@ -62,9 +62,6 @@ export default class WhatsappService {
                 })
             }
           
-           console.log(message, ":::::::::::::::::::::message");
-            
-
             let messageData: MessageData =  {
                 messageReferenceId: message.id,
                 conversationId: conversationId,
@@ -161,13 +158,7 @@ export default class WhatsappService {
 
     getClientInfo(req: Request): ClientContact {
         const clientInfo = req.body.entry?.[0]?.changes?.[0]?.value?.contacts?.[0];
-        console.log(req.body.entry, "ENTRY:::::::")
-        console.log(req.body.entry?.[0]?.changes, "CHANGES:::::::")
-        console.log(req.body.entry?.[0]?.changes?.[0]?.value.statuses, "STATUSES::::::::")
-        console.log(req.body.entry?.[0]?.changes?.[0]?.value.metadata, "METADATA::::::::")
-       
-       console.log(clientInfo, "CLIENTINFO")
-       
+    
         if(!clientInfo) {
             throw new BadRequestError("Meta data not found");
         }
