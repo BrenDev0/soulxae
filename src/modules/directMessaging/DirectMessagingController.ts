@@ -22,8 +22,8 @@ export default class DirectMessagagingController {
             const requiredFields = [ "message"];
             this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
-            const message = req.body.message as MessageData;
-            console.log(message, "MESSAGE:::::::::::::::::")
+            const { message } = req.body;
+
             const requiredMessageFields = ["conversationId", "type"]
             this.httpService.requestValidation.validateRequestBody(requiredMessageFields, message, `${block}.message`);
             
