@@ -25,7 +25,7 @@ export interface PlatformPrivate {
   user_id: string;
   token: string;
   identifier: string;
-  type: string;
+  agent_type: string;
   platform_id: string;
   webhook_secret: string
 }

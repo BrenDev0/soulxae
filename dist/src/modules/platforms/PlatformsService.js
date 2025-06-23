@@ -126,7 +126,7 @@ class PlatformsService {
         return {
             platform_id: platform.platform_id,
             user_id: platform.user_id,
-            type: platform.type,
+            agent_type: platform.agent_type,
             token: platform.token && encryptionService.encryptData(platform.token),
             identifier: platform.identifier && encryptionService.encryptData(platform.identifier),
             webhook_secret: platform.webhook_secret && encryptionService.decryptData(platform.webhook_secret)

@@ -78,7 +78,7 @@ class WebhooksService {
                 const conversationId = yield this.handleConversaton(clientId, platformData.platform_id);
                 const messageData = yield productService.handleIncomingMessage(req, platformData.identifier, platformData.token, conversationId);
                 yield messagesService.create(messageData);
-                if (platformData.type === "ai" && messageData.text) {
+                if (platformData.agent_type === "ai" && messageData.text) {
                     console.log("INrequest");
                     const token = this.httpService.webtokenService.generateToken({ userId: platformData.user_id }, "2m");
                     const response = yield axios_1.default.post(`https://${process.env.AGENT_WEBHOOK}/api/agent/interact`, {

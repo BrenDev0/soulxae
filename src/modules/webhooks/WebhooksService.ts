@@ -84,7 +84,7 @@ export default class WebhooksService {
           
             await messagesService.create(messageData)
 
-            if(platformData.type === "ai" && messageData.text) {
+            if(platformData.agent_type === "ai" && messageData.text) {
                 console.log("INrequest")
                 const token = this.httpService.webtokenService.generateToken({userId: platformData.user_id}, "2m")
                 const response = await axios.post(
