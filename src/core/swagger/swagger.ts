@@ -115,7 +115,7 @@ const doc = {
 
 const outputFile = './swagger.json';  
 const endpointsFiles = [
-  '../../modules/aiConfig/aiconfig.routes.ts',
+  '../../modules/aiConfig/aiConfig.routes.ts',
   '../../modules/agents/agents.routes.ts',
   '../../modules/clients/clients.routes.ts',
   '../../modules/conversations/conversations.routes.ts',

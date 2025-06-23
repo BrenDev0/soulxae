@@ -11,6 +11,128 @@
         }
     ],
     "paths": {
+        "/ai-config/secure/create": {
+            "post": {
+                "tags": [
+                    "AiConfig"
+                ],
+                "description": "create ai configuration",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/createAiConfig"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ai-config/secure/resource/{agentId}": {
+            "get": {
+                "tags": [
+                    "AiConfig"
+                ],
+                "description": "get configuration by agent",
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/ai-config/secure/{agentIs}": {
+            "put": {
+                "tags": [
+                    "AiConfig"
+                ],
+                "description": "create ai configuration",
+                "parameters": [
+                    {
+                        "name": "agentIs",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/updateAiConfig"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ai-config/secure/{agentId}": {
+            "delete": {
+                "tags": [
+                    "AiConfig"
+                ],
+                "description": "delete agent config",
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/agents/secure/create": {
             "post": {
                 "tags": [
