@@ -13,7 +13,7 @@ export default class PlatformsRepository extends BaseRepository<Platform> implem
             SELECT platforms.token, platforms.identifier, platforms.platform_id, platforms.webhook_secret, agents.type as agent_type, agents.user_id
             FROM platforms
             JOIN agents ON platforms.agent_id = agents.agent_id
-            WHERE agent_id = $1 AND platform = $2;
+            WHERE platforms.agent_id = $1 AND platforms.platform = $2;
         `;
 
         const result = await this.pool.query(sqlRead, [agentId, platform]);
