@@ -55,7 +55,7 @@ export default class MediaController {
         "https://soulxae-agent.up.railway.app/api/files/upload",
         {
           agent_id: agentId,
-          s3_key: key,
+          s3_url: url,
           file_type: file?.mimetype,
           filename: file?.originalname
         },

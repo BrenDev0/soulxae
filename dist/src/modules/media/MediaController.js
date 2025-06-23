@@ -50,7 +50,7 @@ class MediaController {
                 }, "2m");
                 const response = yield axios_1.default.post("https://soulxae-agent.up.railway.app/api/files/upload", {
                     agent_id: agentId,
-                    s3_key: key,
+                    s3_url: url,
                     file_type: file === null || file === void 0 ? void 0 : file.mimetype,
                     filename: file === null || file === void 0 ? void 0 : file.originalname
                 }, {
