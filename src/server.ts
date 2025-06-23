@@ -14,6 +14,7 @@ import { initializeConversationsRouter } from './modules/conversations/conversat
 import { initializeWhatsappRouter } from './modules/whatsapp/whatsapp.routes';
 import { initializeMessengerRouter } from './modules/messenger/messenger.routes';
 import { initializeEmployeesRouter } from './modules/employees/employees.routes';
+import { initializeMediaRouter } from './modules/media/media.routes';
 
 
 const server = async() => {
@@ -28,6 +29,7 @@ const server = async() => {
     const conversationsRouter = initializeConversationsRouter();
     const directMessagingRouter = initializeDirectMessageingRouter();
     const employeesRouter = initializeEmployeesRouter();
+    const mediaRouter = initializeMediaRouter();
     const messengerRouter = initializeMessengerRouter();
     const platformsRouter = initializePlatformsRouter();
     const usersRouter = initializeUsersRouter();
@@ -44,6 +46,7 @@ const server = async() => {
     app.use("/conversatations", conversationsRouter);
     app.use("/employees", employeesRouter);
     app.use("/direct", directMessagingRouter);
+    app.use("/media", mediaRouter);
     app.use("/messenger", messengerRouter);
     app.use("/platforms", platformsRouter);
     app.use("/users", usersRouter);
