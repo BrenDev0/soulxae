@@ -113,8 +113,6 @@ export default class WebhooksService {
                         }
                     }
                 );
-
-                console.log(response)
             }
 
            return;

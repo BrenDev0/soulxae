@@ -97,7 +97,6 @@ class WebhooksService {
                             Authorization: `Bearer ${token}`
                         }
                     });
-                    console.log(response);
                 }
                 return;
             }
