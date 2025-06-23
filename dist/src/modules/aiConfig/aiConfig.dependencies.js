@@ -9,7 +9,7 @@ const AiConfigService_1 = __importDefault(require("./AiConfigService"));
 const AiConfigController_1 = __importDefault(require("./AiConfigController"));
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 function configureAiConfigDependencies(pool) {
-    const repository = new BaseRepository_1.default(pool, "aiConfig");
+    const repository = new BaseRepository_1.default(pool, "ai_config");
     const service = new AiConfigService_1.default(repository);
     const httpService = Container_1.default.resolve("HttpService");
     const agentsService = Container_1.default.resolve("AgentsService");

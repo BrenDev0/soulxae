@@ -8,7 +8,7 @@ import HttpService from "../../core/services/HttpService";
 import AgentsService from "../agents/AgentsService";
 
 export function configureAiConfigDependencies(pool: Pool): void {
-    const repository = new BaseRepository<AiConfig>(pool, "aiConfig");
+    const repository = new BaseRepository<AiConfig>(pool, "ai_config");
     const service = new AiConfigService(repository);
     const httpService = Container.resolve<HttpService>("HttpService");
     const agentsService = Container.resolve<AgentsService>("AgentsService");
