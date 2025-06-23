@@ -34,13 +34,11 @@ export default class MessagesService {
         }
     }
 
-    async collection(conversationId: string): Promise<MessageData | null> {
+    async collection(conversationId: string): Promise<MessageData[]> {
         try {
-            const result = await this.repository.selectOne("conversation_id", conversationId);
-            if(!result) {
-                return null
-            }
-            return this.mapFromDb(result)
+            const result = await this.repository.select("conversation_id", conversationId);
+        
+            return result.map((message) => this.mapFromDb(message))
         } catch (error) {
             handleServiceError(error as Error, this.block, "collection", {conversationId})
             throw error;

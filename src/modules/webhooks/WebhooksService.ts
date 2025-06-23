@@ -12,6 +12,8 @@ import AgentsService from "../agents/AgentsService";
 import MessengerService from "../messenger/MessengerService";
 import { ClientContact } from "../clients/clients.interface";
 import axios from "axios";
+import RedisService from "../../core/services/RedisService";
+import { RedisClientType } from "redis";
 
 export default class WebhooksService {
     private httpService: HttpService;
@@ -56,7 +58,7 @@ export default class WebhooksService {
             const messagesService = Container.resolve<MessagesService>("MessagesService");
             const agentId = req.params.id;
             const platformData = await this.platformsService.getAgentPlatform(agentId, platform)
-            console.log("platform data::::::::::", platformData)
+            
             if(!platformData) {
                 throw new BadRequestError("Agent platform configuratin error")
             }
@@ -85,8 +87,19 @@ export default class WebhooksService {
             await messagesService.create(messageData)
 
             if(platformData.agent_type === "ai" && messageData.text) {
-                console.log("INrequest")
+                const messages = await messagesService.collection(conversationId);
+                const chatHistory = messages.filter((message) => message.text).map((message) => {
+                    return {
+                        sender: message.sender,
+                        text: message.text!
+                    }
+                })
+
+                const redisClient = Container.resolve<RedisClientType>("RedisClient");
+                await redisClient.setEx(`conversation:${conversationId}`, 900, JSON.stringify(chatHistory))
+
                 const token = this.httpService.webtokenService.generateToken({userId: platformData.user_id}, "2m")
+                
                 const response = await axios.post(
                     `https://${process.env.AGENT_WEBHOOK}/api/agent/interact`,
                     {

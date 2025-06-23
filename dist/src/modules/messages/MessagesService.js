@@ -49,11 +49,8 @@ class MessagesService {
     collection(conversationId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.repository.selectOne("conversation_id", conversationId);
-                if (!result) {
-                    return null;
-                }
-                return this.mapFromDb(result);
+                const result = yield this.repository.select("conversation_id", conversationId);
+                return result.map((message) => this.mapFromDb(message));
             }
             catch (error) {
                 (0, error_service_1.handleServiceError)(error, this.block, "collection", { conversationId });
