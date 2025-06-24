@@ -2,17 +2,15 @@ import { Request } from "express";
 import Container from "../../core/dependencies/Container";
 import HttpService from "../../core/services/HttpService";
 import PlatformsService from "../platforms/PlatformsService";
-import { AuthorizationError, BadRequestError, DatabaseError, NotFoundError } from "../../core/errors/errors";
+import { AuthorizationError, BadRequestError } from "../../core/errors/errors";
 import MessagesService from "../messages/MessagesService";
 import ConversationsService from "../conversations/ConversationsService";
 import ClientsService from "../clients/ClientsService";
 import WhatsappService from "../whatsapp/WhatsappService";
 import EncryptionService from "../../core/services/EncryptionService";
-import AgentsService from "../agents/AgentsService";
 import MessengerService from "../messenger/MessengerService";
 import { ClientContact } from "../clients/clients.interface";
 import axios from "axios";
-import RedisService from "../../core/services/RedisService";
 import { RedisClientType } from "redis";
 
 export default class WebhooksService {
@@ -87,38 +85,51 @@ export default class WebhooksService {
             await messagesService.create(messageData)
 
             if(platformData.agent_type === "ai" && messageData.text) {
-                const messages = await messagesService.collection(conversationId);
-                const chatHistory = messages.filter((message) => message.text).map((message) => {
-                    return {
-                        sender: message.sender,
-                        text: message.text!
-                    }
-                })
+               await this.sendMessageToAi(agentId, conversationId, messagesService, platformData.user_id, messageData.text);
+               return
+            }
 
-                const redisClient = Container.resolve<RedisClientType>("RedisClient");
-                await redisClient.setEx(`conversation:${conversationId}`, 900, JSON.stringify(chatHistory))
-
-                const token = this.httpService.webtokenService.generateToken({userId: platformData.user_id}, "2m")
-                
-                const response = await axios.post(
-                    `https://${process.env.AGENT_HOST}/api/agent/interact`,
-                    {
-                        agent_id: agentId,
-                        conversation_id: conversationId,
-                        input: messageData.text
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
-                );
+            if(platformData.agent_type === "flow" && messageData.text){
+                return
             }
 
            return;
         } catch (error) {
             console.log(error)
             throw error;
+        }
+    }
+
+    async sendMessageToAi(agentId: string, conversationId: string, messagesService: MessagesService, userId: string, text: string) {
+        try {
+            const messages = await messagesService.collection(conversationId);
+            const chatHistory = messages.filter((message) => message.text).map((message) => {
+                return {
+                    sender: message.sender,
+                    text: message.text!
+                }
+            })
+
+            const redisClient = Container.resolve<RedisClientType>("RedisClient");
+            await redisClient.setEx(`conversation:${conversationId}`, 900, JSON.stringify(chatHistory))
+
+            const token = this.httpService.webtokenService.generateToken({userId: userId}, "2m")
+            
+            const response = await axios.post(
+                `https://${process.env.AGENT_HOST}/api/agent/interact`,
+                {
+                    agent_id: agentId,
+                    conversation_id: conversationId,
+                    input: text
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+        } catch (error) {
+            
         }
     }
 

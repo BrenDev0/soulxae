@@ -78,31 +78,44 @@ class WebhooksService {
                 const messageData = yield productService.handleIncomingMessage(req, platformData.identifier, platformData.token, conversationId);
                 yield messagesService.create(messageData);
                 if (platformData.agent_type === "ai" && messageData.text) {
-                    const messages = yield messagesService.collection(conversationId);
-                    const chatHistory = messages.filter((message) => message.text).map((message) => {
-                        return {
-                            sender: message.sender,
-                            text: message.text
-                        };
-                    });
-                    const redisClient = Container_1.default.resolve("RedisClient");
-                    yield redisClient.setEx(`conversation:${conversationId}`, 900, JSON.stringify(chatHistory));
-                    const token = this.httpService.webtokenService.generateToken({ userId: platformData.user_id }, "2m");
-                    const response = yield axios_1.default.post(`https://${process.env.AGENT_HOST}/api/agent/interact`, {
-                        agent_id: agentId,
-                        conversation_id: conversationId,
-                        input: messageData.text
-                    }, {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    });
+                    yield this.sendMessageToAi(agentId, conversationId, messagesService, platformData.user_id, messageData.text);
+                    return;
+                }
+                if (platformData.agent_type === "flow" && messageData.text) {
+                    return;
                 }
                 return;
             }
             catch (error) {
                 console.log(error);
                 throw error;
+            }
+        });
+    }
+    sendMessageToAi(agentId, conversationId, messagesService, userId, text) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const messages = yield messagesService.collection(conversationId);
+                const chatHistory = messages.filter((message) => message.text).map((message) => {
+                    return {
+                        sender: message.sender,
+                        text: message.text
+                    };
+                });
+                const redisClient = Container_1.default.resolve("RedisClient");
+                yield redisClient.setEx(`conversation:${conversationId}`, 900, JSON.stringify(chatHistory));
+                const token = this.httpService.webtokenService.generateToken({ userId: userId }, "2m");
+                const response = yield axios_1.default.post(`https://${process.env.AGENT_HOST}/api/agent/interact`, {
+                    agent_id: agentId,
+                    conversation_id: conversationId,
+                    input: text
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            }
+            catch (error) {
             }
         });
     }

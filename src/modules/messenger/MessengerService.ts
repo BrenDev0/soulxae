@@ -70,8 +70,10 @@ export default class MessengerService {
                 sender: "client",
                 type: "text",
                 text: null,
+                subText: null,
                 media: null,
-                mediaType: null
+                mediaType: null,
+                buttons: null
 
             }
 

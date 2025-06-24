@@ -1,97 +1,127 @@
-// import { SessionState } from "../interface/app";
-// import axios from 'axios';
+import axios from 'axios';
+import Container from '../../core/dependencies/Container';
+import { DirectMessagagingService } from '../directMessaging/DirectMessagingService';
+import { MessageData } from '../messages/messages.interface';
+import FlowConfigsService from '../flowConfig/FlowConfigService';
+import { BadRequestError } from '../../core/errors/errors';
+import { handleServiceError } from '../../core/errors/error.service';
 
-// class VoiceflowService {
-//   async interact(state: SessionState) {
-//       const voiceflowResponse = await axios.post(`https://general-runtime.voiceflow.com/state/user/${state.client}/interact?logs=off`,
-//           {request: state.request},
-//           {
-//             headers: {
-//               accept: 'application/json',
-//               'content-type': 'application/json',
-//               Authorization: state.agent.apiKey,
-//               'versionID': 'production'
-//             }
-//           }
-//         );
-  
-//         if(state.request.type == "launch"){
-//           const options = {
-//             method: 'PATCH',
-//             url: `https://general-runtime.voiceflow.com/state/user/${state.client}/variables`,
-//             headers: {
-//               accept: 'application/json',
-//               'content-type': 'application/json',
-//               Authorization: state.agent.apiKey,
-//               'version': 'production'
-//             },
-//             data: {
-//               agent: state.agent.phone.length > 0 ? state.agent.phone : state.agent.agentid,
-//               client: state.client.contactIdentifier,
-//               conversation: state.conversation.conversation_id
-//             }
-//           };
-          
-//           await axios(options)
-//         }
-
-//         console.log("RESPONSE:::::::::::::", voiceflowResponse.data)
+class VoiceflowService {
+    async interact(conversationId: string, request: any, agentId: string) {
+        const block = "voiceflow.service.interact"
+        try {
+            const flowConfigService = Container.resolve<FlowConfigsService>("FlowConfigService");
+            const flowConfig = await flowConfigService.resource(agentId);
+            if(!flowConfig) {
+                throw new BadRequestError("Agent configuration errror")
+            }
+            const voiceflowResponse = await axios.post(
+                `https://general-runtime.voiceflow.com/state/user/${conversationId}/interact?logs=off`,
+                {request: request},
+                {
+                    headers: {
+                    accept: 'application/json',
+                    'content-type': 'application/json',
+                    Authorization: flowConfig.apiKey,
+                    'versionID': 'production'
+                    }
+                }
+            );
         
-//         if (!voiceflowResponse || !voiceflowResponse.data || !Array.isArray(voiceflowResponse.data)) {
-//           throw new Error('Voiceflow error');
-//         };
+            if(request.type == "launch"){
+                const options = {
+                    method: 'PATCH',
+                    url: `https://general-runtime.voiceflow.com/state/user/${conversationId}/variables`,
+                    headers: {
+                    accept: 'application/json',
+                    'content-type': 'application/json',
+                    Authorization: flowConfig.apiKey,
+                    'version': 'production'
+                    }
+                };
+            
+                await axios(options)
+            }
 
-//         const messages = this.sortVoiceflowData(voiceflowResponse.data);
-//         return messages;
-//   }
-
-//   private sortVoiceflowData(data: any): Array<any> {
-//       let messages = [];
-
-//       for(const trace of data){
-//         switch(trace.type) {
-//             case "text":
-//             case "speech":
-//                 messages.push({
-//                     text: trace.payload.message
-//                 });
-//                 break;
-//             case "choice":
-//                 messages.push({
-//                     buttons: trace.payload.buttons
-//                 });
-//                 break;
-//               case "cardV2":
-//                   messages.push({
-//                     cardV2: {
-//                       header: trace.payload.imageUrl,
-//                       body: trace.payload.title,
-//                       footer: trace.payload.description.text,
-//                       buttons: trace.payload.buttons
-//                     }
-//                   });
+            console.log("RESPONSE:::::::::::::", voiceflowResponse.data)
                 
-//                 break;
-//               case "visual":
-//                 messages.push({
-//                   visual: {
-//                     link: trace.payload.image
-//                   }
-//                 })  
-//                 break;
-//             case "end":
-//                 console.log("Interaction ended.");
-//                 messages.push({
-//                   end: "end"
-//                 });
-//                 break
-//             default:
-//                 break;           
-//         }
-//       }
+            if (!voiceflowResponse || !voiceflowResponse.data || !Array.isArray(voiceflowResponse.data)) {
+                throw new Error('Voiceflow error');
+            };
 
-//       return messages;
-//   }
-// }
+            await this.handleVoiceflowData(voiceflowResponse.data);
+            return;
+        } catch (error) {
+            handleServiceError(error as Error, block, "outgoing", {conversationId, request, agentId})
+            throw error;
+        }
+    }
 
-// export default  VoiceflowService
+    private async handleVoiceflowData(data: any): Promise<void> {
+        const directMessagingService = Container.resolve<DirectMessagagingService>("DirectMessagingService")
+        for(let i = 0; i < data.length; i++){
+            const message = data[i];
+            const nextMessage =  data[i + 1];
+
+            const messageData: MessageData = {
+                conversationId: "",
+                messageReferenceId: "",
+                sender: "",
+                type: "",
+                text: null,
+                subText: null,
+                media: null,
+                mediaType: null,
+                buttons: null
+            }
+
+            if(message.trace.type === "text" && (!nextMessage || nextMessage?.trace?.type === "text" || nextMessage?.trace?.type !== "choice")) {
+                messageData.type = "text";
+
+                messageData.text = message.trace.payload.message;
+
+                await directMessagingService.handleOutGoingMessage(messageData as MessageData)
+
+                continue;
+            } else if(message.trace.type === "text" && nextMessage?.trace?.type === "choice") {
+                messageData.type = "buttons";
+
+                messageData.text = message.trace.payload.message;
+
+                messageData.buttons = message.trace.payload.buttons
+
+                await directMessagingService.handleOutGoingMessage(messageData);
+
+                return;
+            } else if(message.trace.type === "cardV2") {
+                messageData.type = "buttons";
+
+                if(message.trace.payload.imageUrl) {
+                    message.media =  [message.trace.payload.imageUrl];
+                }
+
+                messageData.text = message.trace.payload.title;
+                messageData.subText = message.trace.payload.description.text
+
+                if(message.trace.payload.buttons) {
+                    message.buttons = message.trace.payload.buttons;
+                }
+
+                await directMessagingService.handleOutGoingMessage(messageData);
+                return 
+            } else if(message.trace.type === "visual") {
+                messageData.type = "image";
+
+                messageData.media = [message.trace.payload.image]
+
+                await directMessagingService.handleOutGoingMessage(messageData)
+
+                continue;
+            } else if(message.end) {
+                return;
+            }
+        }
+    }
+}
+
+export default  VoiceflowService

@@ -8,59 +8,24 @@ import MessagesService from "../messages/MessagesService";
 import ConversationsService from "../conversations/ConversationsService";
 import { MessageData } from "../messages/messages.interface";
 import MessengerService from "../messenger/MessengerService";
+import { DirectMessagagingService } from "./DirectMessagingService";
 
 
 export default class DirectMessagagingController {
     private readonly block = "directMessaging.controller"
     private httpService: HttpService;
-    constructor(httpService: HttpService) {
+    private directMessagingService: DirectMessagagingService;
+    constructor(httpService: HttpService, directMessagingService: DirectMessagagingService) {
         this.httpService = httpService;
+        this.directMessagingService = directMessagingService;
     }
     async send(req: Request, res: Response): Promise<void> {
         const block = `${this.block}.send`
         try { 
             const requiredFields = [ "conversationId", "type"];
             this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-
-            console.log(req.body, "REQUEST:::::::::")
-
-            const { conversationId, type } = req.body
             
-            const conversationsService = Container.resolve<ConversationsService>("ConversationsService");
-           
-            const conversation = await conversationsService.getAPIData(conversationId);
-            if(!conversation) {
-                throw new NotFoundError("conversation not found")
-            }
-
-            let productService;
-            switch(conversation.platform) {
-                case "messenger":
-                    productService = Container.resolve<MessengerService>("MessengerService");
-                    break;
-                case 'whatsapp':
-                    productService = Container.resolve<WhatsappService>("WhatsappService");
-                    break;
-                default:
-                    break    
-            }
-
-            if(!productService) {
-                throw new BadRequestError("Unsupported messaging product")
-            }
-
-            const messageRefereceId = await productService.handleOutgoingMessage(req.body, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token);
-
-            const messagesService = Container.resolve<MessagesService>("MessagesService");
-            await messagesService.create({
-                messageReferenceId: messageRefereceId,
-                conversationId: conversation.conversationId!,
-                sender: "agent",
-                type: type,
-                text: req.body.text ? req.body.text : null,
-                media: req.body.media ? req.body.media : null,
-                mediaType: req.body.mediaType ? req.body.mediaType : null
-            })
+            await this.directMessagingService.handleOutGoingMessage(req.body)
 
             res.status(200).json({ message: "Message sent" })
         } catch (error) {

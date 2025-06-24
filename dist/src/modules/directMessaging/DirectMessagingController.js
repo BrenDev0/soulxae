@@ -8,16 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const Container_1 = __importDefault(require("../../core/dependencies/Container"));
-const errors_1 = require("../../core/errors/errors");
 class DirectMessagagingController {
-    constructor(httpService) {
+    constructor(httpService, directMessagingService) {
         this.block = "directMessaging.controller";
         this.httpService = httpService;
+        this.directMessagingService = directMessagingService;
     }
     send(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -25,38 +21,7 @@ class DirectMessagagingController {
             try {
                 const requiredFields = ["conversationId", "type"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-                console.log(req.body, "REQUEST:::::::::");
-                const { conversationId, type } = req.body;
-                const conversationsService = Container_1.default.resolve("ConversationsService");
-                const conversation = yield conversationsService.getAPIData(conversationId);
-                if (!conversation) {
-                    throw new errors_1.NotFoundError("conversation not found");
-                }
-                let productService;
-                switch (conversation.platform) {
-                    case "messenger":
-                        productService = Container_1.default.resolve("MessengerService");
-                        break;
-                    case 'whatsapp':
-                        productService = Container_1.default.resolve("WhatsappService");
-                        break;
-                    default:
-                        break;
-                }
-                if (!productService) {
-                    throw new errors_1.BadRequestError("Unsupported messaging product");
-                }
-                const messageRefereceId = yield productService.handleOutgoingMessage(req.body, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token);
-                const messagesService = Container_1.default.resolve("MessagesService");
-                yield messagesService.create({
-                    messageReferenceId: messageRefereceId,
-                    conversationId: conversation.conversationId,
-                    sender: "agent",
-                    type: type,
-                    text: req.body.text ? req.body.text : null,
-                    media: req.body.media ? req.body.media : null,
-                    mediaType: req.body.mediaType ? req.body.mediaType : null
-                });
+                yield this.directMessagingService.handleOutGoingMessage(req.body);
                 res.status(200).json({ message: "Message sent" });
             }
             catch (error) {

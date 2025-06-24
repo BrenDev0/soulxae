@@ -74,8 +74,10 @@ export default class MessagesService {
           conversation_id: message.conversationId,
           sender: message.sender,
           text: message.text,
+          sub_text: message.subText,
           media: message.media,
           media_type: message.mediaType,
+          buttons: message.buttons,
           type: message.type 
         }
     }
@@ -88,8 +90,10 @@ export default class MessagesService {
             conversationId: message.conversation_id,
             sender: message.sender,
             text: message.text,
+            subText: message.sub_text,
             media: message.media,
             mediaType: message.media_type,
+            buttons: message.buttons,
             type: message.type 
         }
     }

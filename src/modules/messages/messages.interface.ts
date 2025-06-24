@@ -26,8 +26,10 @@ export interface Message {
   sender: string;
   type: string;
   text: string | null;
+  sub_text: string | null;
   media: string[] | null;
   media_type: string | null;
+  buttons: string[] | null;
   timeStamp?:  Date 
 }
 
@@ -37,8 +39,10 @@ export interface MessageData {
   conversationId: string;
   sender: string;
   text: string | null;
+  subText: string | null;
   media: string[] | null;
   mediaType: string | null;
+  buttons: string[] | null;
   type: string;
   timeStamp?:  Date 
 }
