@@ -38,7 +38,7 @@ export const initializeAiToolsRouter = (customController?: AiToolsController) =>
         #swagger.description = 'get collection or resource'
         #swagger.parameters['resource'] = { 
             in: 'query',            
-            description: 'resource id, if inclueded will retur sinlge tool, if excluded will return collection of agents tools',                   
+            description: 'resource id, if included will return sinlge tool, if excluded will return collection of agents tools',                   
             required: 'false',                     
             type: 'string',                             
         }
