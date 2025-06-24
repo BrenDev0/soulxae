@@ -101,7 +101,7 @@ export default class WebhooksService {
                 const token = this.httpService.webtokenService.generateToken({userId: platformData.user_id}, "2m")
                 
                 const response = await axios.post(
-                    `https://${process.env.AGENT_WEBHOOK}/api/agent/interact`,
+                    `https://${process.env.AGENT_HOST}/api/agent/interact`,
                     {
                         agent_id: agentId,
                         conversation_id: conversationId,

@@ -82,6 +82,35 @@ class ConversationsController {
     //     throw error;
     //   }
     // }
+    agentHandoff(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.agentHandoff`;
+            try {
+                const user = req.user;
+                const conversataionId = req.params.conversationId;
+                this.httpService.requestValidation.validateUuid(conversataionId, "conversationId", block);
+                function parseBoolean(value) {
+                    if (value === 'true')
+                        return true;
+                    if (value === 'false')
+                        return false;
+                    return null;
+                }
+                const agentHandoffStatus = parseBoolean(req.query.agentHandoff);
+                if (agentHandoffStatus === null) {
+                    throw new errors_1.BadRequestError("Invalid request query");
+                }
+                const conversationResource = yield this.conversationsService.resource(conversataionId);
+                if (!conversationResource) {
+                    throw new errors_1.NotFoundError("Conversation not found");
+                }
+                yield this.conversationsService.update(conversataionId, { handoff: agentHandoffStatus });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     deleteRequest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.deleteRequest`;

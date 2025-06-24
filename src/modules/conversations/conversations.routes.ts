@@ -32,6 +32,11 @@ export const initializeConversationsRouter = (customController?: ConversationsCo
         controller.collectionRequest.bind(controller)
     )
 
+    secureRouter.put("/:conversationId/agent-handoff",
+
+        controller.agentHandoff.bind(controller)
+    )
+
     secureRouter.delete("/:conversationId", 
          /*
         #swagger.tags = ['Conversations']

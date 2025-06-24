@@ -92,6 +92,36 @@ export default class ConversationsController {
   //   }
   // }
 
+  async agentHandoff(req: Request, res: Response): Promise<void> {
+    const block =  `${this.block}.agentHandoff`
+    try {
+      const user = req.user;
+
+      const conversataionId = req.params.conversationId;
+      this.httpService.requestValidation.validateUuid(conversataionId, "conversationId", block);
+
+      function parseBoolean(value: any): boolean | null {
+        if (value === 'true') return true;
+        if (value === 'false') return false;
+        return null;
+      }
+
+      const agentHandoffStatus = parseBoolean(req.query.agentHandoff);
+
+      if (agentHandoffStatus === null) {
+        throw new BadRequestError("Invalid request query")
+      }
+      const conversationResource = await this.conversationsService.resource(conversataionId);
+      if(!conversationResource) {
+        throw new NotFoundError("Conversation not found")
+      }
+
+      await this.conversationsService.update(conversataionId, { handoff: agentHandoffStatus } as ConversationData)
+    } catch (error) {
+      throw error
+    }
+  }
+
   async deleteRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.deleteRequest`;
     try {

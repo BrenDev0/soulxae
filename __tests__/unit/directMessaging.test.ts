@@ -15,7 +15,7 @@ describe("USERS ROUTES", () => {
 
     const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmNmN2ZmZC1lOTRmLTRmNTktYTc2ZS05ZDcwMDAyM2ZiYTIiLCJpYXQiOjE3NDk1ODEwNTksImV4cCI6MTc4MTExNzA1OX0.S6WoYU-CatNXRb7fq5Xvs39SJ8udLBD4HB8db1-WhxQ";
     const verificationToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJpZmljYXRpb25Db2RlIjoxMjM0NTYsImlhdCI6MTc0OTU4MTY2MSwiZXhwIjoxNzgxMTE3NjYxfQ.gBXDKWjdTXn3VBZWoagZyyprqHBQnV1_IUFXsMGRDb8"
-    const conversationId = "0fb1a939-e56f-4cc6-bf64-41ecd7451459"
+    const conversationId = "4073cb49-3d49-461a-9ca4-e3f3277f6568"
 
     beforeAll(async() => {
     pool  = new Pool({
@@ -82,23 +82,23 @@ describe("USERS ROUTES", () => {
         
       // });
 
-      // it('should send text message ', async () => {
-      //   const res = await request(app)
-      //     .post('/direct/secure/send')
-      //     .set('Authorization', token)
-      //     .send({
-    //           conversationId: conversationId,
-    //           type: "text",
-    //           text: "hello from jest"
-      //     });
+      it('should send text message ', async () => {
+        const res = await request(app)
+          .post('/direct/secure/send')
+          .set('Authorization', token)
+          .send({
+              conversationId: conversationId,
+              type: "text",
+              text: "hello from jest"
+          });
 
-      //     console.log(res.body)
+          console.log(res.body)
     
-      //   expect(res.status).toBe(200);
-      //   expect(res.body.message).toBe('Message sent');
+        expect(res.status).toBe(200);
+        expect(res.body.message).toBe('Message sent');
 
         
-      // });
+      });
 
       // it('should send image message with text ', async () => {
       //   const res = await request(app)
@@ -123,24 +123,24 @@ describe("USERS ROUTES", () => {
       // });
 
 
-       it('should send video message', async () => {
-        const res = await request(app)
-          .post('/direct/secure/send')
-          .set('Authorization', token)
-          .send({
-              conversationId: conversationId,
-              type: "video",
-              media: ["https://soulxae-imagenes.s3.us-east-1.amazonaws.com/66cf7ffd-e94f-4f59-a76e-9d700023fba2/42750558-27ab-445c-b1b1-dced31059fd9/16249d6f-63f4-40d9-b51d-03f92190ce83/cc398f74-0fdc-4c23-b2c9-50128858f484/video/mp4/1610303579644893"],
-              mediaType: "video/mp4"
-          });
+      //  it('should send video message', async () => {
+      //   const res = await request(app)
+      //     .post('/direct/secure/send')
+      //     .set('Authorization', token)
+      //     .send({
+      //         conversationId: conversationId,
+      //         type: "video",
+      //         media: ["https://soulxae-imagenes.s3.us-east-1.amazonaws.com/66cf7ffd-e94f-4f59-a76e-9d700023fba2/42750558-27ab-445c-b1b1-dced31059fd9/16249d6f-63f4-40d9-b51d-03f92190ce83/cc398f74-0fdc-4c23-b2c9-50128858f484/video/mp4/1610303579644893"],
+      //         mediaType: "video/mp4"
+      //     });
 
-          console.log(res.body)
+      //     console.log(res.body)
     
-        expect(res.status).toBe(200);
-        expect(res.body.message).toBe('Message sent');
+      //   expect(res.status).toBe(200);
+      //   expect(res.body.message).toBe('Message sent');
 
         
-      });
+      // });
 
       //  it('should send video message with text', async () => {
       //   const res = await request(app)

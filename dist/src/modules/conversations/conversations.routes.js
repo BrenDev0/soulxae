@@ -29,6 +29,7 @@ const initializeConversationsRouter = (customController) => {
    #swagger.description = 'get agents conversations'
    */
     controller.collectionRequest.bind(controller));
+    secureRouter.put("/:conversationId/agent-handoff", controller.agentHandoff.bind(controller));
     secureRouter.delete("/:conversationId", 
     /*
    #swagger.tags = ['Conversations']

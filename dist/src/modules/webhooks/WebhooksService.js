@@ -88,7 +88,7 @@ class WebhooksService {
                     const redisClient = Container_1.default.resolve("RedisClient");
                     yield redisClient.setEx(`conversation:${conversationId}`, 900, JSON.stringify(chatHistory));
                     const token = this.httpService.webtokenService.generateToken({ userId: platformData.user_id }, "2m");
-                    const response = yield axios_1.default.post(`https://${process.env.AGENT_WEBHOOK}/api/agent/interact`, {
+                    const response = yield axios_1.default.post(`https://${process.env.AGENT_HOST}/api/agent/interact`, {
                         agent_id: agentId,
                         conversation_id: conversationId,
                         input: messageData.text
