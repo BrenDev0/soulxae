@@ -143,6 +143,117 @@
         ]
       }
     },
+    "/aiTools/secure/create": {
+      "post": {
+        "tags": [
+          "AiTools"
+        ],
+        "description": "Add tools to ai config",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/addAiTools"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/aiTools/secure/read/{agentId}": {
+      "get": {
+        "tags": [
+          "AiTools"
+        ],
+        "description": "get collection or resource",
+        "parameters": [
+          {
+            "name": "agentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resource",
+            "in": "query",
+            "description": "resource id, if inclueded will retur sinlge tool, if excluded will return collection of agents tools",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/aiTools/secure/read": {
+      "get": {
+        "tags": [
+          "AiTools"
+        ],
+        "description": "get alltools available for agent configuration",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/aiTools/secure/delete": {
+      "delete": {
+        "tags": [
+          "AiTools"
+        ],
+        "description": "remove tool from agent config",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/addAiTools"
+              }
+            }
+          }
+        }
+      }
+    },
     "/agents/secure/create": {
       "post": {
         "tags": [
@@ -1333,6 +1444,19 @@
           "apiKey": {
             "type": "string",
             "example": "new key"
+          }
+        }
+      },
+      "addAiTools": {
+        "type": "object",
+        "properties": {
+          "agentId": {
+            "type": "string",
+            "example": "required"
+          },
+          "toolId": {
+            "type": "string",
+            "example": "required"
           }
         }
       },

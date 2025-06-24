@@ -84,6 +84,11 @@ const doc = {
         apiKey: "new key"
       },
 
+      addAiTools: {
+        agentId: "required",
+        toolId: "required"
+      },
+
       createPlatform: {
         agentId: "required",
         platform: "whatsapp or  messenger or instagram",
@@ -123,6 +128,7 @@ const doc = {
 const outputFile = './swagger.json';  
 const endpointsFiles = [
   '../../modules/aiConfig/aiConfig.routes.ts',
+  '../../modules/aiTools/aiTools.routes.ts',
   '../../modules/agents/agents.routes.ts',
   '../../modules/clients/clients.routes.ts',
   '../../modules/conversations/conversations.routes.ts',
