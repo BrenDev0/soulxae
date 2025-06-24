@@ -52,7 +52,7 @@ export default class MediaController {
       }, "2m")
 
       const response = await axios.post(
-        `https://${process.env.AGENT_WEBHOOK}/api/files/upload`,
+        `https://${process.env.AGENT_HOST}/api/files/upload`,
         {
           agent_id: agentId,
           s3_url: url,

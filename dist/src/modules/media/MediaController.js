@@ -48,7 +48,7 @@ class MediaController {
                 const token = this.httpService.webtokenService.generateToken({
                     userId: user.user_id
                 }, "2m");
-                const response = yield axios_1.default.post(`https://${process.env.AGENT_WEBHOOK}/api/files/upload`, {
+                const response = yield axios_1.default.post(`https://${process.env.AGENT_HOST}/api/files/upload`, {
                     agent_id: agentId,
                     s3_url: url,
                     file_type: file === null || file === void 0 ? void 0 : file.mimetype,
