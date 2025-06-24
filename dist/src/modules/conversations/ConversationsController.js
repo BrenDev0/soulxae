@@ -96,7 +96,7 @@ class ConversationsController {
                         return false;
                     return null;
                 }
-                const agentHandoffStatus = parseBoolean(req.query.agentHandoff);
+                const agentHandoffStatus = parseBoolean(req.query.status);
                 if (agentHandoffStatus === null) {
                     throw new errors_1.BadRequestError("Invalid request query");
                 }

@@ -33,7 +33,18 @@ export const initializeConversationsRouter = (customController?: ConversationsCo
     )
 
     secureRouter.put("/:conversationId/agent-handoff",
-
+        /*
+        #swagger.tags = ['Conversations']
+        #swagger.path =  '/conversations/secure/{conversationId}/agent-handoff'
+        #swagger.security = [{ "bearerAuth": [] }] 
+        #swagger.description = 'get agents conversations'
+        #swagger.parameters['status'] = { 
+            in: 'query',            
+            description: 'true for human interaction false for ai or flow interaction',                   
+            required: 'true',                     
+            type: 'string',                             
+        }
+        */
         controller.agentHandoff.bind(controller)
     )
 

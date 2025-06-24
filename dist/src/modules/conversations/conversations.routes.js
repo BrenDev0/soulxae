@@ -29,7 +29,20 @@ const initializeConversationsRouter = (customController) => {
    #swagger.description = 'get agents conversations'
    */
     controller.collectionRequest.bind(controller));
-    secureRouter.put("/:conversationId/agent-handoff", controller.agentHandoff.bind(controller));
+    secureRouter.put("/:conversationId/agent-handoff", 
+    /*
+    #swagger.tags = ['Conversations']
+    #swagger.path =  '/conversations/secure/{conversationId}/agent-handoff'
+    #swagger.security = [{ "bearerAuth": [] }]
+    #swagger.description = 'get agents conversations'
+    #swagger.parameters['status'] = {
+        in: 'query',
+        description: 'true for human interaction false for ai or flow interaction',
+        required: 'true',
+        type: 'string',
+    }
+    */
+    controller.agentHandoff.bind(controller));
     secureRouter.delete("/:conversationId", 
     /*
    #swagger.tags = ['Conversations']

@@ -421,6 +421,43 @@
         ]
       }
     },
+    "/conversations/secure/{conversationId}/agent-handoff": {
+      "put": {
+        "tags": [
+          "Conversations"
+        ],
+        "description": "get agents conversations",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "true for human interaction false for ai or flow interaction",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/conversations/secure/{conversationId}": {
       "delete": {
         "tags": [

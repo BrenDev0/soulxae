@@ -106,7 +106,7 @@ export default class ConversationsController {
         return null;
       }
 
-      const agentHandoffStatus = parseBoolean(req.query.agentHandoff);
+      const agentHandoffStatus = parseBoolean(req.query.status);
 
       if (agentHandoffStatus === null) {
         throw new BadRequestError("Invalid request query")
