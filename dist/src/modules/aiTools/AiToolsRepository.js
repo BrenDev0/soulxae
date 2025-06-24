@@ -53,7 +53,7 @@ class AiToolsRepository {
             SELECT ai_tools.*, tools.name AS name
             FROM ai_tools
             JOIN tools ON ai_tools.tool_id = tools.tool_id
-            WHERE ai_tools.agent_id;
+            WHERE ai_tools.agent_id = $1;
         `;
             const result = yield this.pool.query(sqlRead, [agentId]);
             return result.rows;
