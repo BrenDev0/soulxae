@@ -19,17 +19,14 @@ export default class DirectMessagagingController {
     async send(req: Request, res: Response): Promise<void> {
         const block = `${this.block}.send`
         try { 
-            const requiredFields = [ "message"];
+            const requiredFields = [ "conversationId", "type"];
             this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
-            const { message } = req.body;
-
-            const requiredMessageFields = ["conversationId", "type"]
-            this.httpService.requestValidation.validateRequestBody(requiredMessageFields, message, `${block}.message`);
+            const { conversationId, type } = req.body
             
             const conversationsService = Container.resolve<ConversationsService>("ConversationsService");
            
-            const conversation = await conversationsService.getAPIData(message.conversationId);
+            const conversation = await conversationsService.getAPIData(conversationId);
             if(!conversation) {
                 throw new NotFoundError("conversation not found")
             }
@@ -50,17 +47,17 @@ export default class DirectMessagagingController {
                 throw new BadRequestError("Unsupported messaging product")
             }
 
-            const messageRefereceId = await productService.handleOutgoingMessage(message, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token);
+            const messageRefereceId = await productService.handleOutgoingMessage(req.body, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token);
 
             const messagesService = Container.resolve<MessagesService>("MessagesService");
             await messagesService.create({
                 messageReferenceId: messageRefereceId,
                 conversationId: conversation.conversationId!,
                 sender: "agent",
-                type: message.type,
-                text: message.text ? message.text : null,
-                media: message.media ? message.media : null,
-                mediaType: message.mediaType ? message.mediaType : null
+                type: type,
+                text: req.body.text ? req.body.text : null,
+                media: req.body.media ? req.body.media : null,
+                mediaType: req.body.mediaType ? req.body.mediaType : null
             })
 
             res.status(200).json({ message: "Message sent" })

@@ -1225,35 +1225,30 @@
       "sendDirectMessage": {
         "type": "object",
         "properties": {
-          "message": {
-            "type": "object",
-            "properties": {
-              "conversationId": {
-                "type": "string",
-                "example": "conversationId"
-              },
-              "type": {
-                "type": "string",
-                "example": "image, text, audio, document"
-              },
-              "text": {
-                "type": "string",
-                "example": "message text, optional"
-              },
-              "media": {
-                "type": "array",
-                "example": [
-                  "media urls optional"
-                ],
-                "items": {
-                  "type": "string"
-                }
-              },
-              "mediaType": {
-                "type": "string",
-                "example": "mime type, optional"
-              }
+          "conversationId": {
+            "type": "string",
+            "example": "conversationId  required"
+          },
+          "type": {
+            "type": "string",
+            "example": "image, text, audio, document required"
+          },
+          "text": {
+            "type": "string",
+            "example": "message text, optional"
+          },
+          "media": {
+            "type": "array",
+            "example": [
+              "media urls optional"
+            ],
+            "items": {
+              "type": "string"
             }
+          },
+          "mediaType": {
+            "type": "string",
+            "example": "mime type, optional"
           }
         }
       }

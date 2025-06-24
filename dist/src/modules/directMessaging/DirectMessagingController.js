@@ -23,13 +23,11 @@ class DirectMessagagingController {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.send`;
             try {
-                const requiredFields = ["message"];
+                const requiredFields = ["conversationId", "type"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-                const { message } = req.body;
-                const requiredMessageFields = ["conversationId", "type"];
-                this.httpService.requestValidation.validateRequestBody(requiredMessageFields, message, `${block}.message`);
+                const { conversationId, type } = req.body;
                 const conversationsService = Container_1.default.resolve("ConversationsService");
-                const conversation = yield conversationsService.getAPIData(message.conversationId);
+                const conversation = yield conversationsService.getAPIData(conversationId);
                 if (!conversation) {
                     throw new errors_1.NotFoundError("conversation not found");
                 }
@@ -47,16 +45,16 @@ class DirectMessagagingController {
                 if (!productService) {
                     throw new errors_1.BadRequestError("Unsupported messaging product");
                 }
-                const messageRefereceId = yield productService.handleOutgoingMessage(message, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token);
+                const messageRefereceId = yield productService.handleOutgoingMessage(req.body, conversation.platformIdentifier, conversation.clientIdentifier, conversation.token);
                 const messagesService = Container_1.default.resolve("MessagesService");
                 yield messagesService.create({
                     messageReferenceId: messageRefereceId,
                     conversationId: conversation.conversationId,
                     sender: "agent",
-                    type: message.type,
-                    text: message.text ? message.text : null,
-                    media: message.media ? message.media : null,
-                    mediaType: message.mediaType ? message.mediaType : null
+                    type: type,
+                    text: req.body.text ? req.body.text : null,
+                    media: req.body.media ? req.body.media : null,
+                    mediaType: req.body.mediaType ? req.body.mediaType : null
                 });
                 res.status(200).json({ message: "Message sent" });
             }

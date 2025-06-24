@@ -51,12 +51,10 @@ describe("USERS ROUTES", () => {
       //     .post('/direct/secure/send')
       //     .set('Authorization', token)
       //     .send({
-      //       message: {
-      //           conversationId: conversationId,
-      //           type: "image",
-      //           media: ["https://soulxae-imagenes.s3.us-east-1.amazonaws.com/66cf7ffd-e94f-4f59-a76e-9d700023fba2/6c797893-3145-4c55-836a-df6449ba54f2/c352ab7c-94af-4944-9e3f-ea47b5515906/682ada70-15f8-45ff-98ed-714868b31bdc/1792023d-7e24-44a7-8c4a-aa3d55282a25/image/jpeg/1085168556809467"],
-      //           mediaType: "image/jpeg"
-      //       }
+    //           conversationId: conversationId,
+    //           type: "image",
+    //           media: ["https://soulxae-imagenes.s3.us-east-1.amazonaws.com/66cf7ffd-e94f-4f59-a76e-9d700023fba2/6c797893-3145-4c55-836a-df6449ba54f2/c352ab7c-94af-4944-9e3f-ea47b5515906/682ada70-15f8-45ff-98ed-714868b31bdc/1792023d-7e24-44a7-8c4a-aa3d55282a25/image/jpeg/1085168556809467"],
+    //           mediaType: "image/jpeg"
       //     });
     
       //   expect(res.status).toBe(200);
@@ -70,12 +68,10 @@ describe("USERS ROUTES", () => {
       //     .post('/direct/secure/send')
       //     .set('Authorization', token)
       //     .send({
-      //       message: {
-      //           conversationId: conversationId,
-      //           type: "audio",
-      //           media: ["https://soulxae-imagenes.s3.us-east-1.amazonaws.com/66cf7ffd-e94f-4f59-a76e-9d700023fba2/42750558-27ab-445c-b1b1-dced31059fd9/16249d6f-63f4-40d9-b51d-03f92190ce83/cc398f74-0fdc-4c23-b2c9-50128858f484/audio/ogg/1959631054845857"],
-      //           mediaType: "audio/ogg"
-      //       }
+    //           conversationId: conversationId,
+    //           type: "audio",
+    //           media: ["https://soulxae-imagenes.s3.us-east-1.amazonaws.com/66cf7ffd-e94f-4f59-a76e-9d700023fba2/42750558-27ab-445c-b1b1-dced31059fd9/16249d6f-63f4-40d9-b51d-03f92190ce83/cc398f74-0fdc-4c23-b2c9-50128858f484/audio/ogg/1959631054845857"],
+    //           mediaType: "audio/ogg"
       //     });
 
       //     console.log(res.body)
@@ -91,11 +87,9 @@ describe("USERS ROUTES", () => {
       //     .post('/direct/secure/send')
       //     .set('Authorization', token)
       //     .send({
-      //       message: {
-      //           conversationId: conversationId,
-      //           type: "text",
-      //           text: "hello from jest"
-      //       }
+    //           conversationId: conversationId,
+    //           type: "text",
+    //           text: "hello from jest"
       //     });
 
       //     console.log(res.body)
@@ -134,12 +128,10 @@ describe("USERS ROUTES", () => {
           .post('/direct/secure/send')
           .set('Authorization', token)
           .send({
-            message: {
-                conversationId: conversationId,
-                type: "video",
-                media: ["https://soulxae-imagenes.s3.us-east-1.amazonaws.com/66cf7ffd-e94f-4f59-a76e-9d700023fba2/42750558-27ab-445c-b1b1-dced31059fd9/16249d6f-63f4-40d9-b51d-03f92190ce83/cc398f74-0fdc-4c23-b2c9-50128858f484/video/mp4/1610303579644893"],
-                mediaType: "video/mp4"
-            }
+              conversationId: conversationId,
+              type: "video",
+              media: ["https://soulxae-imagenes.s3.us-east-1.amazonaws.com/66cf7ffd-e94f-4f59-a76e-9d700023fba2/42750558-27ab-445c-b1b1-dced31059fd9/16249d6f-63f4-40d9-b51d-03f92190ce83/cc398f74-0fdc-4c23-b2c9-50128858f484/video/mp4/1610303579644893"],
+              mediaType: "video/mp4"
           });
 
           console.log(res.body)
@@ -155,13 +147,11 @@ describe("USERS ROUTES", () => {
       //     .post('/direct/secure/send')
       //     .set('Authorization', token)
       //     .send({
-      //       message: {
-      //           conversationId: conversationId,
-      //           type: "video",
-      //           media: ["https://soulxae-imagenes.s3.us-east-1.amazonaws.com/66cf7ffd-e94f-4f59-a76e-9d700023fba2/42750558-27ab-445c-b1b1-dced31059fd9/16249d6f-63f4-40d9-b51d-03f92190ce83/cc398f74-0fdc-4c23-b2c9-50128858f484/video/mp4/1610303579644893"],
-      //           mediaType: "video/mp4",
-      //           text: "video with text"
-      //       }
+    //           conversationId: conversationId,
+    //           type: "video",
+    //           media: ["https://soulxae-imagenes.s3.us-east-1.amazonaws.com/66cf7ffd-e94f-4f59-a76e-9d700023fba2/42750558-27ab-445c-b1b1-dced31059fd9/16249d6f-63f4-40d9-b51d-03f92190ce83/cc398f74-0fdc-4c23-b2c9-50128858f484/video/mp4/1610303579644893"],
+    //           mediaType: "video/mp4",
+    //           text: "video with text"
       //     });
 
       //     console.log(res.body)

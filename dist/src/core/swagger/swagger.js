@@ -99,13 +99,11 @@ const doc = {
                 file: "formdata type file "
             },
             sendDirectMessage: {
-                message: {
-                    conversationId: "conversationId",
-                    type: "image, text, audio, document",
-                    text: "message text, optional",
-                    media: ["media urls optional"],
-                    mediaType: "mime type, optional"
-                }
+                conversationId: "conversationId  required",
+                type: "image, text, audio, document required",
+                text: "message text, optional",
+                media: ["media urls optional"],
+                mediaType: "mime type, optional"
             }
         },
     },
