@@ -1,28 +1,28 @@
 import { Router } from 'express';
 import Container from '../../core/dependencies/Container';
 import MiddlewareService from '../../core/middleware/MiddlewareService';
-import AiConfigController from './AiConfigController';
+import FlowConfigController from './FlowConfigController';
 
-export const initializeAiConfigRouter = (customController?: AiConfigController) => {
+export const initializeFlowConfigRouter = (customController?: FlowConfigController) => {
     const router = Router();
     const secureRouter = Router();
     const middlewareService = Container.resolve<MiddlewareService>("MiddlewareService");
-    const controller = customController ?? Container.resolve<AiConfigController>("AiConfigController");
+    const controller = customController ?? Container.resolve<FlowConfigController>("FlowConfigController");
 
     secureRouter.use(middlewareService.auth.bind(middlewareService));
 
     // protected Routes //
     secureRouter.post("/create/:agentId",
          /*
-        #swagger.tags = ['AiConfig']
-        #swagger.path =  '/ai-config/secure/create/{agentId}'
+        #swagger.tags = ['FlowConfig']
+        #swagger.path =  '/flow-config/secure/create/{agentId}'
         #swagger.security = [{ "bearerAuth": [] }] 
-        #swagger.description = 'create ai configuration'
+        #swagger.description = 'create flow configuration'
         #swagger.requestBody = {
             required: true,
             content: {
                 "application/json": {
-                    schema: { $ref: "#/components/schemas/createAiConfig" }
+                    schema: { $ref: "#/components/schemas/createFlowConfig" }
                 }
             }
         }
@@ -32,8 +32,8 @@ export const initializeAiConfigRouter = (customController?: AiConfigController) 
 
     secureRouter.get("/resource/:agentId",
          /*
-        #swagger.tags = ['AiConfig']
-        #swagger.path =  '/ai-config/secure/resource/{agentId}'
+        #swagger.tags = ['FlowConfig']
+        #swagger.path =  '/flow-config/secure/resource/{agentId}'
         #swagger.security = [{ "bearerAuth": [] }] 
         #swagger.description = 'get configuration by agent'
         */
@@ -42,15 +42,15 @@ export const initializeAiConfigRouter = (customController?: AiConfigController) 
 
     secureRouter.put("/:agentId",
          /*
-        #swagger.tags = ['AiConfig']
-        #swagger.path =  '/ai-config/secure/{agentIs}'
+        #swagger.tags = ['FlowConfig']
+        #swagger.path =  '/flow-config/secure/{agentIs}'
         #swagger.security = [{ "bearerAuth": [] }] 
-        #swagger.description = 'update ai configuration'
+        #swagger.description = 'updat flow configuration'
         #swagger.requestBody = {
             required: true,
             content: {
                 "application/json": {
-                    schema: { $ref: "#/components/schemas/updateAiConfig" }
+                    schema: { $ref: "#/components/schemas/updateFlowConfig" }
                 }
             }
         }
@@ -60,8 +60,8 @@ export const initializeAiConfigRouter = (customController?: AiConfigController) 
 
     secureRouter.delete("/:agentId", 
          /*
-        #swagger.tags = ['AiConfig']
-        #swagger.path =  '/ai-config/secure/{agentId}'
+        #swagger.tags = ['FlowConfig']
+        #swagger.path =  '/flow-config/secure/{agentId}'
         #swagger.security = [{ "bearerAuth": [] }] 
         #swagger.description = 'delete agent config'
         */
@@ -74,6 +74,6 @@ export const initializeAiConfigRouter = (customController?: AiConfigController) 
 
     router.use("/secure", secureRouter);
 
-    console.log("AiConfig router initialized.");
+    console.log("FlowConfig router initialized.");
     return router;
 }

@@ -1,33 +1,32 @@
 import { Request, Response } from "express";
 import HttpService from "../../core/services/HttpService"
 import { AuthorizationError, BadRequestError, NotFoundError } from "../../core/errors/errors";
-import AiConfigService from "./AiConfigService";
-import { AiConfigData } from "./aiConfig.interface";
-import Container from "../../core/dependencies/Container";
+import FlowConfigService from "./FlowConfigService";
+import { FlowConfigData } from "./flowConfig.interface";
 import AgentsService from "../agents/AgentsService";
 
-export default class AiConfigController { 
+export default class FlowConfigController { 
   private httpService: HttpService;
-  private aiConfigService: AiConfigService; 
+  private flowConfigService: FlowConfigService; 
   private agentsService: AgentsService; 
-  private block = "aiConfig.controller"; 
+  private block = "flowConfig.controller"; 
   
 
-  constructor(httpService: HttpService, aiConfigService: AiConfigService, agentsService: AgentsService) {
+  constructor(httpService: HttpService, flowConfigService: FlowConfigService, agentsService: AgentsService) {
     this.httpService = httpService;
-    this.aiConfigService = aiConfigService;
-    this.agentsService = agentsService
+    this.flowConfigService = flowConfigService;
+    this.agentsService = agentsService;
   }
 
   async createRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.createRequest`;
     try {
-      const requiredFields = ["systemPrompt", "maxTokens", "temperature"];
-      this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-
       const user = req.user;
       const agentId = req.params.agentId;
       this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
+
+      const requiredFields = ["provider", "apiKey"];
+      this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
       const agentResource = await this.agentsService.resource(agentId)
       if(!agentResource) {
@@ -38,25 +37,25 @@ export default class AiConfigController {
         throw new AuthorizationError()
       }
 
-      if(agentResource.type !== "ai") {
-        throw new BadRequestError("Agent type not supported for ai configuration", {
+      if(agentResource.type !== "flow") {
+        throw new BadRequestError("Agent type not supported for flow configuration", {
           agentType: agentResource.type
         })
       }
 
-      const agentHasConfig = await this.aiConfigService.resource(agentId)
+      const agentHasConfig = await this.flowConfigService.resource(agentId)
       if(agentHasConfig) {
         throw new BadRequestError("Agent has already been configured please update previous configuration")
       }
 
-      const aiConfigData: Omit<AiConfigData, "aiConfigId"> = {
+      const flowConfigData: Omit<FlowConfigData, "flogConfigId"> = {
         ...req.body,
-        agentId: agentId
+        agentId
       };
 
-      await this.aiConfigService.create(aiConfigData);
+      await this.flowConfigService.create(flowConfigData);
 
-      res.status(200).json({ message: "AiConfig added" });
+      res.status(200).json({ message: "FlowConfig added" });
     } catch (error) {
       throw error;
     }
@@ -66,7 +65,8 @@ export default class AiConfigController {
     const block = `${this.block}.resourceRequest`;
     try {
       const agentId = req.params.agentId;
-      this.httpService.requestValidation.validateUuid(agentId, "agentId", block)
+      this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
+
       const user = req.user;
 
        const agentResource = await this.agentsService.resource(agentId)
@@ -78,8 +78,7 @@ export default class AiConfigController {
         throw new AuthorizationError()
       }
 
-
-      const data = await this.aiConfigService.resource(agentId);
+      const data = await this.flowConfigService.resource(agentId);
 
       res.status(200).json({ data: data })
     } catch (error) {
@@ -105,18 +104,18 @@ export default class AiConfigController {
       }
 
 
-     const configResource = await this.aiConfigService.resource(agentId);
+    const configResource = await this.flowConfigService.resource(agentId);
       if (!configResource) {
         throw new NotFoundError(undefined, {
           block: `${block}.notFound`,
         });
       }
 
-      const allowedChanges = ["systemPrompt", "maxTokens", "temperature"];
+      const allowedChanges = ["apiKey"];
 
-      const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<AiConfigData>(allowedChanges, req.body, block);
+      const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<FlowConfigData>(allowedChanges, req.body, block);
 
-      await this.aiConfigService.update(configResource.aiConfigId, filteredChanges);
+      await this.flowConfigService.update(configResource.flowConfigId, filteredChanges);
 
       res.status(200).json({ message: "AiConfig updated" });
     } catch (error) {
@@ -127,7 +126,7 @@ export default class AiConfigController {
   async deleteRequest(req: Request, res: Response): Promise<void> {
     const block = `${this.block}.deleteRequest`;
     try {
-      const agentId = req.params.agetnId;
+     const agentId = req.params.agetnId;
       this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
 
       const user = req.user;
@@ -142,16 +141,16 @@ export default class AiConfigController {
       }
 
 
-     const configResource = await this.aiConfigService.resource(agentId);
+     const configResource = await this.flowConfigService.resource(agentId);
       if (!configResource) {
         throw new NotFoundError(undefined, {
           block: `${block}.notFound`,
         });
       }
 
-      await this.aiConfigService.delete(configResource.aiConfigId);
+      await this.flowConfigService.delete(configResource.flowConfigId);
       
-      res.status(200).json({ message: "Ai configuration deleted" })
+      res.status(200).json({ message: "Flow configuration deleted" })
     } catch (error) {
       throw error;
     }

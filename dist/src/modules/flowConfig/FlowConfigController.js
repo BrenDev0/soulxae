@@ -10,22 +10,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = require("../../core/errors/errors");
-class AiConfigController {
-    constructor(httpService, aiConfigService, agentsService) {
-        this.block = "aiConfig.controller";
+class FlowConfigController {
+    constructor(httpService, flowConfigService, agentsService) {
+        this.block = "flowConfig.controller";
         this.httpService = httpService;
-        this.aiConfigService = aiConfigService;
+        this.flowConfigService = flowConfigService;
         this.agentsService = agentsService;
     }
     createRequest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.createRequest`;
             try {
-                const requiredFields = ["systemPrompt", "maxTokens", "temperature"];
-                this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const user = req.user;
                 const agentId = req.params.agentId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
+                const requiredFields = ["provider", "apiKey"];
+                this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const agentResource = yield this.agentsService.resource(agentId);
                 if (!agentResource) {
                     throw new errors_1.BadRequestError("Agent not found");
@@ -33,18 +33,18 @@ class AiConfigController {
                 if (agentResource.userId !== user.user_id) {
                     throw new errors_1.AuthorizationError();
                 }
-                if (agentResource.type !== "ai") {
-                    throw new errors_1.BadRequestError("Agent type not supported for ai configuration", {
+                if (agentResource.type !== "flow") {
+                    throw new errors_1.BadRequestError("Agent type not supported for flow configuration", {
                         agentType: agentResource.type
                     });
                 }
-                const agentHasConfig = yield this.aiConfigService.resource(agentId);
+                const agentHasConfig = yield this.flowConfigService.resource(agentId);
                 if (agentHasConfig) {
                     throw new errors_1.BadRequestError("Agent has already been configured please update previous configuration");
                 }
-                const aiConfigData = Object.assign(Object.assign({}, req.body), { agentId: agentId });
-                yield this.aiConfigService.create(aiConfigData);
-                res.status(200).json({ message: "AiConfig added" });
+                const flowConfigData = Object.assign(Object.assign({}, req.body), { agentId });
+                yield this.flowConfigService.create(flowConfigData);
+                res.status(200).json({ message: "FlowConfig added" });
             }
             catch (error) {
                 throw error;
@@ -65,7 +65,7 @@ class AiConfigController {
                 if (agentResource.userId !== user.user_id) {
                     throw new errors_1.AuthorizationError();
                 }
-                const data = yield this.aiConfigService.resource(agentId);
+                const data = yield this.flowConfigService.resource(agentId);
                 res.status(200).json({ data: data });
             }
             catch (error) {
@@ -87,15 +87,15 @@ class AiConfigController {
                 if (agentResource.userId !== user.user_id) {
                     throw new errors_1.AuthorizationError();
                 }
-                const configResource = yield this.aiConfigService.resource(agentId);
+                const configResource = yield this.flowConfigService.resource(agentId);
                 if (!configResource) {
                     throw new errors_1.NotFoundError(undefined, {
                         block: `${block}.notFound`,
                     });
                 }
-                const allowedChanges = ["systemPrompt", "maxTokens", "temperature"];
+                const allowedChanges = ["apiKey"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
-                yield this.aiConfigService.update(configResource.aiConfigId, filteredChanges);
+                yield this.flowConfigService.update(configResource.flowConfigId, filteredChanges);
                 res.status(200).json({ message: "AiConfig updated" });
             }
             catch (error) {
@@ -117,14 +117,14 @@ class AiConfigController {
                 if (agentResource.userId !== user.user_id) {
                     throw new errors_1.AuthorizationError();
                 }
-                const configResource = yield this.aiConfigService.resource(agentId);
+                const configResource = yield this.flowConfigService.resource(agentId);
                 if (!configResource) {
                     throw new errors_1.NotFoundError(undefined, {
                         block: `${block}.notFound`,
                     });
                 }
-                yield this.aiConfigService.delete(configResource.aiConfigId);
-                res.status(200).json({ message: "Ai configuration deleted" });
+                yield this.flowConfigService.delete(configResource.flowConfigId);
+                res.status(200).json({ message: "Flow configuration deleted" });
             }
             catch (error) {
                 throw error;
@@ -132,4 +132,4 @@ class AiConfigController {
         });
     }
 }
-exports.default = AiConfigController;
+exports.default = FlowConfigController;

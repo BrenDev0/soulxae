@@ -82,7 +82,7 @@
                 "tags": [
                     "AiConfig"
                 ],
-                "description": "create ai configuration",
+                "description": "update ai configuration",
                 "parameters": [
                     {
                         "name": "agentIs",
@@ -662,6 +662,138 @@
                 ]
             }
         },
+        "/flow-config/secure/create/{agentId}": {
+            "post": {
+                "tags": [
+                    "FlowConfig"
+                ],
+                "description": "create flow configuration",
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/createFlowConfig"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/flow-config/secure/resource/{agentId}": {
+            "get": {
+                "tags": [
+                    "FlowConfig"
+                ],
+                "description": "get configuration by agent",
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/flow-config/secure/{agentIs}": {
+            "put": {
+                "tags": [
+                    "FlowConfig"
+                ],
+                "description": "updat flow configuration",
+                "parameters": [
+                    {
+                        "name": "agentIs",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/updateFlowConfig"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/flow-config/secure/{agentId}": {
+            "delete": {
+                "tags": [
+                    "FlowConfig"
+                ],
+                "description": "delete agent config",
+                "parameters": [
+                    {
+                        "name": "agentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/platforms/secure/create": {
             "post": {
                 "tags": [
@@ -1179,6 +1311,28 @@
                     "temperature": {
                         "type": "number",
                         "example": 0.2
+                    }
+                }
+            },
+            "createFlowConfig": {
+                "type": "object",
+                "properties": {
+                    "provider": {
+                        "type": "string",
+                        "example": "required only voiceflow supported currently"
+                    },
+                    "apiKey": {
+                        "type": "string",
+                        "example": "required"
+                    }
+                }
+            },
+            "updateFlowConfig": {
+                "type": "object",
+                "properties": {
+                    "apiKey": {
+                        "type": "string",
+                        "example": "new key"
                     }
                 }
             },

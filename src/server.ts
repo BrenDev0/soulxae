@@ -16,6 +16,7 @@ import { initializeMessengerRouter } from './modules/messenger/messenger.routes'
 import { initializeEmployeesRouter } from './modules/employees/employees.routes';
 import { initializeMediaRouter } from './modules/media/media.routes';
 import { initializeAiConfigRouter } from './modules/aiConfig/aiConfig.routes';
+import { initializeFlowConfigRouter } from './modules/flowConfig/flowConfig.routes';
 
 
 const server = async() => {
@@ -31,6 +32,7 @@ const server = async() => {
     const conversationsRouter = initializeConversationsRouter();
     const directMessagingRouter = initializeDirectMessageingRouter();
     const employeesRouter = initializeEmployeesRouter();
+    const flowConfigRouter = initializeFlowConfigRouter();
     const mediaRouter = initializeMediaRouter();
     const messengerRouter = initializeMessengerRouter();
     const platformsRouter = initializePlatformsRouter();
@@ -47,8 +49,9 @@ const server = async() => {
     app.use("/agents", agentsRouter);
     app.use("/clients", clientsRouter);
     app.use("/conversatations", conversationsRouter);
-    app.use("/employees", employeesRouter);
     app.use("/direct", directMessagingRouter);
+    app.use("/employees", employeesRouter);
+    app.use("/flow-config", flowConfigRouter);
     app.use("/media", mediaRouter);
     app.use("/messenger", messengerRouter);
     app.use("/platforms", platformsRouter);

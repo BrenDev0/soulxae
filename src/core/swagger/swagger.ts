@@ -75,6 +75,15 @@ const doc = {
         temperature: 0.2
       },
 
+      createFlowConfig: {
+        provider: "required only voiceflow supported currently",
+        apiKey: "required"
+      },
+
+      updateFlowConfig: {
+        apiKey: "new key"
+      },
+
       createPlatform: {
         agentId: "required",
         platform: "whatsapp or  messenger or instagram",
@@ -119,6 +128,7 @@ const endpointsFiles = [
   '../../modules/conversations/conversations.routes.ts',
   '../../modules/directMessaging/directMessaging.routes.ts',
   '../../modules/employees/employees.routes.ts',
+  '../../modules/flowConfig/flowConfig.routes.ts',
   '../../modules/platforms/platforms.routes.ts',
   '../../modules/users/users.routes.ts'
   
