@@ -52,7 +52,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     process.env.NODE_ENV === "production" && app.use(middlewareService.verifyHMAC);
     process.env.NODE_ENV !== 'production' && app.use('/docs/endpoints', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
     app.use("/ai-config", aiConfigRouter);
-    app.use("ai-tools", aiToolsRouter);
+    app.use("/ai-tools", aiToolsRouter);
     app.use("/agents", agentsRouter);
     app.use("/clients", clientsRouter);
     app.use("/conversatations", conversationsRouter);

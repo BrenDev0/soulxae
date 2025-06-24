@@ -48,7 +48,7 @@ const server = async() => {
     process.env.NODE_ENV !== 'production' && app.use('/docs/endpoints', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
     app.use("/ai-config", aiConfigRouter);
-    app.use("ai-tools", aiToolsRouter);
+    app.use("/ai-tools", aiToolsRouter);
     app.use("/agents", agentsRouter);
     app.use("/clients", clientsRouter);
     app.use("/conversatations", conversationsRouter);
