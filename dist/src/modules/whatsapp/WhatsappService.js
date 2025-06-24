@@ -186,9 +186,11 @@ class WhatsappService {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+                console.log(messageObject, "OBJECT::::::::::::");
                 return response;
             }
             catch (error) {
+                console.log(error, "ERROR::::::::::::");
                 throw new errors_1.ExternalAPIError(undefined, {
                     service: "whatsapp",
                     originalError: error.message
