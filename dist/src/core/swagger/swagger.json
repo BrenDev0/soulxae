@@ -143,7 +143,7 @@
                 ]
             }
         },
-        "/aiTools/secure/create": {
+        "/ai-tools/secure/create": {
             "post": {
                 "tags": [
                     "AiTools"

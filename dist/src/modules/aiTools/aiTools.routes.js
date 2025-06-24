@@ -16,7 +16,7 @@ const initializeAiToolsRouter = (customController) => {
     secureRouter.post("/create", 
     /*
     #swagger.tags = ['AiTools']
-    #swagger.path =  '/aiTools/secure/create'
+    #swagger.path =  '/ai-tools/secure/create'
     #swagger.security = [{ "bearerAuth": [] }]
     #swagger.description = 'Add tools to ai config'
     #swagger.requestBody = {
