@@ -12,6 +12,7 @@ import MessengerService from "../messenger/MessengerService";
 import { ClientContact } from "../clients/clients.interface";
 import axios from "axios";
 import { RedisClientType } from "redis";
+import WebSocketService from "../webSocket/WebSocketService";
 
 export default class WebhooksService {
     private httpService: HttpService;
@@ -93,6 +94,8 @@ export default class WebhooksService {
                 return
             }
 
+           const webSocketService = Container.resolve<WebSocketService>("WebSocketService");
+           webSocketService.broadcast(conversationId, "UPDATE");
            return;
         } catch (error) {
             console.log(error)

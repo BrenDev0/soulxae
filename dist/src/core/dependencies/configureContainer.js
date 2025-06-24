@@ -40,6 +40,7 @@ const employees_dependencies_1 = require("../../modules/employees/employees.depe
 const aiConfig_dependencies_1 = require("../../modules/aiConfig/aiConfig.dependencies");
 const flowConfig_dependencies_1 = require("../../modules/flowConfig/flowConfig.dependencies");
 const aiTools_dependencies_1 = require("../../modules/aiTools/aiTools.dependencies");
+const WebSocketService_1 = __importDefault(require("../../modules/webSocket/WebSocketService"));
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
         // pool //
@@ -69,6 +70,9 @@ function configureContainer(testPool, testRedis) {
         const connectionUrl = testRedis !== null && testRedis !== void 0 ? testRedis : (process.env.REDIS_URL || "");
         const redisClient = yield new RedisService_1.default(connectionUrl).createClient();
         Container_1.default.register("RedisClient", redisClient);
+        // websocket
+        const webSocketService = new WebSocketService_1.default();
+        Container_1.default.register("WebSocketService", webSocketService);
         // agents //
         (0, agents_dependencies_1.configureAgentsDependencies)(pool);
         // clients // 

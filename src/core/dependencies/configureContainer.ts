@@ -28,6 +28,7 @@ import { configureEmployeesDependencies } from '../../modules/employees/employee
 import { configureAiConfigDependencies } from '../../modules/aiConfig/aiConfig.dependencies';
 import { configureFlowConfigDependencies } from '../../modules/flowConfig/flowConfig.dependencies';
 import { configureAiToolsDependencies } from '../../modules/aiTools/aiTools.dependencies';
+import WebSocketService from '../../modules/webSocket/WebSocketService';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -66,6 +67,10 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
     const connectionUrl = testRedis ?? (process.env.REDIS_URL as string || "");
     const redisClient = await new RedisService(connectionUrl).createClient();
     Container.register<RedisClientType>("RedisClient", redisClient);
+
+    // websocket
+    const webSocketService = new WebSocketService();
+    Container.register<WebSocketService>("WebSocketService", webSocketService);
 
     // agents //
     configureAgentsDependencies(pool);

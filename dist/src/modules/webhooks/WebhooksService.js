@@ -84,6 +84,8 @@ class WebhooksService {
                 if (platformData.agent_type === "flow" && messageData.text) {
                     return;
                 }
+                const webSocketService = Container_1.default.resolve("WebSocketService");
+                webSocketService.broadcast(conversationId, "UPDATE");
                 return;
             }
             catch (error) {
