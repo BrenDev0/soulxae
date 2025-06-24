@@ -27,6 +27,7 @@ import { configureMessengerDependencies } from '../../modules/messenger/messenge
 import { configureSubscriptionsDependencies } from '../../modules/subscriptions/subscriptions.dependencies';
 import { configureEmployeesDependencies } from '../../modules/employees/employees.dependencies';
 import { configureAiConfigDependencies } from '../../modules/aiConfig/aiConfig.dependencies';
+import { configureFlowConfigDependencies } from '../../modules/flowConfig/flowConfig.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -101,7 +102,13 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
 
     // agent configs --- must configure agents above this block 
-    configureAiConfigDependencies(pool)
+
+    // ai config
+    configureAiConfigDependencies(pool);
+
+    // flow config
+    configureFlowConfigDependencies(pool)
+    
 
 
     // messaging services  --- must configure webhooks above this block //
