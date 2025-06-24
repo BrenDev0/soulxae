@@ -10,7 +10,7 @@ export default class FlowConfigController {
   private flowConfigService: FlowConfigService; 
   private agentsService: AgentsService; 
   private block = "flowConfig.controller"; 
-  
+  private readonly allwowedServiceproviders =  ["voiceflow"]
 
   constructor(httpService: HttpService, flowConfigService: FlowConfigService, agentsService: AgentsService) {
     this.httpService = httpService;
@@ -28,6 +28,12 @@ export default class FlowConfigController {
       const requiredFields = ["provider", "apiKey"];
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
+      if(!this.allwowedServiceproviders.includes(req.body.provider)) {
+        throw new BadRequestError("Flow service provider not supported", {
+          requestedProvider: req.body.provider,
+          allwowedServiceproviders: this.allwowedServiceproviders
+        })
+      }
       const agentResource = await this.agentsService.resource(agentId)
       if(!agentResource) {
         throw new BadRequestError("Agent not found")

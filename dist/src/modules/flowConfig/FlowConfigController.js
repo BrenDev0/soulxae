@@ -13,6 +13,7 @@ const errors_1 = require("../../core/errors/errors");
 class FlowConfigController {
     constructor(httpService, flowConfigService, agentsService) {
         this.block = "flowConfig.controller";
+        this.allwowedServiceproviders = ["voiceflow"];
         this.httpService = httpService;
         this.flowConfigService = flowConfigService;
         this.agentsService = agentsService;
@@ -26,6 +27,12 @@ class FlowConfigController {
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
                 const requiredFields = ["provider", "apiKey"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+                if (!this.allwowedServiceproviders.includes(req.body.provider)) {
+                    throw new errors_1.BadRequestError("Flow service provider not supported", {
+                        requestedProvider: req.body.provider,
+                        allwowedServiceproviders: this.allwowedServiceproviders
+                    });
+                }
                 const agentResource = yield this.agentsService.resource(agentId);
                 if (!agentResource) {
                     throw new errors_1.BadRequestError("Agent not found");
