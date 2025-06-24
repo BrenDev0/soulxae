@@ -33,7 +33,7 @@ export const initializeAiToolsRouter = (customController?: AiToolsController) =>
     secureRouter.get("/read/:agentId", 
          /*
         #swagger.tags = ['AiTools']
-        #swagger.path =  '/aiTools/secure/read/{agentId}'
+        #swagger.path =  '/ai-tools/secure/read/{agentId}'
         #swagger.security = [{ "bearerAuth": [] }] 
         #swagger.description = 'get collection or resource'
         #swagger.parameters['resource'] = { 
@@ -49,7 +49,7 @@ export const initializeAiToolsRouter = (customController?: AiToolsController) =>
     secureRouter.get("/read", 
         /*
         #swagger.tags = ['AiTools']
-        #swagger.path =  '/aiTools/secure/read'
+        #swagger.path =  '/ai-tools/secure/read'
         #swagger.security = [{ "bearerAuth": [] }] 
         #swagger.description = 'get alltools available for agent configuration'
         */
@@ -59,7 +59,7 @@ export const initializeAiToolsRouter = (customController?: AiToolsController) =>
     secureRouter.delete("/delete",
         /*
             #swagger.tags = ['AiTools']
-            #swagger.path =  '/aiTools/secure/delete'
+            #swagger.path =  '/ai-tools/secure/delete'
             #swagger.security = [{ "bearerAuth": [] }] 
             #swagger.description = 'remove tool from agent config'
             #swagger.requestBody = {

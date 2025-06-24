@@ -17,6 +17,7 @@ import { initializeEmployeesRouter } from './modules/employees/employees.routes'
 import { initializeMediaRouter } from './modules/media/media.routes';
 import { initializeAiConfigRouter } from './modules/aiConfig/aiConfig.routes';
 import { initializeFlowConfigRouter } from './modules/flowConfig/flowConfig.routes';
+import { initializeAiToolsRouter } from './modules/aiTools/aiTools.routes';
 
 
 const server = async() => {
@@ -26,7 +27,8 @@ const server = async() => {
     const middlewareService: MiddlewareService =  Container.resolve("MiddlewareService");
 
     // routers //
-    const aiConfigRouter = initializeAiConfigRouter()
+    const aiConfigRouter = initializeAiConfigRouter();
+    const aiToolsRouter = initializeAiToolsRouter();
     const agentsRouter = initializeAgentsRouter();
     const clientsRouter = initializeClientsRouter();
     const conversationsRouter = initializeConversationsRouter();
@@ -46,6 +48,7 @@ const server = async() => {
     process.env.NODE_ENV !== 'production' && app.use('/docs/endpoints', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
     app.use("/ai-config", aiConfigRouter);
+    app.use("ai-tools", aiToolsRouter);
     app.use("/agents", agentsRouter);
     app.use("/clients", clientsRouter);
     app.use("/conversatations", conversationsRouter);

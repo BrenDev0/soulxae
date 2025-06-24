@@ -29,12 +29,14 @@ const employees_routes_1 = require("./modules/employees/employees.routes");
 const media_routes_1 = require("./modules/media/media.routes");
 const aiConfig_routes_1 = require("./modules/aiConfig/aiConfig.routes");
 const flowConfig_routes_1 = require("./modules/flowConfig/flowConfig.routes");
+const aiTools_routes_1 = require("./modules/aiTools/aiTools.routes");
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, createApp_1.default)();
     yield (0, configureContainer_1.configureContainer)();
     const middlewareService = Container_1.default.resolve("MiddlewareService");
     // routers //
     const aiConfigRouter = (0, aiConfig_routes_1.initializeAiConfigRouter)();
+    const aiToolsRouter = (0, aiTools_routes_1.initializeAiToolsRouter)();
     const agentsRouter = (0, agents_routes_1.initializeAgentsRouter)();
     const clientsRouter = (0, clients_routes_1.initializeClientsRouter)();
     const conversationsRouter = (0, conversations_routes_1.initializeConversationsRouter)();
@@ -50,6 +52,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     process.env.NODE_ENV === "production" && app.use(middlewareService.verifyHMAC);
     process.env.NODE_ENV !== 'production' && app.use('/docs/endpoints', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
     app.use("/ai-config", aiConfigRouter);
+    app.use("ai-tools", aiToolsRouter);
     app.use("/agents", agentsRouter);
     app.use("/clients", clientsRouter);
     app.use("/conversatations", conversationsRouter);
