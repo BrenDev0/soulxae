@@ -17,7 +17,6 @@ import { configureAgentsDependencies } from '../../modules/agents/agents.depende
 import { configurePlatformsDependencies } from '../../modules/platforms/platforms.dependencies';
 import { configureConversationsDependencies } from '../../modules/conversations/conversations.dependencies';
 import { configureClientsDependencies } from '../../modules/clients/clients.dependencies';
-import { configureSessionsDependencies } from '../../modules/sessions/sessions.dependencies';
 import { configureWhatsappDependencies } from '../../modules/whatsapp/whatsapp.dependencies';
 import { configureMessagesDependencies } from '../../modules/messages/messages.dependencies';
 import { configureDirectMessagingDependencies } from '../../modules/directMessaging/directMessaging.dependencies';
@@ -88,9 +87,6 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
     // platforms //
     configurePlatformsDependencies(pool);
-
-    // sessions //
-    configureSessionsDependencies(redisClient);
 
     // subscriptions //
     configureSubscriptionsDependencies(pool);

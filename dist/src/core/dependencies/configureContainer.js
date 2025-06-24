@@ -29,7 +29,6 @@ const agents_dependencies_1 = require("../../modules/agents/agents.dependencies"
 const platforms_dependencies_1 = require("../../modules/platforms/platforms.dependencies");
 const conversations_dependencies_1 = require("../../modules/conversations/conversations.dependencies");
 const clients_dependencies_1 = require("../../modules/clients/clients.dependencies");
-const sessions_dependencies_1 = require("../../modules/sessions/sessions.dependencies");
 const whatsapp_dependencies_1 = require("../../modules/whatsapp/whatsapp.dependencies");
 const messages_dependencies_1 = require("../../modules/messages/messages.dependencies");
 const directMessaging_dependencies_1 = require("../../modules/directMessaging/directMessaging.dependencies");
@@ -84,8 +83,6 @@ function configureContainer(testPool, testRedis) {
         (0, messages_dependencies_1.configureMessagesDependencies)(pool);
         // platforms //
         (0, platforms_dependencies_1.configurePlatformsDependencies)(pool);
-        // sessions //
-        (0, sessions_dependencies_1.configureSessionsDependencies)(redisClient);
         // subscriptions //
         (0, subscriptions_dependencies_1.configureSubscriptionsDependencies)(pool);
         // users //
