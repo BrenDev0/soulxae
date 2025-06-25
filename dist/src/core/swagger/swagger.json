@@ -1268,11 +1268,15 @@
                 "properties": {
                     "email": {
                         "type": "string",
-                        "example": "email"
+                        "example": "required"
                     },
                     "password": {
                         "type": "string",
-                        "example": "password"
+                        "example": "required"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "required"
                     },
                     "code": {
                         "type": "string",

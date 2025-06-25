@@ -28,8 +28,9 @@ const doc = {
         },
         schemas: {
             createUser: {
-                email: "email",
-                password: "password",
+                email: "required",
+                password: "required",
+                name: "required",
                 code: "code from users email"
             },
             updateUser: {
