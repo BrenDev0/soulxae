@@ -80,7 +80,7 @@ class UsersController {
             const block = `${this.block}.updateRequest`;
             try {
                 const user = req.user;
-                const allowedChanges = ["subscription", "password"];
+                const allowedChanges = ["subscription", "password", "name"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 if (req.body.password) {
                     const { password, oldPassword } = req.body;

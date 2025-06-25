@@ -35,6 +35,7 @@ const doc = {
             },
             updateUser: {
                 subscription: "new sub",
+                name: "new name",
                 password: "new passoword",
                 oldPassword: "old password"
             },

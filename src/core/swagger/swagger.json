@@ -1291,6 +1291,10 @@
             "type": "string",
             "example": "new sub"
           },
+          "name": {
+            "type": "string",
+            "example": "new name"
+          },
           "password": {
             "type": "string",
             "example": "new passoword"
