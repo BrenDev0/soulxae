@@ -91,7 +91,7 @@ class UsersService {
         return {
             userId: user.user_id,
             email: encryptionService.decryptData(user.email),
-            name: encryptionService.decryptData(user.name),
+            name: user.name && encryptionService.decryptData(user.name),
             createdAt: user.created_at,
             subscriptionId: user.subscription_id,
             isAdmin: user.is_admin
