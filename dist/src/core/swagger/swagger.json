@@ -310,22 +310,12 @@
                 ]
             }
         },
-        "/agents/secure/collection/{userId}": {
+        "/agents/secure/collection": {
             "get": {
                 "tags": [
                     "Agents"
                 ],
-                "description": "get agents by workspace",
-                "parameters": [
-                    {
-                        "name": "userId",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "description": "get agents by user",
                 "responses": {
                     "default": {
                         "description": ""
