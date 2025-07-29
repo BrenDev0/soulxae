@@ -117,6 +117,7 @@ export default class ConversationsController {
       }
 
       await this.conversationsService.update(conversataionId, { handoff: agentHandoffStatus } as ConversationData)
+      res.status(200).json({"message": "conversaiton updated"})
     } catch (error) {
       throw error
     }

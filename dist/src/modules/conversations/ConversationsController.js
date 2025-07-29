@@ -105,6 +105,7 @@ class ConversationsController {
                     throw new errors_1.NotFoundError("Conversation not found");
                 }
                 yield this.conversationsService.update(conversataionId, { handoff: agentHandoffStatus });
+                res.status(200).json({ "message": "conversaiton updated" });
             }
             catch (error) {
                 throw error;
