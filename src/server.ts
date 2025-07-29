@@ -51,7 +51,7 @@ const server = async() => {
     app.use("/ai-tools", aiToolsRouter);
     app.use("/agents", agentsRouter);
     app.use("/clients", clientsRouter);
-    app.use("/conversatations", conversationsRouter);
+    app.use("/conversations", conversationsRouter);
     app.use("/direct", directMessagingRouter);
     app.use("/employees", employeesRouter);
     app.use("/flow-config", flowConfigRouter);
