@@ -29,48 +29,52 @@ import { configureAiConfigDependencies } from '../../modules/aiConfig/aiConfig.d
 import { configureFlowConfigDependencies } from '../../modules/flowConfig/flowConfig.dependencies';
 import { configureAiToolsDependencies } from '../../modules/aiTools/aiTools.dependencies';
 import WebSocketService from '../../modules/webSocket/WebSocketService';
+import { configureGoogleDependencies } from '../../modules/google/google.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
-    // pool //
     const pool =  testPool ?? await databaseInstance.getPool();
     Container.register<Pool>("Pool", pool);
 
-    // Encryption //
+    //// Core  ////
+
+    // independent instances //
+    const emailService = new EmailService();
+    Container.register<EmailService>("EmailService", emailService);
+  
     const encryptionService = new EncryptionService();
     Container.register<EncryptionService>("EncryptionService", encryptionService);
 
-    // password //
-    const passwordService = new PasswordService();
-    Container.register<PasswordService>("PasswordService", passwordService);
-
-    // webtoken //
-    const webtokenService = new WebTokenService();
-    Container.register<WebTokenService>("WebtokenService", webtokenService);
-
-    // http request validation //
-    const httpRequestValidationService = new HttpRequestValidationService();
-    Container.register<HttpRequestValidationService>("HttpRequestValidationService", httpRequestValidationService);
-    
-    // errors //
     const errorHandler = new ErrorHandler(pool)
     Container.register("ErrorHandler", errorHandler);
 
-    // email //
-    const emailService = new EmailService();
-    Container.register<EmailService>("EmailService", emailService);
+    const httpRequestValidationService = new HttpRequestValidationService();
+    Container.register<HttpRequestValidationService>("HttpRequestValidationService", httpRequestValidationService);
 
-    const httpService = new HttpService(httpRequestValidationService, passwordService, webtokenService, encryptionService);
-    Container.register<HttpService>("HttpService", httpService);
+    const passwordService = new PasswordService();
+    Container.register<PasswordService>("PasswordService", passwordService);
 
-     // redis // 
+    
     const connectionUrl = testRedis ?? (process.env.REDIS_URL as string || "");
     const redisClient = await new RedisService(connectionUrl).createClient();
     Container.register<RedisClientType>("RedisClient", redisClient);
 
-    // websocket
+
     const webSocketService = new WebSocketService();
     Container.register<WebSocketService>("WebSocketService", webSocketService);
+
+    const webtokenService = new WebTokenService();
+    Container.register<WebTokenService>("WebtokenService", webtokenService);
+
+
+    // dependent //
+    const httpService = new HttpService(httpRequestValidationService, passwordService, webtokenService, encryptionService);
+    Container.register<HttpService>("HttpService", httpService);
+
+
+
+
+    //// Modules ////
 
     // agents //
     configureAgentsDependencies(pool);
@@ -83,6 +87,10 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
     // employees //
     configureEmployeesDependencies(pool);
+
+    // google //
+
+    configureGoogleDependencies(pool)
 
     // media //
     configureMediaDependencies(pool);

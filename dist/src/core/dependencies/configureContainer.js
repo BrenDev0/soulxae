@@ -41,38 +41,34 @@ const aiConfig_dependencies_1 = require("../../modules/aiConfig/aiConfig.depende
 const flowConfig_dependencies_1 = require("../../modules/flowConfig/flowConfig.dependencies");
 const aiTools_dependencies_1 = require("../../modules/aiTools/aiTools.dependencies");
 const WebSocketService_1 = __importDefault(require("../../modules/webSocket/WebSocketService"));
+const google_dependencies_1 = require("../../modules/google/google.dependencies");
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
-        // pool //
         const pool = testPool !== null && testPool !== void 0 ? testPool : yield Database_1.default.getPool();
         Container_1.default.register("Pool", pool);
-        // Encryption //
-        const encryptionService = new EncryptionService_1.default();
-        Container_1.default.register("EncryptionService", encryptionService);
-        // password //
-        const passwordService = new PasswordService_1.default();
-        Container_1.default.register("PasswordService", passwordService);
-        // webtoken //
-        const webtokenService = new WebtokenService_1.default();
-        Container_1.default.register("WebtokenService", webtokenService);
-        // http request validation //
-        const httpRequestValidationService = new HttpRequestValidationService_1.default();
-        Container_1.default.register("HttpRequestValidationService", httpRequestValidationService);
-        // errors //
-        const errorHandler = new ErrorHandler_1.default(pool);
-        Container_1.default.register("ErrorHandler", errorHandler);
-        // email //
+        //// Core  ////
+        // independent instances //
         const emailService = new EmailService_1.default();
         Container_1.default.register("EmailService", emailService);
-        const httpService = new HttpService_1.default(httpRequestValidationService, passwordService, webtokenService, encryptionService);
-        Container_1.default.register("HttpService", httpService);
-        // redis // 
+        const encryptionService = new EncryptionService_1.default();
+        Container_1.default.register("EncryptionService", encryptionService);
+        const errorHandler = new ErrorHandler_1.default(pool);
+        Container_1.default.register("ErrorHandler", errorHandler);
+        const httpRequestValidationService = new HttpRequestValidationService_1.default();
+        Container_1.default.register("HttpRequestValidationService", httpRequestValidationService);
+        const passwordService = new PasswordService_1.default();
+        Container_1.default.register("PasswordService", passwordService);
         const connectionUrl = testRedis !== null && testRedis !== void 0 ? testRedis : (process.env.REDIS_URL || "");
         const redisClient = yield new RedisService_1.default(connectionUrl).createClient();
         Container_1.default.register("RedisClient", redisClient);
-        // websocket
         const webSocketService = new WebSocketService_1.default();
         Container_1.default.register("WebSocketService", webSocketService);
+        const webtokenService = new WebtokenService_1.default();
+        Container_1.default.register("WebtokenService", webtokenService);
+        // dependent //
+        const httpService = new HttpService_1.default(httpRequestValidationService, passwordService, webtokenService, encryptionService);
+        Container_1.default.register("HttpService", httpService);
+        //// Modules ////
         // agents //
         (0, agents_dependencies_1.configureAgentsDependencies)(pool);
         // clients // 
@@ -81,6 +77,8 @@ function configureContainer(testPool, testRedis) {
         (0, conversations_dependencies_1.configureConversationsDependencies)(pool);
         // employees //
         (0, employees_dependencies_1.configureEmployeesDependencies)(pool);
+        // google //
+        (0, google_dependencies_1.configureGoogleDependencies)(pool);
         // media //
         (0, media_dependencies_1.configureMediaDependencies)(pool);
         // messages //
