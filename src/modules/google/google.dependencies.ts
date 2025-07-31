@@ -7,13 +7,11 @@ import GoogleCalendarService from './calendar/GoogleCalendarService';
 import HttpService from '../../core/services/HttpService';
 import GoogleClientManager from './GoogleClientManager';
 import GoogleCalendarController from './calendar/GoogleCalendarController';
-import CalendarsService from '../google/calendar/GoogleCalendarService';
 
 export function configureGoogleDependencies(pool: Pool) {
     const repository = new GoogleRepository(pool);
     const httpService = Container.resolve<HttpService>("HttpService");
     const calendarService = new GoogleCalendarService;
-    const platformCalendarService = Container.resolve<CalendarsService>("CalendarsService");
     
     const clientManager = new GoogleClientManager(repository);
     const googleService = new GoogleService(clientManager, calendarService);
