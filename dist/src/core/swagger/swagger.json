@@ -895,6 +895,34 @@
                 ]
             }
         },
+        "/google/secure/url": {
+            "get": {
+                "tags": [
+                    "Google"
+                ],
+                "description": "get google auth href",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/callback": {
+            "get": {
+                "description": "",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/platforms/secure/create": {
             "post": {
                 "tags": [
