@@ -33,13 +33,8 @@ class FlowConfigController {
                         allwowedServiceproviders: this.allwowedServiceproviders
                     });
                 }
-                const agentResource = yield this.agentsService.resource(agentId);
-                if (!agentResource) {
-                    throw new errors_1.BadRequestError("Agent not found");
-                }
-                if (agentResource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError();
-                }
+                const agentResource = yield this.httpService.requestValidation.validateResource(agentId, "AgentsService", "Agent not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block);
                 if (agentResource.type !== "flow") {
                     throw new errors_1.BadRequestError("Agent type not supported for flow configuration", {
                         agentType: agentResource.type
@@ -65,13 +60,8 @@ class FlowConfigController {
                 const agentId = req.params.agentId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
                 const user = req.user;
-                const agentResource = yield this.agentsService.resource(agentId);
-                if (!agentResource) {
-                    throw new errors_1.BadRequestError("Agent not found");
-                }
-                if (agentResource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError();
-                }
+                const agentResource = yield this.httpService.requestValidation.validateResource(agentId, "AgentsService", "Agent not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block);
                 const data = yield this.flowConfigService.resource(agentId);
                 res.status(200).json({ data: data });
             }
@@ -87,13 +77,8 @@ class FlowConfigController {
                 const agentId = req.params.agetnId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
                 const user = req.user;
-                const agentResource = yield this.agentsService.resource(agentId);
-                if (!agentResource) {
-                    throw new errors_1.BadRequestError("Agent not found");
-                }
-                if (agentResource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError();
-                }
+                const agentResource = yield this.httpService.requestValidation.validateResource(agentId, "AgentsService", "Agent not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block);
                 const configResource = yield this.flowConfigService.resource(agentId);
                 if (!configResource) {
                     throw new errors_1.NotFoundError(undefined, {
@@ -117,13 +102,8 @@ class FlowConfigController {
                 const agentId = req.params.agetnId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
                 const user = req.user;
-                const agentResource = yield this.agentsService.resource(agentId);
-                if (!agentResource) {
-                    throw new errors_1.BadRequestError("Agent not found");
-                }
-                if (agentResource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError();
-                }
+                const agentResource = yield this.httpService.requestValidation.validateResource(agentId, "AgentsService", "Agent not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block);
                 const configResource = yield this.flowConfigService.resource(agentId);
                 if (!configResource) {
                     throw new errors_1.NotFoundError(undefined, {

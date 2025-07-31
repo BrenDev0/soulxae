@@ -5,6 +5,7 @@ import AiConfigService from "./AiConfigService";
 import { AiConfigData } from "./aiConfig.interface";
 import Container from "../../core/dependencies/Container";
 import AgentsService from "../agents/AgentsService";
+import { AgentData } from "../agents/agents.interface";
 
 export default class AiConfigController { 
   private httpService: HttpService;
@@ -29,14 +30,9 @@ export default class AiConfigController {
       const agentId = req.params.agentId;
       this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
 
-      const agentResource = await this.agentsService.resource(agentId)
-      if(!agentResource) {
-        throw new BadRequestError("Agent not found")
-      }
-
-      if(agentResource.userId !== user.user_id) {
-        throw new AuthorizationError()
-      }
+      const agentResource = await this.httpService.requestValidation.validateResource<AgentData>(agentId, "AgentsService", "Agent not found", block);
+      
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block)
 
       if(agentResource.type !== "ai") {
         throw new BadRequestError("Agent type not supported for ai configuration", {
@@ -69,14 +65,9 @@ export default class AiConfigController {
       this.httpService.requestValidation.validateUuid(agentId, "agentId", block)
       const user = req.user;
 
-       const agentResource = await this.agentsService.resource(agentId)
-      if(!agentResource) {
-        throw new BadRequestError("Agent not found")
-      }
+      const agentResource = await this.httpService.requestValidation.validateResource<AgentData>(agentId, "AgentsService", "Agent not found", block);
 
-      if(agentResource.userId !== user.user_id) {
-        throw new AuthorizationError()
-      }
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block)
 
 
       const data = await this.aiConfigService.resource(agentId);
@@ -95,14 +86,9 @@ export default class AiConfigController {
 
       const user = req.user;
 
-      const agentResource = await this.agentsService.resource(agentId)
-      if(!agentResource) {
-        throw new BadRequestError("Agent not found")
-      }
+      const agentResource = await this.httpService.requestValidation.validateResource<AgentData>(agentId, "AgentsService", "Agent not found", block);
 
-      if(agentResource.userId !== user.user_id) {
-        throw new AuthorizationError()
-      }
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block)
 
 
      const configResource = await this.aiConfigService.resource(agentId);
@@ -132,14 +118,9 @@ export default class AiConfigController {
 
       const user = req.user;
 
-      const agentResource = await this.agentsService.resource(agentId)
-      if(!agentResource) {
-        throw new BadRequestError("Agent not found")
-      }
-
-      if(agentResource.userId !== user.user_id) {
-        throw new AuthorizationError()
-      }
+      const agentResource = await this.httpService.requestValidation.validateResource<AgentData>(agentId, "AgentsService", "Agent not found", block);
+      
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block)
 
 
      const configResource = await this.aiConfigService.resource(agentId);

@@ -97,8 +97,8 @@ export default class ConversationsController {
     try {
       const user = req.user;
 
-      const conversataionId = req.params.conversationId;
-      this.httpService.requestValidation.validateUuid(conversataionId, "conversationId", block);
+      const conversationId = req.params.conversationId;
+      this.httpService.requestValidation.validateUuid(conversationId, "conversationId", block);
 
       function parseBoolean(value: any): boolean | null {
         if (value === 'true') return true;
@@ -111,12 +111,9 @@ export default class ConversationsController {
       if (agentHandoffStatus === null) {
         throw new BadRequestError("Invalid request query")
       }
-      const conversationResource = await this.conversationsService.resource(conversataionId);
-      if(!conversationResource) {
-        throw new NotFoundError("Conversation not found")
-      }
+      const conversationResource = await this.httpService.requestValidation.validateResource<ConversationData>(conversationId, "ConversationsService", "Conversation not found", block)
 
-      await this.conversationsService.update(conversataionId, { handoff: agentHandoffStatus } as ConversationData)
+      await this.conversationsService.update(conversationId, { handoff: agentHandoffStatus } as ConversationData)
       res.status(200).json({"message": "conversaiton updated"})
     } catch (error) {
       throw error
@@ -129,13 +126,7 @@ export default class ConversationsController {
       const conversationId = req.params.conversationId;
       this.httpService.requestValidation.validateUuid(conversationId, "conversationId", block);
 
-      const resource = await this.conversationsService.resource(conversationId);
-      if(!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.conversationExistCheck`,
-          resource: resource || `No conversation found in db with id ${conversationId}`
-        })
-      }
+      const conversationResource = await this.httpService.requestValidation.validateResource<ConversationData>(conversationId, "ConversationsService", "Conversation not found", block)
       
       await this.conversationsService.delete(conversationId);
       res.status(200).json({ message: "Conversation deleted"})

@@ -4,6 +4,7 @@ import { AuthorizationError, BadRequestError, NotFoundError } from "../../core/e
 import AiToolsService from "./AiToolsService";
 import { AiToolData } from "./aiTools.interface";
 import AgentsService from "../agents/AgentsService";
+import { AgentData } from "../agents/agents.interface";
 
 export default class AiToolsController { 
   private httpService: HttpService;
@@ -104,14 +105,9 @@ export default class AiToolsController {
 
       const { agentId, toolId } = req.body;
 
-      const agentResource = await this.agentsService.resource(agentId);
-      if(!agentResource) {
-        throw new NotFoundError("Agent not found");
-      }
-
-      if(agentResource.userId !== user.user_id) {
-        throw new AuthorizationError()
-      }
+      const agentResource = await this.httpService.requestValidation.validateResource<AgentData>(agentId, "AgentsService", "Agent not found", block);
+      
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block)
 
       await this.aiToolsService.delete(agentId, toolId); 
       res.status(200).json({ message: "Tool removed from aget config"})

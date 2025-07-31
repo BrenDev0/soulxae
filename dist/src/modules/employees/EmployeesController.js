@@ -51,12 +51,7 @@ class EmployeesController {
             try {
                 const employeeId = req.params.employeeId;
                 this.httpService.requestValidation.validateUuid(employeeId, "employeeId", block);
-                const resource = yield this.employeesService.resource(employeeId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.notFound`,
-                    });
-                }
+                const resource = yield this.httpService.requestValidation.validateResource(employeeId, "EmployeesService", "Employee not found", block);
                 res.status(200).json({ data: resource });
             }
             catch (error) {
@@ -84,12 +79,7 @@ class EmployeesController {
             try {
                 const employeeId = req.params.employeeId;
                 this.httpService.requestValidation.validateUuid(employeeId, "employeeId", block);
-                const resource = yield this.employeesService.resource(employeeId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.notFound`,
-                    });
-                }
+                yield this.httpService.requestValidation.validateResource(employeeId, "EmployeesService", "Employee not found", block);
                 const allowedChanges = ["name"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 yield this.employeesService.update(employeeId, filteredChanges);
@@ -106,12 +96,7 @@ class EmployeesController {
             try {
                 const employeeId = req.params.employeeId;
                 this.httpService.requestValidation.validateUuid(employeeId, "employeeId", block);
-                const resource = yield this.employeesService.resource(employeeId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.notFound`,
-                    });
-                }
+                yield this.httpService.requestValidation.validateResource(employeeId, "EmployeesService", "Employee not found", block);
                 yield this.employeesService.delete(employeeId);
             }
             catch (error) {

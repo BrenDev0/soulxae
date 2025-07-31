@@ -131,6 +131,7 @@ const endpointsFiles = [
     '../../modules/directMessaging/directMessaging.routes.ts',
     '../../modules/employees/employees.routes.ts',
     '../../modules/flowConfig/flowConfig.routes.ts',
+    '../../modules/google/google.routes.ts',
     '../../modules/platforms/platforms.routes.ts',
     '../../modules/users/users.routes.ts'
 ];

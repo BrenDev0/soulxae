@@ -8,12 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = require("../../core/errors/errors");
-const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 class PlatformsController {
     constructor(httpService, platformsService) {
         this.block = "platforms.controller";
@@ -30,14 +26,8 @@ class PlatformsController {
                 const user = req.user;
                 const agentId = req.params.agentId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
-                const agentsService = Container_1.default.resolve("AgentsService");
-                const agentResourcre = yield agentsService.resource(agentId);
-                if (!agentResourcre) {
-                    throw new errors_1.BadRequestError("Agent not found");
-                }
-                if (agentResourcre.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError();
-                }
+                const agentResource = yield this.httpService.requestValidation.validateResource(agentId, "AgentsService", "Agent not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block);
                 const { platform, token } = req.body;
                 if (!this.allowedPlatforms.includes(platform)) {
                     throw new errors_1.BadRequestError("Invalid platform type", {
@@ -75,12 +65,7 @@ class PlatformsController {
             try {
                 const platformId = req.params.platformId;
                 this.httpService.requestValidation.validateUuid(platformId, "platformId", block);
-                const resource = yield this.platformsService.resource("platform_id", platformId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.notFound`,
-                    });
-                }
+                const resource = yield this.httpService.requestValidation.validateResource(platformId, "PlatformsService", "Platform not found", block);
                 res.status(200).json({ data: resource });
             }
             catch (error) {
@@ -108,12 +93,7 @@ class PlatformsController {
             try {
                 const platformId = req.params.platformId;
                 this.httpService.requestValidation.validateUuid(platformId, "platformId", block);
-                const resource = yield this.platformsService.resource("platform_id", platformId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.notFound`,
-                    });
-                }
+                yield this.httpService.requestValidation.validateResource(platformId, "PlatformsService", "Platform not found", block);
                 const allowedChanges = ["token", "platform"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 if (filteredChanges.platform && !this.allowedPlatforms.includes(filteredChanges.platform)) {
@@ -136,12 +116,7 @@ class PlatformsController {
             try {
                 const platformId = req.params.platformId;
                 this.httpService.requestValidation.validateUuid(platformId, "platformId", block);
-                const resource = yield this.platformsService.resource("platform_id", platformId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.notFound`,
-                    });
-                }
+                yield this.httpService.requestValidation.validateResource(platformId, "PlatformsService", "Platform not found", block);
                 yield this.platformsService.delete(platformId);
                 res.status(200).json({ message: "Platform deleted" });
             }

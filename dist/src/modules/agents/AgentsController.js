@@ -47,18 +47,9 @@ class AgentsController {
                 const user = req.user;
                 const agentId = req.params.agentId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
-                const resource = yield this.agentsService.resource(agentId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError("Agent not found");
-                }
-                if (resource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError(undefined, {
-                        block: `${block}.userCheck`,
-                        workspaceUserId: resource.userId,
-                        userId: user.user_id
-                    });
-                }
-                res.status(200).json({ data: resource });
+                const agentResource = yield this.httpService.requestValidation.validateResource(agentId, "AgentsService", "Agent not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block);
+                res.status(200).json({ data: agentResource });
             }
             catch (error) {
                 throw error;
@@ -85,19 +76,8 @@ class AgentsController {
                 const user = req.user;
                 const agentId = req.params.agentId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
-                const resource = yield this.agentsService.resource(agentId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.notFound`,
-                    });
-                }
-                if (resource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError(undefined, {
-                        block: `${block}.userCheck`,
-                        workspaceUserId: resource.userId,
-                        userId: user.user_id
-                    });
-                }
+                const agentResource = yield this.httpService.requestValidation.validateResource(agentId, "AgentsService", "Agent not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block);
                 const allowedChanges = ["name", "description"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 yield this.agentsService.update(agentId, filteredChanges);
@@ -115,19 +95,8 @@ class AgentsController {
                 const user = req.user;
                 const agentId = req.params.agentId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
-                const resource = yield this.agentsService.resource(agentId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.notFound`,
-                    });
-                }
-                if (resource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError(undefined, {
-                        block: `${block}.userCheck`,
-                        workspaceUserId: resource.userId,
-                        userId: user.user_id
-                    });
-                }
+                const agentResource = yield this.httpService.requestValidation.validateResource(agentId, "AgentsService", "Agent not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block);
                 yield this.agentsService.delete(agentId);
                 res.status(200).json({ message: "Agent deleted" });
             }

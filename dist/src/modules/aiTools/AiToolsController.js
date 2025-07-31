@@ -93,13 +93,8 @@ class AiToolsController {
                 const requiredFields = ["agentId", "toolId"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const { agentId, toolId } = req.body;
-                const agentResource = yield this.agentsService.resource(agentId);
-                if (!agentResource) {
-                    throw new errors_1.NotFoundError("Agent not found");
-                }
-                if (agentResource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError();
-                }
+                const agentResource = yield this.httpService.requestValidation.validateResource(agentId, "AgentsService", "Agent not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block);
                 yield this.aiToolsService.delete(agentId, toolId);
                 res.status(200).json({ message: "Tool removed from aget config" });
             }

@@ -56,12 +56,7 @@ export default class EmployeesController {
       const employeeId = req.params.employeeId;
       this.httpService.requestValidation.validateUuid(employeeId, "employeeId", block);
 
-      const resource = await this.employeesService.resource(employeeId);
-      if (!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.notFound`,
-        });
-      }
+      const resource = await this.httpService.requestValidation.validateResource<EmployeeData>(employeeId, "EmployeesService", "Employee not found", block)
 
       res.status(200).json({ data: resource })
     } catch (error) {
@@ -89,12 +84,7 @@ export default class EmployeesController {
      const employeeId = req.params.employeeId;
       this.httpService.requestValidation.validateUuid(employeeId, "employeeId", block);
 
-      const resource = await this.employeesService.resource(employeeId);
-      if (!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.notFound`,
-        });
-      }
+      await this.httpService.requestValidation.validateResource<EmployeeData>(employeeId, "EmployeesService", "Employee not found", block)
       const allowedChanges = ["name"];
 
       const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<EmployeeData>(allowedChanges, req.body, block);
@@ -113,12 +103,7 @@ export default class EmployeesController {
      const employeeId = req.params.employeeId;
       this.httpService.requestValidation.validateUuid(employeeId, "employeeId", block);
 
-      const resource = await this.employeesService.resource(employeeId);
-      if (!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.notFound`,
-        });
-      }
+      await this.httpService.requestValidation.validateResource<EmployeeData>(employeeId, "EmployeesService", "Employee not found", block)
 
       await this.employeesService.delete(employeeId);
     } catch (error) {

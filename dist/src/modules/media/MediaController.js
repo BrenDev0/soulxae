@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = require("../../core/errors/errors");
-const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 const axios_1 = __importDefault(require("axios"));
 class MediaController {
     constructor(httpService, s3Service) {
@@ -35,14 +34,8 @@ class MediaController {
                 const user = req.user;
                 const agentId = req.params.agentId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
-                const agentService = Container_1.default.resolve("AgentsService");
-                const agentResource = yield agentService.resource(agentId);
-                if (!agentResource) {
-                    throw new errors_1.NotFoundError("No agent found");
-                }
-                if (agentResource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError();
-                }
+                const agentResource = yield this.httpService.requestValidation.validateResource(agentId, "AgentsService", "Agent not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block);
                 const key = `temp_for_ empbeding:${user.user_id}:${agentId}`;
                 const url = yield this.s3Service.upload(key, file);
                 const token = this.httpService.webtokenService.generateToken({

@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const errors_1 = require("../../core/errors/errors");
 class SubscriptionsController {
     constructor(httpService, subscriptionsService) {
         this.block = "subscriptions.controller";
@@ -36,12 +35,7 @@ class SubscriptionsController {
             try {
                 const subscriptionId = req.params.subscriptionId;
                 this.httpService.requestValidation.validateUuid(subscriptionId, "subscriptionId", block);
-                const resource = yield this.subscriptionsService.resource(subscriptionId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.notFound`,
-                    });
-                }
+                const resource = yield this.httpService.requestValidation.validateResource(subscriptionId, "SubscriptionsService", "Subscription not found", block);
                 res.status(200).json({ data: resource });
             }
             catch (error) {
@@ -55,12 +49,7 @@ class SubscriptionsController {
             try {
                 const subscriptionId = req.params.subscriptionId;
                 this.httpService.requestValidation.validateUuid(subscriptionId, "subscriptionId", block);
-                const resource = yield this.subscriptionsService.resource(subscriptionId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.notFound`,
-                    });
-                }
+                yield this.httpService.requestValidation.validateResource(subscriptionId, "SubscriptionsService", "Subscription not found", block);
                 const allowedChanges = ["name", "details", "priceMonth", "priceYear", "agencyLimit", "agentLimit"];
                 const filteredChanges = this.httpService.requestValidation.filterUpdateRequest(allowedChanges, req.body, block);
                 yield this.subscriptionsService.update(subscriptionId, filteredChanges);
@@ -77,12 +66,7 @@ class SubscriptionsController {
             try {
                 const subscriptionId = req.params.subscriptionId;
                 this.httpService.requestValidation.validateUuid(subscriptionId, "subscriptionId", block);
-                const resource = yield this.subscriptionsService.resource(subscriptionId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.notFound`,
-                    });
-                }
+                yield this.httpService.requestValidation.validateResource(subscriptionId, "SubscriptionsService", "Subscription not found", block);
                 yield this.subscriptionsService.delete(subscriptionId);
                 res.status(200).json({ message: "Subscription deleted" });
             }

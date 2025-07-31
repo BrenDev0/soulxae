@@ -4,6 +4,7 @@ import { AuthorizationError, BadRequestError, NotFoundError } from "../../core/e
 import FlowConfigService from "./FlowConfigService";
 import { FlowConfigData } from "./flowConfig.interface";
 import AgentsService from "../agents/AgentsService";
+import { AgentData } from "../agents/agents.interface";
 
 export default class FlowConfigController { 
   private httpService: HttpService;
@@ -34,14 +35,9 @@ export default class FlowConfigController {
           allwowedServiceproviders: this.allwowedServiceproviders
         })
       }
-      const agentResource = await this.agentsService.resource(agentId)
-      if(!agentResource) {
-        throw new BadRequestError("Agent not found")
-      }
+      const agentResource = await this.httpService.requestValidation.validateResource<AgentData>(agentId, "AgentsService", "Agent not found", block);
 
-      if(agentResource.userId !== user.user_id) {
-        throw new AuthorizationError()
-      }
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block)
 
       if(agentResource.type !== "flow") {
         throw new BadRequestError("Agent type not supported for flow configuration", {
@@ -75,14 +71,9 @@ export default class FlowConfigController {
 
       const user = req.user;
 
-       const agentResource = await this.agentsService.resource(agentId)
-      if(!agentResource) {
-        throw new BadRequestError("Agent not found")
-      }
+      const agentResource = await this.httpService.requestValidation.validateResource<AgentData>(agentId, "AgentsService", "Agent not found", block);
 
-      if(agentResource.userId !== user.user_id) {
-        throw new AuthorizationError()
-      }
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block)
 
       const data = await this.flowConfigService.resource(agentId);
 
@@ -100,14 +91,9 @@ export default class FlowConfigController {
 
       const user = req.user;
 
-      const agentResource = await this.agentsService.resource(agentId)
-      if(!agentResource) {
-        throw new BadRequestError("Agent not found")
-      }
+      const agentResource = await this.httpService.requestValidation.validateResource<AgentData>(agentId, "AgentsService", "Agent not found", block);
 
-      if(agentResource.userId !== user.user_id) {
-        throw new AuthorizationError()
-      }
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block)
 
 
     const configResource = await this.flowConfigService.resource(agentId);
@@ -137,14 +123,9 @@ export default class FlowConfigController {
 
       const user = req.user;
 
-      const agentResource = await this.agentsService.resource(agentId)
-      if(!agentResource) {
-        throw new BadRequestError("Agent not found")
-      }
+      const agentResource = await this.httpService.requestValidation.validateResource<AgentData>(agentId, "AgentsService", "Agent not found", block);
 
-      if(agentResource.userId !== user.user_id) {
-        throw new AuthorizationError()
-      }
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block)
 
 
      const configResource = await this.flowConfigService.resource(agentId);

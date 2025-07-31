@@ -5,6 +5,7 @@ import PlatformsService from "./PlatformsService";
 import { PlatformData } from "./platforms.interface";
 import Container from "../../core/dependencies/Container";
 import AgenciesService from "../agencies/AgenciesService";
+import { AgentData } from "../agents/agents.interface";
 
 export default class PlatformsController { 
   private httpService: HttpService;
@@ -28,15 +29,9 @@ export default class PlatformsController {
       const agentId = req.params.agentId;
       this.httpService.requestValidation.validateUuid(agentId, "agentId", block)
 
-      const agentsService = Container.resolve<AgenciesService>("AgentsService");
-      const agentResourcre =  await agentsService.resource(agentId);
-      if(!agentResourcre) {
-        throw new BadRequestError("Agent not found")
-      }
-
-      if(agentResourcre.userId !== user.user_id) {
-        throw new AuthorizationError()
-      }
+      const agentResource = await this.httpService.requestValidation.validateResource<AgentData>(agentId, "AgentsService", "Agent not found", block);
+      
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block)
       
       const {  platform, token } = req.body;
       
@@ -88,12 +83,7 @@ export default class PlatformsController {
 
       this.httpService.requestValidation.validateUuid(platformId, "platformId", block);
 
-      const resource = await this.platformsService.resource("platform_id", platformId);
-      if (!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.notFound`,
-        });
-      }
+      const resource = await this.httpService.requestValidation.validateResource<PlatformData>(platformId, "PlatformsService", "Platform not found", block)
 
       res.status(200).json({ data: resource })
     } catch (error) {
@@ -123,12 +113,7 @@ export default class PlatformsController {
 
       this.httpService.requestValidation.validateUuid(platformId, "platformId", block);
 
-      const resource = await this.platformsService.resource("platform_id", platformId);
-      if (!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.notFound`,
-        });
-      }
+      await this.httpService.requestValidation.validateResource<PlatformData>(platformId, "PlatformsService", "Platform not found", block)
 
       const allowedChanges = ["token", "platform"];
 
@@ -156,12 +141,8 @@ export default class PlatformsController {
 
       this.httpService.requestValidation.validateUuid(platformId, "platformId", block);
 
-      const resource = await this.platformsService.resource("platform_id", platformId);
-      if (!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.notFound`,
-        });
-      }
+      await this.httpService.requestValidation.validateResource<PlatformData>(platformId, "PlatformsService", "Platform not found", block)
+
 
       await this.platformsService.delete(platformId);
       res.status(200).json({ message: "Platform deleted"})

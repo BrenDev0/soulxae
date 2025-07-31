@@ -87,8 +87,8 @@ class ConversationsController {
             const block = `${this.block}.agentHandoff`;
             try {
                 const user = req.user;
-                const conversataionId = req.params.conversationId;
-                this.httpService.requestValidation.validateUuid(conversataionId, "conversationId", block);
+                const conversationId = req.params.conversationId;
+                this.httpService.requestValidation.validateUuid(conversationId, "conversationId", block);
                 function parseBoolean(value) {
                     if (value === 'true')
                         return true;
@@ -100,11 +100,8 @@ class ConversationsController {
                 if (agentHandoffStatus === null) {
                     throw new errors_1.BadRequestError("Invalid request query");
                 }
-                const conversationResource = yield this.conversationsService.resource(conversataionId);
-                if (!conversationResource) {
-                    throw new errors_1.NotFoundError("Conversation not found");
-                }
-                yield this.conversationsService.update(conversataionId, { handoff: agentHandoffStatus });
+                const conversationResource = yield this.httpService.requestValidation.validateResource(conversationId, "ConversationsService", "Conversation not found", block);
+                yield this.conversationsService.update(conversationId, { handoff: agentHandoffStatus });
                 res.status(200).json({ "message": "conversaiton updated" });
             }
             catch (error) {
@@ -118,13 +115,7 @@ class ConversationsController {
             try {
                 const conversationId = req.params.conversationId;
                 this.httpService.requestValidation.validateUuid(conversationId, "conversationId", block);
-                const resource = yield this.conversationsService.resource(conversationId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.conversationExistCheck`,
-                        resource: resource || `No conversation found in db with id ${conversationId}`
-                    });
-                }
+                const conversationResource = yield this.httpService.requestValidation.validateResource(conversationId, "ConversationsService", "Conversation not found", block);
                 yield this.conversationsService.delete(conversationId);
                 res.status(200).json({ message: "Conversation deleted" });
             }

@@ -18,6 +18,7 @@ import { initializeMediaRouter } from './modules/media/media.routes';
 import { initializeAiConfigRouter } from './modules/aiConfig/aiConfig.routes';
 import { initializeFlowConfigRouter } from './modules/flowConfig/flowConfig.routes';
 import { initializeAiToolsRouter } from './modules/aiTools/aiTools.routes';
+import { initializeGoogleRouter } from './modules/google/google.routes';
 
 
 const server = async() => {
@@ -35,6 +36,7 @@ const server = async() => {
     const directMessagingRouter = initializeDirectMessageingRouter();
     const employeesRouter = initializeEmployeesRouter();
     const flowConfigRouter = initializeFlowConfigRouter();
+    const googleRouter = initializeGoogleRouter();
     const mediaRouter = initializeMediaRouter();
     const messengerRouter = initializeMessengerRouter();
     const platformsRouter = initializePlatformsRouter();
@@ -55,6 +57,7 @@ const server = async() => {
     app.use("/direct", directMessagingRouter);
     app.use("/employees", employeesRouter);
     app.use("/flow-config", flowConfigRouter);
+    app.use("/google", googleRouter)
     app.use("/media", mediaRouter);
     app.use("/messenger", messengerRouter);
     app.use("/platforms", platformsRouter);

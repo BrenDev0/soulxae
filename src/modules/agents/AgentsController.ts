@@ -52,21 +52,12 @@ export default class AgentsController {
       const agentId = req.params.agentId;
       this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
 
-      const resource = await this.agentsService.resource(agentId);
-      if(!resource) {
-        throw new NotFoundError("Agent not found")
-      }
+      const agentResource = await this.httpService.requestValidation.validateResource<AgentData>(agentId, "AgentsService", "Agent not found", block);
 
-      if(resource.userId !== user.user_id) {
-        throw new AuthorizationError(undefined, {
-          block: `${block}.userCheck`,
-          workspaceUserId: resource.userId,
-          userId: user.user_id
-        })
-      }
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block)
 
 
-      res.status(200).json({ data: resource})
+      res.status(200).json({ data: agentResource})
     } catch (error) {
       throw error;
     }
@@ -92,21 +83,9 @@ export default class AgentsController {
       const agentId = req.params.agentId;
       this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
 
-     const resource = await this.agentsService.resource(agentId);
-      if (!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.notFound`,
-        });
-      }
+     const agentResource = await this.httpService.requestValidation.validateResource<AgentData>(agentId, "AgentsService", "Agent not found", block);
 
-      if(resource.userId !== user.user_id) {
-        throw new AuthorizationError(undefined, {
-          block: `${block}.userCheck`,
-          workspaceUserId: resource.userId,
-          userId: user.user_id
-        })
-      }
-
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block)
 
       const allowedChanges = ["name", "description"];
 
@@ -127,20 +106,9 @@ export default class AgentsController {
       const agentId = req.params.agentId;
       this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
 
-     const resource = await this.agentsService.resource(agentId);
-      if (!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.notFound`,
-        });
-      }
+     const agentResource = await this.httpService.requestValidation.validateResource<AgentData>(agentId, "AgentsService", "Agent not found", block);
 
-      if(resource.userId !== user.user_id) {
-        throw new AuthorizationError(undefined, {
-          block: `${block}.userCheck`,
-          workspaceUserId: resource.userId,
-          userId: user.user_id
-        })
-      }
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block)
 
       await this.agentsService.delete(agentId);
       res.status(200).json({ message: "Agent deleted"})

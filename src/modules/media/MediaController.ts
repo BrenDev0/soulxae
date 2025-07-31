@@ -5,6 +5,7 @@ import S3Service from "./S3Service";
 import Container from "../../core/dependencies/Container";
 import AgentsService from "../agents/AgentsService";
 import axios from "axios";
+import { AgentData } from "../agents/agents.interface";
 
 export default class MediaController { 
   private httpService: HttpService;
@@ -33,15 +34,9 @@ export default class MediaController {
       const agentId = req.params.agentId;
       this.httpService.requestValidation.validateUuid(agentId, "agentId", block)
 
-      const agentService = Container.resolve<AgentsService>("AgentsService");
-      const agentResource = await agentService.resource(agentId);
-      if(!agentResource) {
-        throw new NotFoundError("No agent found")
-      }
-
-      if(agentResource.userId !== user.user_id) {
-        throw new AuthorizationError()
-      }
+      const agentResource = await this.httpService.requestValidation.validateResource<AgentData>(agentId, "AgentsService", "Agent not found", block);
+      
+      this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block)
 
       const key = `temp_for_ empbeding:${user.user_id}:${agentId}`
 

@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const errors_1 = require("../../core/errors/errors");
 class ClientsController {
     constructor(httpService, clientsService) {
         this.block = "clients.controller";
@@ -35,13 +34,7 @@ class ClientsController {
             try {
                 const clientId = req.params.clientId;
                 this.httpService.requestValidation.validateUuid(clientId, "clientId", block);
-                const resource = yield this.clientsService.resource("client_id", clientId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.clientExistCheck`,
-                        resource: resource || `No client found in db with id ${clientId}`
-                    });
-                }
+                const resource = yield this.httpService.requestValidation.validateResource(clientId, "ClientsService", "Client not found", block);
                 res.status(200).json({ data: resource });
             }
             catch (error) {
@@ -86,13 +79,7 @@ class ClientsController {
             try {
                 const clientId = req.params.clientId;
                 this.httpService.requestValidation.validateUuid(clientId, "clientId", block);
-                const resource = yield this.clientsService.resource("client_id", clientId);
-                if (!resource) {
-                    throw new errors_1.NotFoundError(undefined, {
-                        block: `${block}.clientExistCheck`,
-                        resource: resource || `No client found in db with id ${clientId}`
-                    });
-                }
+                const resource = yield this.httpService.requestValidation.validateResource(clientId, "ClientsService", "Client not found", block);
                 yield this.clientsService.delete(clientId);
                 res.status(200).json({ message: "Client deleted" });
             }

@@ -35,12 +35,7 @@ export default class SubscriptionsController {
       const subscriptionId = req.params.subscriptionId;
       this.httpService.requestValidation.validateUuid(subscriptionId, "subscriptionId", block);
 
-      const resource = await this.subscriptionsService.resource(subscriptionId);
-      if(!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.notFound`,
-        });
-      }
+      const resource = await this.httpService.requestValidation.validateResource<SubscriptionData>(subscriptionId, "SubscriptionsService", "Subscription not found", block)
 
       res.status(200).json({ data: resource })
     } catch (error) {
@@ -54,12 +49,8 @@ export default class SubscriptionsController {
       const subscriptionId = req.params.subscriptionId;
       this.httpService.requestValidation.validateUuid(subscriptionId, "subscriptionId", block);
 
-      const resource = await this.subscriptionsService.resource(subscriptionId);
-      if (!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.notFound`,
-        });
-      }
+      await this.httpService.requestValidation.validateResource<SubscriptionData>(subscriptionId, "SubscriptionsService", "Subscription not found", block)
+      
       const allowedChanges = ["name", "details", "priceMonth", "priceYear", "agencyLimit", "agentLimit"];
 
       const filteredChanges = this.httpService.requestValidation.filterUpdateRequest<SubscriptionData>(allowedChanges, req.body, block);
@@ -78,12 +69,7 @@ export default class SubscriptionsController {
       const subscriptionId = req.params.subscriptionId;
       this.httpService.requestValidation.validateUuid(subscriptionId, "subscriptionId", block);
 
-      const resource = await this.subscriptionsService.resource(subscriptionId);
-      if (!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.notFound`,
-        });
-      }
+      await this.httpService.requestValidation.validateResource<SubscriptionData>(subscriptionId, "SubscriptionsService", "Subscription not found", block)
 
       await this.subscriptionsService.delete(subscriptionId);
       

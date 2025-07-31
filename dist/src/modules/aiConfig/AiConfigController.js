@@ -26,13 +26,8 @@ class AiConfigController {
                 const user = req.user;
                 const agentId = req.params.agentId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
-                const agentResource = yield this.agentsService.resource(agentId);
-                if (!agentResource) {
-                    throw new errors_1.BadRequestError("Agent not found");
-                }
-                if (agentResource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError();
-                }
+                const agentResource = yield this.httpService.requestValidation.validateResource(agentId, "AgentsService", "Agent not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block);
                 if (agentResource.type !== "ai") {
                     throw new errors_1.BadRequestError("Agent type not supported for ai configuration", {
                         agentType: agentResource.type
@@ -58,13 +53,8 @@ class AiConfigController {
                 const agentId = req.params.agentId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
                 const user = req.user;
-                const agentResource = yield this.agentsService.resource(agentId);
-                if (!agentResource) {
-                    throw new errors_1.BadRequestError("Agent not found");
-                }
-                if (agentResource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError();
-                }
+                const agentResource = yield this.httpService.requestValidation.validateResource(agentId, "AgentsService", "Agent not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block);
                 const data = yield this.aiConfigService.resource(agentId);
                 res.status(200).json({ data: data });
             }
@@ -80,13 +70,8 @@ class AiConfigController {
                 const agentId = req.params.agetnId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
                 const user = req.user;
-                const agentResource = yield this.agentsService.resource(agentId);
-                if (!agentResource) {
-                    throw new errors_1.BadRequestError("Agent not found");
-                }
-                if (agentResource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError();
-                }
+                const agentResource = yield this.httpService.requestValidation.validateResource(agentId, "AgentsService", "Agent not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block);
                 const configResource = yield this.aiConfigService.resource(agentId);
                 if (!configResource) {
                     throw new errors_1.NotFoundError(undefined, {
@@ -110,13 +95,8 @@ class AiConfigController {
                 const agentId = req.params.agetnId;
                 this.httpService.requestValidation.validateUuid(agentId, "agentId", block);
                 const user = req.user;
-                const agentResource = yield this.agentsService.resource(agentId);
-                if (!agentResource) {
-                    throw new errors_1.BadRequestError("Agent not found");
-                }
-                if (agentResource.userId !== user.user_id) {
-                    throw new errors_1.AuthorizationError();
-                }
+                const agentResource = yield this.httpService.requestValidation.validateResource(agentId, "AgentsService", "Agent not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, agentResource.userId, block);
                 const configResource = yield this.aiConfigService.resource(agentId);
                 if (!configResource) {
                     throw new errors_1.NotFoundError(undefined, {

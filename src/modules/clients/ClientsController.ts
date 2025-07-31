@@ -38,13 +38,7 @@ export default class ClientsController {
       const clientId = req.params.clientId;
       this.httpService.requestValidation.validateUuid(clientId, "clientId", block);
 
-      const resource = await this.clientsService.resource("client_id", clientId);
-      if(!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.clientExistCheck`,
-          resource: resource || `No client found in db with id ${clientId}`
-        })
-      }
+      const resource = await this.httpService.requestValidation.validateResource<ClientData>(clientId, "ClientsService", "Client not found", block)
 
       res.status(200).json({ data: resource })
     } catch (error) {
@@ -94,13 +88,7 @@ export default class ClientsController {
       const clientId = req.params.clientId;
       this.httpService.requestValidation.validateUuid(clientId, "clientId", block);
 
-      const resource = await this.clientsService.resource("client_id", clientId);
-      if(!resource) {
-        throw new NotFoundError(undefined, {
-          block: `${block}.clientExistCheck`,
-          resource: resource || `No client found in db with id ${clientId}`
-        })
-      }
+      const resource = await this.httpService.requestValidation.validateResource<ClientData>(clientId, "ClientsService", "Client not found", block)
       
       await this.clientsService.delete(clientId);
       res.status(200).json({ message: "Client deleted"})
