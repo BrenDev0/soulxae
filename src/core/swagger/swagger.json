@@ -143,117 +143,6 @@
         ]
       }
     },
-    "/ai-tools/secure/create": {
-      "post": {
-        "tags": [
-          "AiTools"
-        ],
-        "description": "Add tools to ai config",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/addAiTools"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/ai-tools/secure/read/{agentId}": {
-      "get": {
-        "tags": [
-          "AiTools"
-        ],
-        "description": "get collection or resource",
-        "parameters": [
-          {
-            "name": "agentId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "resource",
-            "in": "query",
-            "description": "resource id, if included will return sinlge tool, if excluded will return collection of agents tools",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/ai-tools/secure/read": {
-      "get": {
-        "tags": [
-          "AiTools"
-        ],
-        "description": "get alltools available for agent configuration",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/ai-tools/secure/delete": {
-      "delete": {
-        "tags": [
-          "AiTools"
-        ],
-        "description": "remove tool from agent config",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/addAiTools"
-              }
-            }
-          }
-        }
-      }
-    },
     "/agents/secure/create": {
       "post": {
         "tags": [
@@ -363,6 +252,108 @@
         "parameters": [
           {
             "name": "agentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/calendars/secure/create": {
+      "post": {
+        "tags": [
+          "Calendars"
+        ],
+        "description": "create calendar",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createCalendar"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/calendars/secure/resource/{calendarId}": {
+      "get": {
+        "tags": [
+          "Calendars"
+        ],
+        "description": "Get calendar by id",
+        "parameters": [
+          {
+            "name": "calendarId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/calendars/secure/collection": {
+      "get": {
+        "tags": [
+          "Calendars"
+        ],
+        "description": "get users calendars",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/calendars/secure/{calendarId}": {
+      "delete": {
+        "tags": [
+          "Calendars"
+        ],
+        "description": "Update calendars",
+        "parameters": [
+          {
+            "name": "calendarId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1590,6 +1581,15 @@
           "mediaType": {
             "type": "string",
             "example": "mime type, optional"
+          }
+        }
+      },
+      "createCalendar": {
+        "type": "object",
+        "properties": {
+          "calendarReferenceId": {
+            "type": "string",
+            "example": "id from google"
           }
         }
       }

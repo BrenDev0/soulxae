@@ -117,6 +117,9 @@ const doc = {
                 text: "message text, optional",
                 media: ["media urls optional"],
                 mediaType: "mime type, optional"
+            },
+            createCalendar: {
+                calendarReferenceId: "id from google"
             }
         },
     },
@@ -125,7 +128,7 @@ const outputFile = './swagger.json';
 const endpointsFiles = [
     '../../modules/aiConfig/aiConfig.routes.ts',
     '../../modules/agents/agents.routes.ts',
-    '../../modules/calendars/calendar.routes.ts',
+    '../../modules/calendars/calendars.routes.ts',
     '../../modules/clients/clients.routes.ts',
     '../../modules/conversations/conversations.routes.ts',
     '../../modules/directMessaging/directMessaging.routes.ts',
