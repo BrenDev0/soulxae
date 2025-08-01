@@ -3,6 +3,8 @@ import { AuthorizationError, BadRequestError, NotFoundError } from "../../../cor
 import Container from "../../../core/dependencies/Container";
 import GoogleService from "../GoogleService";
 import HttpService from "../../../core/services/HttpService";
+import { GoogleError } from "../google.erros";
+import { CalendarData } from "../../calendars/calendars.interface";
 
 
 export default class GoogleCalendarController {

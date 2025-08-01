@@ -21,7 +21,7 @@ export default class CalendarsService {
         }
     }
 
-    async resource(calendarId: string): Promise<Omit<CalendarData, "refreshToken"> | null> {
+    async resource(calendarId: string): Promise<CalendarData | null> {
         try {
             const result = await this.repository.selectOne("calendar_id", calendarId);
             if(!result) {
@@ -34,7 +34,7 @@ export default class CalendarsService {
         }
     }
 
-    async collection(userId: string): Promise<Omit<CalendarData, "refreshToken">[]> {
+    async collection(userId: string): Promise<CalendarData[]> {
         try {
             const result = await this.repository.select("user_id", userId);
             
@@ -71,12 +71,11 @@ export default class CalendarsService {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
            user_id: calendar.userId,
-           calendar_reference_id: encryptionService.encryptData(calendar.calendarReferenceId),
-           refresh_token: calendar.refreshToken
+           calendar_reference_id: encryptionService.encryptData(calendar.calendarReferenceId)
         }
     }
 
-    mapFromDb(calendar: Calendar): Omit<CalendarData, "refreshToken"> {
+    mapFromDb(calendar: Calendar): CalendarData {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             calendarId: calendar.calendar_id,

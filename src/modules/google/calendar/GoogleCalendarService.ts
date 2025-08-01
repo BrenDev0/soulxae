@@ -3,11 +3,6 @@ import { OAuth2Client } from 'google-auth-library';
 import { calendar_v3, google } from 'googleapis';
 import { GoogleError } from "../google.erros";
 
-export interface notificationResult {
-    watchId: string;
-    resourceId: string;
-    expiration: string;
-}
 
 export default class GoogleCalendarService {
     private readonly block = "google.services.calendar";

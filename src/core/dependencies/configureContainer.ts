@@ -30,6 +30,7 @@ import { configureFlowConfigDependencies } from '../../modules/flowConfig/flowCo
 import { configureAiToolsDependencies } from '../../modules/aiTools/aiTools.dependencies';
 import WebSocketService from '../../modules/webSocket/WebSocketService';
 import { configureGoogleDependencies } from '../../modules/google/google.dependencies';
+import { configureCalendarsDependencies } from '../../modules/calendars/calendars.dependencies';
 
 
 export async function configureContainer(testPool?: Pool, testRedis?: string): Promise<void> {
@@ -78,6 +79,9 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
     // agents //
     configureAgentsDependencies(pool);
+
+    // calendars //
+    configureCalendarsDependencies(pool);
 
     // clients // 
     configureClientsDependencies(pool);

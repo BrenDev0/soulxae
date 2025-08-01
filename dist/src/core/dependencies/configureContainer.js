@@ -42,6 +42,7 @@ const flowConfig_dependencies_1 = require("../../modules/flowConfig/flowConfig.d
 const aiTools_dependencies_1 = require("../../modules/aiTools/aiTools.dependencies");
 const WebSocketService_1 = __importDefault(require("../../modules/webSocket/WebSocketService"));
 const google_dependencies_1 = require("../../modules/google/google.dependencies");
+const calendars_dependencies_1 = require("../../modules/calendars/calendars.dependencies");
 function configureContainer(testPool, testRedis) {
     return __awaiter(this, void 0, void 0, function* () {
         const pool = testPool !== null && testPool !== void 0 ? testPool : yield Database_1.default.getPool();
@@ -71,6 +72,8 @@ function configureContainer(testPool, testRedis) {
         //// Modules ////
         // agents //
         (0, agents_dependencies_1.configureAgentsDependencies)(pool);
+        // calendars //
+        (0, calendars_dependencies_1.configureCalendarsDependencies)(pool);
         // clients // 
         (0, clients_dependencies_1.configureClientsDependencies)(pool);
         // conversations //
