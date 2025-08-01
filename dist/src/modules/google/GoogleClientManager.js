@@ -25,10 +25,10 @@ class GoogleClientManager {
         const client = new googleapis_1.google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_REDIRECT_URI);
         return client;
     }
-    getcredentialedClient(calendarId) {
+    getcredentialedClient(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const client = this.getClient();
-            const user = yield this.getUser(calendarId);
+            const user = yield this.getUser(userId);
             client.setCredentials({
                 refresh_token: user.refresh_token
             });

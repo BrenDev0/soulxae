@@ -25,9 +25,9 @@ export default class GoogleClientManager {
         return client
     } 
 
-    async getcredentialedClient(calendarId: string): Promise<OAuth2Client> {
+    async getcredentialedClient(userId: string): Promise<OAuth2Client> {
         const client = this.getClient()
-        const user = await this.getUser(calendarId)
+        const user = await this.getUser(userId)
         
         client.setCredentials({
             refresh_token: user.refresh_token

@@ -18,72 +18,72 @@ export default class GoogleCalendarController {
       
     }
 
-    // async getCalendars(req: Request, res: Response): Promise<void> {
-    //     try {
-    //         const user = req.user;
-    //         const client = await this.googleService.clientManager.getcredentialedClient(businessId);
+    async getCalendars(req: Request, res: Response): Promise<void> {
+        try {
+            const user = req.user;
+            const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
-    //         const calendars = await this.googleService.calendarService.listCalendars(client);
+            const calendars = await this.googleService.calendarService.listCalendars(client);
 
-    //         res.status(200).json({ data: calendars })
-    //     } catch (error) {
-    //         throw error 
-    //     }
-    // }
+            res.status(200).json({ data: calendars })
+        } catch (error) {
+            throw error 
+        }
+    }
 
-    // async getCalendarEvents(req: Request, res: Response): Promise<void> {
-    //     const block = `${this.block}.getCalendarEvents`
-    //     try {
-    //         const user = req.user;
-    //         const calendarId = req.params.calendarId;
-    //         const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
+    async getCalendarEvents(req: Request, res: Response): Promise<void> {
+        const block = `${this.block}.getCalendarEvents`
+        try {
+            const user = req.user;
+            const calendarId = req.params.calendarId;
+            const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
-    //         this.httpService.requestValidation.validateUuid(calendarId, "calenderId", block);
+            this.httpService.requestValidation.validateUuid(calendarId, "calenderId", block);
        
-    //         const resource = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarsService", "Calendar not found", block);
+            const resource = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarsService", "Calendar not found", block);
 
-    //         const data = await this.googleService.calendarService.listEvents(client, resource.calendarReferenceId);
-    //         res.status(200).json({ data: data })
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // } 
+            const data = await this.googleService.calendarService.listEvents(client, resource.calendarReferenceId);
+            res.status(200).json({ data: data })
+        } catch (error) {
+            throw error;
+        }
+    } 
 
-    // async createEventRequest(req: Request, res: Response): Promise<void> {
-    //     const block = `${this.block}.createEventRequest`
-    //     try {
-    //         const user = req.user;
-    //         const calendarId = req.params.calendarId;
-    //         const requiredFields = ["startTime", "endTime", "summary"];
+    async createEventRequest(req: Request, res: Response): Promise<void> {
+        const block = `${this.block}.createEventRequest`
+        try {
+            const user = req.user;
+            const calendarId = req.params.calendarId;
+            const requiredFields = ["startTime", "endTime", "summary"];
 
-    //         this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
-    //         this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+            this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
+            this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
             
-    //         const calendar = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarsService", "Calendar not found", block);
+            const calendar = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarsService", "Calendar not found", block);
 
             
-    //         // https://developers.google.com/workspace/calendar/api/v3/reference/events/insert  reference for parameters
-    //         const event = {
-    //             ...req.body,
-    //             start: {
-    //                 dateTime: req.body.startTime
-    //             },
-    //             end: {
-    //                 dateTime: req.body.endTime
-    //             },
-    //             sendUpdates: "all"
-    //         }
+            // https://developers.google.com/workspace/calendar/api/v3/reference/events/insert  reference for parameters
+            const event = {
+                ...req.body,
+                start: {
+                    dateTime: req.body.startTime
+                },
+                end: {
+                    dateTime: req.body.endTime
+                },
+                sendUpdates: "all"
+            }
             
             
-    //         const client = await this.googleService.clientManager.getcredentialedClient(businessId);
+            const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
-    //         await this.googleService.calendarService.addEvent(client, calendar.calendarReferenceId, event);
+            await this.googleService.calendarService.addEvent(client, calendar.calendarReferenceId, event);
 
-    //         res.status(200).json({ message: "Event added"})
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
+            res.status(200).json({ message: "Event added"})
+        } catch (error) {
+            throw error;
+        }
+    }
 
     // async updateEventRequest(req: Request, res: Response): Promise<void> {
     //     const block = `${this.block}.updateEventRequest`

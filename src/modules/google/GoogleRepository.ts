@@ -8,14 +8,14 @@ export class GoogleRepository implements IGoogleRepository {
  
     }
 
-    async getGoogleUser(calendarId: string): Promise<GoogleUser> {
+    async getGoogleUser(userId: string): Promise<GoogleUser> {
          const sqlRead =  `
             SELECT refresh_token 
-            FROM calendars
-            WHERE calendar_id = $1
+            FROM tokens
+            WHERE user_id = $1
         `
 
-        const result = await this.pool.query(sqlRead, [calendarId])
+        const result = await this.pool.query(sqlRead, [userId])
 
         return result.rows[0];
     }
