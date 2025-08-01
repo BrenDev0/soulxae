@@ -17,7 +17,6 @@ import { initializeEmployeesRouter } from './modules/employees/employees.routes'
 import { initializeMediaRouter } from './modules/media/media.routes';
 import { initializeAiConfigRouter } from './modules/aiConfig/aiConfig.routes';
 import { initializeFlowConfigRouter } from './modules/flowConfig/flowConfig.routes';
-import { initializeAiToolsRouter } from './modules/aiTools/aiTools.routes';
 import { initializeGoogleRouter } from './modules/google/google.routes';
 import { initializeCalendarsRouter } from './modules/calendars/calendars.routes';
 
@@ -30,7 +29,6 @@ const server = async() => {
 
     // routers //
     const aiConfigRouter = initializeAiConfigRouter();
-    const aiToolsRouter = initializeAiToolsRouter();
     const agentsRouter = initializeAgentsRouter();
     const calendarsRouter =  initializeCalendarsRouter();
     const clientsRouter = initializeClientsRouter();
@@ -52,7 +50,6 @@ const server = async() => {
     process.env.NODE_ENV !== 'production' && app.use('/docs/endpoints', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
     app.use("/ai-config", aiConfigRouter);
-    app.use("/ai-tools", aiToolsRouter);
     app.use("/agents", agentsRouter);
     app.use("/calendars", calendarsRouter);
     app.use("/clients", clientsRouter);

@@ -39,7 +39,6 @@ const subscriptions_dependencies_1 = require("../../modules/subscriptions/subscr
 const employees_dependencies_1 = require("../../modules/employees/employees.dependencies");
 const aiConfig_dependencies_1 = require("../../modules/aiConfig/aiConfig.dependencies");
 const flowConfig_dependencies_1 = require("../../modules/flowConfig/flowConfig.dependencies");
-const aiTools_dependencies_1 = require("../../modules/aiTools/aiTools.dependencies");
 const WebSocketService_1 = __importDefault(require("../../modules/webSocket/WebSocketService"));
 const google_dependencies_1 = require("../../modules/google/google.dependencies");
 const calendars_dependencies_1 = require("../../modules/calendars/calendars.dependencies");
@@ -97,8 +96,6 @@ function configureContainer(testPool, testRedis) {
         // agent configs --- must configure agents above this block 
         // ai config
         (0, aiConfig_dependencies_1.configureAiConfigDependencies)(pool);
-        // ai tools
-        (0, aiTools_dependencies_1.configureAiToolsDependencies)(pool);
         // flow config
         (0, flowConfig_dependencies_1.configureFlowConfigDependencies)(pool);
         // messaging services  --- must configure webhooks above this block //

@@ -27,7 +27,6 @@ import { configureSubscriptionsDependencies } from '../../modules/subscriptions/
 import { configureEmployeesDependencies } from '../../modules/employees/employees.dependencies';
 import { configureAiConfigDependencies } from '../../modules/aiConfig/aiConfig.dependencies';
 import { configureFlowConfigDependencies } from '../../modules/flowConfig/flowConfig.dependencies';
-import { configureAiToolsDependencies } from '../../modules/aiTools/aiTools.dependencies';
 import WebSocketService from '../../modules/webSocket/WebSocketService';
 import { configureGoogleDependencies } from '../../modules/google/google.dependencies';
 import { configureCalendarsDependencies } from '../../modules/calendars/calendars.dependencies';
@@ -119,9 +118,6 @@ export async function configureContainer(testPool?: Pool, testRedis?: string): P
 
     // ai config
     configureAiConfigDependencies(pool);
-
-    // ai tools
-    configureAiToolsDependencies(pool);
 
     // flow config
     configureFlowConfigDependencies(pool);
