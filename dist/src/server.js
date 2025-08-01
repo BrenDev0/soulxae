@@ -31,6 +31,7 @@ const aiConfig_routes_1 = require("./modules/aiConfig/aiConfig.routes");
 const flowConfig_routes_1 = require("./modules/flowConfig/flowConfig.routes");
 const aiTools_routes_1 = require("./modules/aiTools/aiTools.routes");
 const google_routes_1 = require("./modules/google/google.routes");
+const calendars_routes_1 = require("./modules/calendars/calendars.routes");
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, createApp_1.default)();
     yield (0, configureContainer_1.configureContainer)();
@@ -39,6 +40,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const aiConfigRouter = (0, aiConfig_routes_1.initializeAiConfigRouter)();
     const aiToolsRouter = (0, aiTools_routes_1.initializeAiToolsRouter)();
     const agentsRouter = (0, agents_routes_1.initializeAgentsRouter)();
+    const calendarsRouter = (0, calendars_routes_1.initializeCalendarsRouter)();
     const clientsRouter = (0, clients_routes_1.initializeClientsRouter)();
     const conversationsRouter = (0, conversations_routes_1.initializeConversationsRouter)();
     const directMessagingRouter = (0, directMessaging_routes_1.initializeDirectMessageingRouter)();
@@ -56,6 +58,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     app.use("/ai-config", aiConfigRouter);
     app.use("/ai-tools", aiToolsRouter);
     app.use("/agents", agentsRouter);
+    app.use("/calendars", calendarsRouter);
     app.use("/clients", clientsRouter);
     app.use("/conversations", conversationsRouter);
     app.use("/direct", directMessagingRouter);

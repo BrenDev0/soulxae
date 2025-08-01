@@ -132,6 +132,7 @@ const endpointsFiles = [
   '../../modules/aiConfig/aiConfig.routes.ts',
   '../../modules/aiTools/aiTools.routes.ts',
   '../../modules/agents/agents.routes.ts',
+  '../../modules/calendars/calendar.routes.ts',
   '../../modules/clients/clients.routes.ts',
   '../../modules/conversations/conversations.routes.ts',
   '../../modules/directMessaging/directMessaging.routes.ts',

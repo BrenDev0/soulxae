@@ -19,6 +19,7 @@ import { initializeAiConfigRouter } from './modules/aiConfig/aiConfig.routes';
 import { initializeFlowConfigRouter } from './modules/flowConfig/flowConfig.routes';
 import { initializeAiToolsRouter } from './modules/aiTools/aiTools.routes';
 import { initializeGoogleRouter } from './modules/google/google.routes';
+import { initializeCalendarsRouter } from './modules/calendars/calendars.routes';
 
 
 const server = async() => {
@@ -31,6 +32,7 @@ const server = async() => {
     const aiConfigRouter = initializeAiConfigRouter();
     const aiToolsRouter = initializeAiToolsRouter();
     const agentsRouter = initializeAgentsRouter();
+    const calendarsRouter =  initializeCalendarsRouter();
     const clientsRouter = initializeClientsRouter();
     const conversationsRouter = initializeConversationsRouter();
     const directMessagingRouter = initializeDirectMessageingRouter();
@@ -52,6 +54,7 @@ const server = async() => {
     app.use("/ai-config", aiConfigRouter);
     app.use("/ai-tools", aiToolsRouter);
     app.use("/agents", agentsRouter);
+    app.use("/calendars", calendarsRouter);
     app.use("/clients", clientsRouter);
     app.use("/conversations", conversationsRouter);
     app.use("/direct", directMessagingRouter);
