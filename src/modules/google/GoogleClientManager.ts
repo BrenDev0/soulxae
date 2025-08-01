@@ -5,6 +5,7 @@ import Container from "../../core/dependencies/Container";
 import EncryptionService from "../../core/services/EncryptionService";
 import { GoogleRepository } from "./GoogleRepository";
 import { google } from "googleapis";
+import { GoogleError } from "./google.erros";
 
 export default class GoogleClientManager {
     private repository: GoogleRepository;
@@ -24,9 +25,9 @@ export default class GoogleClientManager {
         return client
     } 
 
-    async getcredentialedClient(businessId: string): Promise<OAuth2Client> {
+    async getcredentialedClient(calendarId: string): Promise<OAuth2Client> {
         const client = this.getClient()
-        const user = await this.getUser(businessId)
+        const user = await this.getUser(calendarId)
         
         client.setCredentials({
             refresh_token: user.refresh_token
@@ -56,9 +57,15 @@ export default class GoogleClientManager {
         const block = `${this.block}.getUser`
         try {
             const data = await this.repository.getGoogleUser(businessId);
+            if(!data) {
+                throw new GoogleError("Google configuration error")
+            }
           
             return this.mapGoogleUser(data);
         } catch (error) {
+            if(error instanceof GoogleError) {
+                throw error
+            }
             handleServiceError(error as Error, this.block, "getUser", {businessId})
             throw error;
         }

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const error_service_1 = require("../../core/errors/error.service");
 const Container_1 = __importDefault(require("../../core/dependencies/Container"));
 const googleapis_1 = require("googleapis");
+const google_erros_1 = require("./google.erros");
 class GoogleClientManager {
     constructor(repository) {
         this.block = "google.service.clientManager";
@@ -24,10 +25,10 @@ class GoogleClientManager {
         const client = new googleapis_1.google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_REDIRECT_URI);
         return client;
     }
-    getcredentialedClient(businessId) {
+    getcredentialedClient(calendarId) {
         return __awaiter(this, void 0, void 0, function* () {
             const client = this.getClient();
-            const user = yield this.getUser(businessId);
+            const user = yield this.getUser(calendarId);
             client.setCredentials({
                 refresh_token: user.refresh_token
             });
@@ -55,9 +56,15 @@ class GoogleClientManager {
             const block = `${this.block}.getUser`;
             try {
                 const data = yield this.repository.getGoogleUser(businessId);
+                if (!data) {
+                    throw new google_erros_1.GoogleError("Google configuration error");
+                }
                 return this.mapGoogleUser(data);
             }
             catch (error) {
+                if (error instanceof google_erros_1.GoogleError) {
+                    throw error;
+                }
                 (0, error_service_1.handleServiceError)(error, this.block, "getUser", { businessId });
                 throw error;
             }

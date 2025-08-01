@@ -14,14 +14,14 @@ class GoogleRepository {
     constructor(pool) {
         this.pool = pool;
     }
-    getGoogleUser(businessId) {
+    getGoogleUser(calendarId) {
         return __awaiter(this, void 0, void 0, function* () {
             const sqlRead = `
-            SELECT token AS refresh_token
-            FROM tokens
-            WHERE business_id = $1
+            SELECT refresh_token 
+            FROM calendars
+            WHERE calendar_id = $1
         `;
-            const result = yield this.pool.query(sqlRead, [businessId]);
+            const result = yield this.pool.query(sqlRead, [calendarId]);
             return result.rows[0];
         });
     }
