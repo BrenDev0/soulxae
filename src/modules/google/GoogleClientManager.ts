@@ -1,5 +1,5 @@
 import { OAuth2Client } from "google-auth-library";
-import { GoogleUser } from "./google.interface";
+import { GoogleUser, Token } from "./google.interface";
 import { handleServiceError } from "../../core/errors/error.service";
 import Container from "../../core/dependencies/Container";
 import EncryptionService from "../../core/services/EncryptionService";
@@ -75,6 +75,21 @@ export default class GoogleClientManager {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
         return {
             refresh_token: user.refresh_token && encryptionService.decryptData(user.refresh_token)
+        }
+    }
+
+    async upsertToken(token: string, userId: string) {
+        try {
+            const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
+            const tokenData: Token =  {
+                refresh_token: encryptionService.encryptData(token),
+                user_id: userId
+            }
+
+            await this.repository.upsertToken(tokenData)
+            return 
+        } catch (error) {
+            handleServiceError(error as Error, this.block, "upsertToken", {token, userId})
         }
     }
 }

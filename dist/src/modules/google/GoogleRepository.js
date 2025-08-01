@@ -25,5 +25,18 @@ class GoogleRepository {
             return result.rows[0];
         });
     }
+    upsertToken(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const sqlInsert = `
+            INSERT INTO tokens (
+                refresh_token,
+                user_id
+            ) VALUES($1, $2)
+             ON CONFLICT (user_id) DO UPDATE SET
+             refresh_token = EXCLUDED.refresh_token
+        `;
+            const result = yield this.pool.query(sqlInsert, [token.refresh_token, token.user_id]);
+        });
+    }
 }
 exports.GoogleRepository = GoogleRepository;

@@ -11,7 +11,7 @@ class GoogleService {
         this.clientManager = clientManager;
         this.calendarService = calendarService;
     }
-    getUrl(oauth2Client) {
+    getUrl(oauth2Client, userId) {
         const scopes = [
             // Google Sheets (read/write)
             'https://www.googleapis.com/auth/spreadsheets',
@@ -24,7 +24,7 @@ class GoogleService {
         ];
         const redisClient = Container_1.default.resolve("RedisClient");
         const state = crypto_1.default.randomBytes(32).toString('hex');
-        redisClient.setEx(`oauth_state:${state}`, 900, 'valid'); // 15m
+        redisClient.setEx(`oauth_state:${state}`, 900, JSON.stringify({ userId: userId })); // 15m
         const authorizationUrl = oauth2Client.generateAuthUrl({
             // 'online' (default) or 'offline' (gets refresh_token)
             access_type: 'offline',

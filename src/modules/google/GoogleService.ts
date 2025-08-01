@@ -17,7 +17,7 @@ export default class GoogleService {
     }
 
     
-    getUrl(oauth2Client: OAuth2Client) {
+    getUrl(oauth2Client: OAuth2Client, userId: string) {
       
         const scopes = [
             // Google Sheets (read/write)
@@ -36,7 +36,7 @@ export default class GoogleService {
        
         const redisClient: RedisClientType = Container.resolve("RedisClient"); 
         const state = crypto.randomBytes(32).toString('hex');
-        redisClient.setEx(`oauth_state:${state}`, 900, 'valid') // 15m
+        redisClient.setEx(`oauth_state:${state}`, 900, JSON.stringify({userId: userId})) // 15m
 
         const authorizationUrl = oauth2Client.generateAuthUrl({
             // 'online' (default) or 'offline' (gets refresh_token)

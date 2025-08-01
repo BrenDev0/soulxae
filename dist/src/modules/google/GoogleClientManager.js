@@ -76,5 +76,21 @@ class GoogleClientManager {
             refresh_token: user.refresh_token && encryptionService.decryptData(user.refresh_token)
         };
     }
+    upsertToken(token, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const encryptionService = Container_1.default.resolve("EncryptionService");
+                const tokenData = {
+                    refresh_token: encryptionService.encryptData(token),
+                    user_id: userId
+                };
+                yield this.repository.upsertToken(tokenData);
+                return;
+            }
+            catch (error) {
+                (0, error_service_1.handleServiceError)(error, this.block, "upsertToken", { token, userId });
+            }
+        });
+    }
 }
 exports.default = GoogleClientManager;

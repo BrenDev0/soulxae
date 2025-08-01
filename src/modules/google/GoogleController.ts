@@ -5,6 +5,7 @@ import Container from "../../core/dependencies/Container";
 import GoogleService from "./GoogleService";
 import EncryptionService from "../../core/services/EncryptionService";
 import HttpService from "../../core/services/HttpService";
+import { GoogleSession } from "./google.interface";
 
 export default class GoogleController {
     private readonly block = "google.controller";
@@ -41,13 +42,10 @@ export default class GoogleController {
                 throw new BadRequestError("Google authorization failed");
             }
             
-            const encryptionService: EncryptionService = Container.resolve("EncryptionService");
-            const sessionData = {
-            refreshToken: encryptionService.encryptData(tokens.refresh_token),
-        
-            }
+            const googleSession: GoogleSession = JSON.parse(session)
+           
 
-            await redisClient.setEx(`oauth_state:${state}`, 900, JSON.stringify(sessionData))
+            await this.googleService.clientManager.upsertToken(tokens.refresh_token, googleSession.userId)
         
             
             res.status(200).send()
@@ -59,8 +57,9 @@ export default class GoogleController {
 
     async getUrl(req: Request, res: Response): Promise<void> {
         try {
+            const user = req.user
             const client = this.googleService.clientManager.getClient()
-            const url = this.googleService.getUrl(client);
+            const url = this.googleService.getUrl(client, user.user_id);
 
             res.status(200).json({
                 url: url

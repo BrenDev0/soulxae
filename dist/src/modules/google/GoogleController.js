@@ -41,11 +41,8 @@ class GoogleController {
                 if (!tokens.refresh_token) {
                     throw new errors_1.BadRequestError("Google authorization failed");
                 }
-                const encryptionService = Container_1.default.resolve("EncryptionService");
-                const sessionData = {
-                    refreshToken: encryptionService.encryptData(tokens.refresh_token),
-                };
-                yield redisClient.setEx(`oauth_state:${state}`, 900, JSON.stringify(sessionData));
+                const googleSession = JSON.parse(session);
+                yield this.googleService.clientManager.upsertToken(tokens.refresh_token, googleSession.userId);
                 res.status(200).send();
             }
             catch (error) {
@@ -57,8 +54,9 @@ class GoogleController {
     getUrl(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const user = req.user;
                 const client = this.googleService.clientManager.getClient();
-                const url = this.googleService.getUrl(client);
+                const url = this.googleService.getUrl(client, user.user_id);
                 res.status(200).json({
                     url: url
                 });
