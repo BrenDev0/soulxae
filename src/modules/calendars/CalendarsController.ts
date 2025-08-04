@@ -19,13 +19,14 @@ export default class CalendarsController {
     const block = `${this.block}.createRequest`;
     try {
       const user = req.user;
+      
       const requiredFields = ["calendarReferenceId"];
 
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
       const calendarData: Omit<CalendarData, "calendarId"> = {
         ...req.body,
-        userId: user.user_Id
+        userId: user.user_id
       };
 
       await this.calendarsService.create(calendarData);

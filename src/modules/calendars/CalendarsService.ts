@@ -69,7 +69,6 @@ export default class CalendarsService {
 
     mapToDb(calendar: Omit<CalendarData, "calendarId">): Omit<Calendar, "calendar_id"> {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
-        console.log(calendar)
         return {
            user_id: calendar.userId,
            calendar_reference_id: encryptionService.encryptData(calendar.calendarReferenceId)
