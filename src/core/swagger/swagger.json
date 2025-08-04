@@ -980,7 +980,7 @@
         }
       }
     },
-    "/google/secure/calendars/events/{calendarId}": {
+    "/google/calendars/secure/events/{calendarId}": {
       "get": {
         "tags": [
           "Google"
