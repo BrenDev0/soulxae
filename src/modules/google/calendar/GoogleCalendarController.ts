@@ -54,6 +54,7 @@ export default class GoogleCalendarController {
             const data = await this.googleService.calendarService.listEvents(client, resource.calendarReferenceId);
             res.status(200).json({ data: data })
         } catch (error) {
+            console.log(error)
             throw error;
         }
     } 

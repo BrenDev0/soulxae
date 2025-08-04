@@ -52,6 +52,7 @@ class GoogleCalendarController {
                 res.status(200).json({ data: data });
             }
             catch (error) {
+                console.log(error);
                 throw error;
             }
         });
