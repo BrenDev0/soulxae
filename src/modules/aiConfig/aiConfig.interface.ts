@@ -3,7 +3,7 @@ export interface AiConfig {
   agent_id: string;
   system_prompt: string;
   max_tokens: string;
-  temperature: string
+  temperature: string;
 }
 
 export interface AiConfigData {

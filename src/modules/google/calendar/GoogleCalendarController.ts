@@ -49,6 +49,7 @@ export default class GoogleCalendarController {
             this.httpService.requestValidation.validateUuid(calendarId, "calenderId", block);
        
             const resource = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarsService", "Calendar not found", block);
+            this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
 
             const data = await this.googleService.calendarService.listEvents(client, resource.calendarReferenceId);
             res.status(200).json({ data: data })

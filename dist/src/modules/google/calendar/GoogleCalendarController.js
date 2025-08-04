@@ -47,6 +47,7 @@ class GoogleCalendarController {
                 const client = yield this.googleService.clientManager.getcredentialedClient(user.user_id);
                 this.httpService.requestValidation.validateUuid(calendarId, "calenderId", block);
                 const resource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarsService", "Calendar not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, resource.userId, block);
                 const data = yield this.googleService.calendarService.listEvents(client, resource.calendarReferenceId);
                 res.status(200).json({ data: data });
             }
