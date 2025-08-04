@@ -57,7 +57,7 @@ export default class GoogleClientManager {
         const block = `${this.block}.getUser`
         try {
             const data = await this.repository.getGoogleUser(userId);
-            console.log("GOOGLE USER:::::::::", data)
+           
             if(!data) {
                 throw new GoogleError("Google configuration error")
             }
@@ -74,7 +74,7 @@ export default class GoogleClientManager {
 
     mapGoogleUser(user: GoogleUser): GoogleUser {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
-        console.log(user, "USER::::::::::::")
+       
         return {
             refresh_token: user.refresh_token && encryptionService.decryptData(user.refresh_token)
         }
