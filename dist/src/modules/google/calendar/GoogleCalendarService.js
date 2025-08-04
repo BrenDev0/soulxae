@@ -37,7 +37,6 @@ class GoogleCalendarService {
                     calendarId: calendarReferenceId
                 });
                 const events = res.data.items;
-                console.log(events, "events::::::::");
                 return events || [];
             }
             catch (error) {

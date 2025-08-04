@@ -53,10 +53,11 @@ export default class GoogleClientManager {
         }
     }
 
-    async getUser(businessId: string): Promise<GoogleUser> {
+    async getUser(userId: string): Promise<GoogleUser> {
         const block = `${this.block}.getUser`
         try {
-            const data = await this.repository.getGoogleUser(businessId);
+            const data = await this.repository.getGoogleUser(userId);
+            console.log("GOOGLE USER:::::::::", data)
             if(!data) {
                 throw new GoogleError("Google configuration error")
             }
@@ -66,13 +67,14 @@ export default class GoogleClientManager {
             if(error instanceof GoogleError) {
                 throw error
             }
-            handleServiceError(error as Error, this.block, "getUser", {businessId})
+            handleServiceError(error as Error, this.block, "getUser", {userId})
             throw error;
         }
     }
 
     mapGoogleUser(user: GoogleUser): GoogleUser {
         const encryptionService = Container.resolve<EncryptionService>("EncryptionService");
+        console.log(user, "USER::::::::::::")
         return {
             refresh_token: user.refresh_token && encryptionService.decryptData(user.refresh_token)
         }

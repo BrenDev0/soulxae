@@ -932,7 +932,7 @@
                 ]
             }
         },
-        "/calendars/secure/events/{calendarId}": {
+        "google/calendars/secure/events/{calendarId}": {
             "post": {
                 "tags": [
                     "Google"
@@ -978,6 +978,34 @@
                         "description": ""
                     }
                 }
+            }
+        },
+        "/google/secure/calendars/events/{calendarId}": {
+            "get": {
+                "tags": [
+                    "Google"
+                ],
+                "description": "get users calendars events",
+                "parameters": [
+                    {
+                        "name": "calendarId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/platforms/secure/create": {

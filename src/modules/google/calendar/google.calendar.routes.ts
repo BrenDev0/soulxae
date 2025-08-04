@@ -32,7 +32,7 @@ export const initializeGoogleCalendarRouter = (customController?: GoogleControll
         /*
         #swagger.tags = ['Google'] 
          #swagger.security = [{ "bearerAuth": [] }]
-        #swagger.path = '/calendars/secure/events/{calendarId}' 
+        #swagger.path = 'google/calendars/secure/events/{calendarId}' 
         #swagger.description = 'create event for full list of parameters check: https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters'
         #swagger.requestBody = {
             required: true,

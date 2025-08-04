@@ -51,11 +51,12 @@ class GoogleClientManager {
             }
         });
     }
-    getUser(businessId) {
+    getUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.getUser`;
             try {
-                const data = yield this.repository.getGoogleUser(businessId);
+                const data = yield this.repository.getGoogleUser(userId);
+                console.log("GOOGLE USER:::::::::", data);
                 if (!data) {
                     throw new google_erros_1.GoogleError("Google configuration error");
                 }
@@ -65,13 +66,14 @@ class GoogleClientManager {
                 if (error instanceof google_erros_1.GoogleError) {
                     throw error;
                 }
-                (0, error_service_1.handleServiceError)(error, this.block, "getUser", { businessId });
+                (0, error_service_1.handleServiceError)(error, this.block, "getUser", { userId });
                 throw error;
             }
         });
     }
     mapGoogleUser(user) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
+        console.log(user, "USER::::::::::::");
         return {
             refresh_token: user.refresh_token && encryptionService.decryptData(user.refresh_token)
         };
