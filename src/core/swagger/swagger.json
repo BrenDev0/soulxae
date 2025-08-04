@@ -914,6 +914,72 @@
         }
       }
     },
+    "/google/calendars/secure": {
+      "get": {
+        "tags": [
+          "Google"
+        ],
+        "description": "get users calendars from drive",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/calendars/secure/events/{calendarId}": {
+      "post": {
+        "tags": [
+          "Google"
+        ],
+        "description": "create event for full list of parameters check: https://developers.google.com/workspace/calendar/api/v3/reference/events/insert for parameters",
+        "parameters": [
+          {
+            "name": "calendarId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createEvent"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/availability": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/platforms/secure/create": {
       "post": {
         "tags": [
