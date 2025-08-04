@@ -53,7 +53,7 @@ export const initializeGoogleCalendarRouter = (customController?: GoogleControll
     )
 
 
-    secureRouter.get("/calendars/events/:calendarId", 
+    secureRouter.get("/events/:calendarId", 
         /*
         #swagger.tags = ['Google'] 
          #swagger.security = [{ "bearerAuth": [] }]
