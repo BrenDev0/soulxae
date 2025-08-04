@@ -14,7 +14,7 @@ const GoogleCalendarController_1 = __importDefault(require("./calendar/GoogleCal
 function configureGoogleDependencies(pool) {
     const repository = new GoogleRepository_1.GoogleRepository(pool);
     const httpService = Container_1.default.resolve("HttpService");
-    const calendarService = new GoogleCalendarService_1.default;
+    const calendarService = new GoogleCalendarService_1.default();
     const clientManager = new GoogleClientManager_1.default(repository);
     const googleService = new GoogleService_1.default(clientManager, calendarService);
     const googleCalendarController = new GoogleCalendarController_1.default(httpService, googleService);

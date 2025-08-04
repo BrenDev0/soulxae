@@ -20,7 +20,7 @@ class CalendarsController {
             const block = `${this.block}.createRequest`;
             try {
                 const user = req.user;
-                const requiredFields = ["calendarReferenceId", "refreshToken"];
+                const requiredFields = ["calendarReferenceId"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const calendarData = Object.assign(Object.assign({}, req.body), { userId: user.userId });
                 yield this.calendarsService.create(calendarData);

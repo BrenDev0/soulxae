@@ -31,6 +31,7 @@ const aiConfig_routes_1 = require("./modules/aiConfig/aiConfig.routes");
 const flowConfig_routes_1 = require("./modules/flowConfig/flowConfig.routes");
 const google_routes_1 = require("./modules/google/google.routes");
 const calendars_routes_1 = require("./modules/calendars/calendars.routes");
+const google_calendar_routes_1 = require("./modules/google/calendar/google.calendar.routes");
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, createApp_1.default)();
     yield (0, configureContainer_1.configureContainer)();
@@ -45,6 +46,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     const employeesRouter = (0, employees_routes_1.initializeEmployeesRouter)();
     const flowConfigRouter = (0, flowConfig_routes_1.initializeFlowConfigRouter)();
     const googleRouter = (0, google_routes_1.initializeGoogleRouter)();
+    const googleCalendarRouter = (0, google_calendar_routes_1.initializeGoogleCalendarRouter)();
     const mediaRouter = (0, media_routes_1.initializeMediaRouter)();
     const messengerRouter = (0, messenger_routes_1.initializeMessengerRouter)();
     const platformsRouter = (0, platforms_routes_1.initializePlatformsRouter)();
@@ -62,6 +64,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     app.use("/employees", employeesRouter);
     app.use("/flow-config", flowConfigRouter);
     app.use("/google", googleRouter);
+    app.use("/google/calendars", googleCalendarRouter);
     app.use("/media", mediaRouter);
     app.use("/messenger", messengerRouter);
     app.use("/platforms", platformsRouter);

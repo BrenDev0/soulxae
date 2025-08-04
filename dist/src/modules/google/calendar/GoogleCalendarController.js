@@ -15,6 +15,16 @@ class GoogleCalendarController {
         this.httpService = httpService;
         this.googleService = googleService;
     }
+    checkAvailability(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                res.status(200).json({ is_available: false });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     getCalendars(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
