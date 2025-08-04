@@ -84,6 +84,7 @@ class CalendarsService {
     }
     mapToDb(calendar) {
         const encryptionService = Container_1.default.resolve("EncryptionService");
+        console.log(calendar);
         return {
             user_id: calendar.userId,
             calendar_reference_id: encryptionService.encryptData(calendar.calendarReferenceId)
