@@ -19,7 +19,7 @@ export default class CalendarsController {
     const block = `${this.block}.createRequest`;
     try {
       const user = req.user;
-      
+
       const requiredFields = ["calendarReferenceId"];
 
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
@@ -59,7 +59,7 @@ export default class CalendarsController {
     try {
       const user = req.user;
 
-      const data = await this.calendarsService.collection(user.user_Id);
+      const data = await this.calendarsService.collection(user.user_id);
 
       res.status(200).json({ data: data })
     } catch (error) {
