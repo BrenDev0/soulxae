@@ -22,7 +22,7 @@ class CalendarsController {
                 const user = req.user;
                 const requiredFields = ["calendarReferenceId"];
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-                const calendarData = Object.assign(Object.assign({}, req.body), { userId: user.userId });
+                const calendarData = Object.assign(Object.assign({}, req.body), { userId: user.user_Id });
                 yield this.calendarsService.create(calendarData);
                 res.status(200).json({ message: "Calendar added" });
             }

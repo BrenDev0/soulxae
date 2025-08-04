@@ -25,7 +25,7 @@ export default class CalendarsController {
 
       const calendarData: Omit<CalendarData, "calendarId"> = {
         ...req.body,
-        userId: user.userId
+        userId: user.user_Id
       };
 
       await this.calendarsService.create(calendarData);
