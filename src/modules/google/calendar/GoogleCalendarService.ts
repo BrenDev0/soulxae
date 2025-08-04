@@ -33,6 +33,7 @@ export default class GoogleCalendarService {
             })
             
             const events = res.data.items
+            console.log(events, "events::::::::")
         
             return events || [];
         } catch (error) {
