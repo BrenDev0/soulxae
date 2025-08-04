@@ -19,6 +19,7 @@ import { initializeAiConfigRouter } from './modules/aiConfig/aiConfig.routes';
 import { initializeFlowConfigRouter } from './modules/flowConfig/flowConfig.routes';
 import { initializeGoogleRouter } from './modules/google/google.routes';
 import { initializeCalendarsRouter } from './modules/calendars/calendars.routes';
+import { initializeGoogleCalendarRouter } from './modules/google/calendar/google.calendar.routes';
 
 
 const server = async() => {
@@ -37,6 +38,7 @@ const server = async() => {
     const employeesRouter = initializeEmployeesRouter();
     const flowConfigRouter = initializeFlowConfigRouter();
     const googleRouter = initializeGoogleRouter();
+    const googleCalendarRouter = initializeGoogleCalendarRouter()
     const mediaRouter = initializeMediaRouter();
     const messengerRouter = initializeMessengerRouter();
     const platformsRouter = initializePlatformsRouter();
@@ -57,7 +59,8 @@ const server = async() => {
     app.use("/direct", directMessagingRouter);
     app.use("/employees", employeesRouter);
     app.use("/flow-config", flowConfigRouter);
-    app.use("/google", googleRouter)
+    app.use("/google", googleRouter);
+    app.use("/google/calendar", googleCalendarRouter);
     app.use("/media", mediaRouter);
     app.use("/messenger", messengerRouter);
     app.use("/platforms", platformsRouter);

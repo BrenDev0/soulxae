@@ -18,6 +18,14 @@ export default class GoogleCalendarController {
       
     }
 
+    async checkAvailability(req: Request, res: Response): Promise<void> {
+        try {
+            res.status(200).send(false)
+        } catch (error) {
+            throw error
+        }
+    }
+
     async getCalendars(req: Request, res: Response): Promise<void> {
         try {
             const user = req.user;

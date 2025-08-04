@@ -19,7 +19,7 @@ export default class CalendarsController {
     const block = `${this.block}.createRequest`;
     try {
       const user = req.user;
-      const requiredFields = ["calendarReferenceId", "refreshToken"];
+      const requiredFields = ["calendarReferenceId"];
 
       this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
 
