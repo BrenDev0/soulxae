@@ -20,7 +20,7 @@ export default class GoogleCalendarController {
 
     async checkAvailability(req: Request, res: Response): Promise<void> {
         try {
-            res.status(200).send(false)
+            res.status(200).json({ is_available: false })
         } catch (error) {
             throw error
         }

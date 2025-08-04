@@ -60,7 +60,7 @@ const server = async() => {
     app.use("/employees", employeesRouter);
     app.use("/flow-config", flowConfigRouter);
     app.use("/google", googleRouter);
-    app.use("/google/calendar", googleCalendarRouter);
+    app.use("/google/calendars", googleCalendarRouter);
     app.use("/media", mediaRouter);
     app.use("/messenger", messengerRouter);
     app.use("/platforms", platformsRouter);
