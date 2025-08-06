@@ -108,12 +108,12 @@ export default class GoogleCalendarService {
             const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
             const startTime = new Date(requestedDatetime)
-            const endTime = new Date(startTime.getTime() + 30 * 60 * 1000).toISOString();
+            const endTime = new Date(startTime.getTime() + 30 * 60 * 1000);
         
             
             const requestBody = {
-                timeMin: requestedDatetime,
-                timeMax: endTime,
+                timeMin: startTime.toISOString(),
+                timeMax: endTime.toISOString(),
                 items: [{ id: calendarReferenceId }]
             }
 
