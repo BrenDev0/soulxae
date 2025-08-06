@@ -117,9 +117,11 @@ class GoogleCalendarService {
                 const calendarTimeZone = (yield calendarDetails).data.timeZone;
                 const startTime = new Date(requestedDatetime);
                 const endTime = new Date(startTime.getTime() + 30 * 60 * 1000);
+                const utcStartTime = new Date(startTime.getTime() + (6 * 60 * 60 * 1000)); // +6 hours for Mexico City
+                const utcEndTime = new Date(endTime.getTime() + (6 * 60 * 60 * 1000));
                 const requestBody = {
-                    timeMin: startTime.toISOString(),
-                    timeMax: endTime.toISOString(),
+                    timeMin: utcStartTime.toISOString(),
+                    timeMax: utcEndTime.toISOString(),
                     timeZone: calendarTimeZone,
                     items: [{ id: calendarReferenceId }]
                 };
