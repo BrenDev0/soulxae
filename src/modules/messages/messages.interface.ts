@@ -30,7 +30,7 @@ export interface Message {
   media: string[] | null;
   media_type: string | null;
   buttons: string[] | null;
-  timeStamp?:  Date 
+  timestamp?:  Date 
 }
 
 export interface MessageData {
@@ -44,5 +44,5 @@ export interface MessageData {
   mediaType: string | null;
   buttons: string[] | null;
   type: string;
-  timeStamp?:  Date 
+  timestamp?:  Date 
 }

@@ -62,7 +62,8 @@ export default class AiConfigsService {
            agent_id: aiConfig.agentId,
            system_prompt: aiConfig.systemPrompt,
            max_tokens: aiConfig.maxTokens,
-           temperature: aiConfig.temperature
+           temperature: aiConfig.temperature,
+           calendar_id: aiConfig.calendarId
         }
     }
 
@@ -73,7 +74,8 @@ export default class AiConfigsService {
             agentId: aiConfig.agent_id,
             systemPrompt: aiConfig.system_prompt,
             maxTokens: aiConfig.max_tokens,
-            temperature: aiConfig.temperature
+            temperature: aiConfig.temperature,
+            calendarId: aiConfig.calendar_id
         }
     }
 }

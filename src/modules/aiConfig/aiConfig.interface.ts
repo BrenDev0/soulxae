@@ -4,6 +4,7 @@ export interface AiConfig {
   system_prompt: string;
   max_tokens: string;
   temperature: string;
+  calendar_id: string | null
 }
 
 export interface AiConfigData {
@@ -11,5 +12,6 @@ export interface AiConfigData {
   agentId: string;
   systemPrompt: string;
   maxTokens: string;
-  temperature: string
+  temperature: string;
+  calendarId: string | null
 }

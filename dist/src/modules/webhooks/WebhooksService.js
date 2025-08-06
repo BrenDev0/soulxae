@@ -96,28 +96,67 @@ class WebhooksService {
     }
     sendMessageToAi(agentId, conversationId, messagesService, userId, text) {
         return __awaiter(this, void 0, void 0, function* () {
+            const block = `webhooks.service.sendToAi`;
             try {
-                const messages = yield messagesService.collection(conversationId);
-                const chatHistory = messages.filter((message) => message.text).map((message) => {
-                    return {
-                        sender: message.sender,
-                        text: message.text
-                    };
-                });
-                const redisClient = Container_1.default.resolve("RedisClient");
-                yield redisClient.setEx(`conversation:${conversationId}`, 900, JSON.stringify(chatHistory));
                 const token = this.httpService.webtokenService.generateToken({ userId: userId }, "2m");
+                const redisClient = Container_1.default.resolve("RedisClient");
+                const sessionExists = yield redisClient.get(`conversation:${conversationId}`);
+                if (!sessionExists) {
+                    const messages = yield messagesService.collection(conversationId);
+                    const chatHistory = messages
+                        .filter((message) => message.text)
+                        .sort((a, b) => {
+                        const timestampA = new Date(a.timestamp).getTime();
+                        const timestampB = new Date(b.timestamp).getTime();
+                        return timestampB - timestampA;
+                    })
+                        .slice(0, 10)
+                        .map((message) => {
+                        return {
+                            sender: message.sender,
+                            text: message.text
+                        };
+                    });
+                    const aiConfigService = Container_1.default.resolve("AiConfigService");
+                    const aiConfig = yield aiConfigService.resource(agentId);
+                    if (!aiConfig) {
+                        throw new errors_1.NotFoundError(`Configuration for agent: ${agentId} not found`, {
+                            block: block
+                        });
+                    }
+                    const sessionData = {
+                        system_message: aiConfig.systemPrompt,
+                        calendar_id: aiConfig.calendarId || null,
+                        conversation_id: conversationId,
+                        token: token,
+                        input: text,
+                        chat_history: chatHistory,
+                        appointments_state: {
+                            name: null,
+                            email: null,
+                            phone: null,
+                            appointment_datetime: null,
+                            next_node: null
+                        }
+                    };
+                    yield redisClient.setEx(`conversation:${conversationId}`, 900, JSON.stringify(sessionData));
+                }
+                else {
+                    let currentSession = JSON.parse(sessionExists);
+                    currentSession = Object.assign(Object.assign({}, currentSession), { token: token, input: text });
+                    yield redisClient.setEx(`conversation:${conversationId}`, 900, JSON.stringify(currentSession));
+                }
                 const response = yield axios_1.default.post(`https://${process.env.AGENT_HOST}/api/agent/interact`, {
-                    agent_id: agentId,
-                    conversation_id: conversationId,
-                    input: text
+                    conversation_id: conversationId
                 }, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
+                return;
             }
             catch (error) {
+                throw error;
             }
         });
     }

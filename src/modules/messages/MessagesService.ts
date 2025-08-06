@@ -94,7 +94,8 @@ export default class MessagesService {
             media: message.media,
             mediaType: message.media_type,
             buttons: message.buttons,
-            type: message.type 
+            type: message.type,
+            timestamp: message.timestamp
         }
     }
 }

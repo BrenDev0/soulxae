@@ -2,7 +2,7 @@ import { Request } from "express";
 import Container from "../../core/dependencies/Container";
 import HttpService from "../../core/services/HttpService";
 import PlatformsService from "../platforms/PlatformsService";
-import { AuthorizationError, BadRequestError } from "../../core/errors/errors";
+import { AuthorizationError, BadRequestError, NotFoundError } from "../../core/errors/errors";
 import MessagesService from "../messages/MessagesService";
 import ConversationsService from "../conversations/ConversationsService";
 import ClientsService from "../clients/ClientsService";
@@ -13,6 +13,9 @@ import { ClientContact } from "../clients/clients.interface";
 import axios from "axios";
 import { RedisClientType } from "redis";
 import WebSocketService from "../webSocket/WebSocketService";
+import { AiConfig, AiConfigData } from "../aiConfig/aiConfig.interface";
+import AiConfigsService from "../aiConfig/AiConfigService";
+import { State } from "./webhooks.interface";
 
 export default class WebhooksService {
     private httpService: HttpService;
@@ -104,26 +107,75 @@ export default class WebhooksService {
     }
 
     async sendMessageToAi(agentId: string, conversationId: string, messagesService: MessagesService, userId: string, text: string) {
+        const block = `webhooks.service.sendToAi`
         try {
-            const messages = await messagesService.collection(conversationId);
-            const chatHistory = messages.filter((message) => message.text).map((message) => {
-                return {
-                    sender: message.sender,
-                    text: message.text!
-                }
-            })
+             const token = this.httpService.webtokenService.generateToken({userId: userId}, "2m")
 
             const redisClient = Container.resolve<RedisClientType>("RedisClient");
-            await redisClient.setEx(`conversation:${conversationId}`, 900, JSON.stringify(chatHistory))
+            const sessionExists = await redisClient.get(`conversation:${conversationId}`);
 
-            const token = this.httpService.webtokenService.generateToken({userId: userId}, "2m")
+            if(!sessionExists) {
+                const messages = await messagesService.collection(conversationId);
+                const chatHistory = messages
+                .filter((message) => message.text)
+                .sort((a, b) => {
+                    const timestampA = new Date(a.timestamp!).getTime();
+                    const timestampB = new Date( b.timestamp!).getTime();
+                    return timestampB - timestampA;
+                })
+                .slice(0, 10)
+                .map((message) => {
+                    return {
+                        sender: message.sender,
+                        text: message.text!
+                    }
+                });
+
+                const aiConfigService = Container.resolve<AiConfigsService>("AiConfigService");
+                const aiConfig = await aiConfigService.resource(agentId);
+
+                if(!aiConfig) {
+                    throw new NotFoundError(`Configuration for agent: ${agentId} not found`, {
+                        block: block
+                    })
+                }
+
+                const sessionData: State = {
+                    system_message: aiConfig.systemPrompt,
+                    calendar_id: aiConfig.calendarId || null,
+                    conversation_id: conversationId,
+                    token: token,
+                    input: text,
+                    chat_history: chatHistory,
+                    appointments_state: {
+                        name: null,
+                        email: null,
+                        phone: null,
+                        appointment_datetime: null,
+                        next_node: null
+                    }
+                }
+
+                await redisClient.setEx(`conversation:${conversationId}`, 900, JSON.stringify(sessionData));
+
+            } else {
+                let currentSession: State = JSON.parse(sessionExists)
+
+                currentSession = {
+                    ...currentSession,
+                    token: token,
+                    input: text
+                }
+
+                await redisClient.setEx(`conversation:${conversationId}`, 900, JSON.stringify(currentSession));
+            }
+
+           
             
             const response = await axios.post(
                 `https://${process.env.AGENT_HOST}/api/agent/interact`,
                 {
-                    agent_id: agentId,
-                    conversation_id: conversationId,
-                    input: text
+                    conversation_id: conversationId
                 },
                 {
                     headers: {
@@ -131,8 +183,10 @@ export default class WebhooksService {
                     }
                 }
             );
+
+            return
         } catch (error) {
-            
+            throw error
         }
     }
 
