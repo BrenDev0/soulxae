@@ -111,11 +111,16 @@ class GoogleCalendarService {
             const block = `${this.block}.checkAvailibility`;
             try {
                 const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
+                const calendarDetails = calendar.calendars.get({
+                    calendarId: calendarReferenceId
+                });
+                const calendarTimeZone = (yield calendarDetails).data.timeZone;
                 const startTime = new Date(requestedDatetime);
                 const endTime = new Date(startTime.getTime() + 30 * 60 * 1000);
                 const requestBody = {
                     timeMin: startTime.toISOString(),
                     timeMax: endTime.toISOString(),
+                    timeZone: calendarTimeZone,
                     items: [{ id: calendarReferenceId }]
                 };
                 const response = yield calendar.freebusy.query({ requestBody });
