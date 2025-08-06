@@ -22,13 +22,18 @@ export default class GoogleCalendarController {
         try {
             const user = req.user;
             
-            const requiredFields =  ["slot", "calendarReferenceId"];
+            const calendarId = req.params.calendarId;
+            this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
+
+            const requiredFields =  ["slot"];
             this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+
+            const calendarResource = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarsService", "Calendar not found", block);
             
-            const { slot, calendarReferenceId } = req.body;
+            const { slot } = req.body;
             const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
-            const isAvailable = await this.googleService.calendarService.checkAvailability(client, calendarReferenceId, slot);
+            const isAvailable = await this.googleService.calendarService.checkAvailability(client, calendarResource.calendarReferenceId, slot);
 
             res.status(200).json({ is_available: isAvailable });
         } catch (error) {

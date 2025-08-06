@@ -47,7 +47,7 @@ export const initializeGoogleCalendarRouter = (customController?: GoogleControll
     )
 
  
-    secureRouter.post("/availability",
+    secureRouter.post("/availability/:calendarId",
 
         controller.checkAvailability.bind(controller)
     )

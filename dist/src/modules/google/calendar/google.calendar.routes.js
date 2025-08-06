@@ -38,7 +38,7 @@ const initializeGoogleCalendarRouter = (customController) => {
     }
     */
     controller.createEventRequest.bind(controller));
-    secureRouter.post("/availability", controller.checkAvailability.bind(controller));
+    secureRouter.post("/availability/:calendarId", controller.checkAvailability.bind(controller));
     secureRouter.get("/events/:calendarId", 
     /*
     #swagger.tags = ['Google']
