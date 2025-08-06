@@ -105,5 +105,30 @@ class GoogleCalendarService {
             }
         });
     }
+    checkAvailability(oauth2Client, calendarReferenceId, requestedDatetime) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
+            const block = `${this.block}.checkAvailibility`;
+            try {
+                const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
+                const startTime = new Date(requestedDatetime);
+                const endTime = new Date(startTime.getTime() + 30 * 60 * 1000).toISOString();
+                const requestBody = {
+                    timeMin: requestedDatetime,
+                    timeMax: endTime,
+                    items: [{ id: calendarReferenceId }]
+                };
+                const response = yield calendar.freebusy.query({ requestBody });
+                const busySlots = ((_b = (_a = response.data.calendars) === null || _a === void 0 ? void 0 : _a[calendarReferenceId]) === null || _b === void 0 ? void 0 : _b.busy) || [];
+                return busySlots.length === 0;
+            }
+            catch (error) {
+                throw new google_erros_1.GoogleError(undefined, {
+                    block: block,
+                    originalError: error.message
+                });
+            }
+        });
+    }
 }
 exports.default = GoogleCalendarService;

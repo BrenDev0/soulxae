@@ -17,8 +17,15 @@ class GoogleCalendarController {
     }
     checkAvailability(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.checkAvailability`;
             try {
-                res.status(200).json({ is_available: false });
+                const user = req.user;
+                const requiredFields = ["slot", "calendarReferenceId"];
+                this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+                const { slot, calendarReferenceId } = req.body;
+                const client = yield this.googleService.clientManager.getcredentialedClient(user.user_id);
+                const isAvailable = yield this.googleService.calendarService.checkAvailability(client, calendarReferenceId, slot);
+                res.status(200).json({ is_available: isAvailable });
             }
             catch (error) {
                 throw error;

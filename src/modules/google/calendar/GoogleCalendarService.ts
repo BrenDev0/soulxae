@@ -1,6 +1,6 @@
 import { NotFoundError } from "../../../core/errors/errors";
 import { OAuth2Client } from 'google-auth-library';
-import { calendar_v3, google } from 'googleapis';
+import { google } from 'googleapis';
 import { GoogleError } from "../google.erros";
 
 
@@ -95,6 +95,33 @@ export default class GoogleCalendarService {
             return;
         } catch (error) {
            throw new GoogleError(undefined, {
+                block: block,
+                originalError: (error as Error).message
+            });
+        }
+    }
+
+    async checkAvailability(oauth2Client: OAuth2Client, calendarReferenceId: string, requestedDatetime: string): Promise<boolean> {
+        const block = `${this.block}.checkAvailibility`;
+        try {
+            const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+            const startTime = new Date(requestedDatetime)
+            const endTime = new Date(startTime.getTime() + 30 * 60 * 1000).toISOString();
+        
+            
+            const requestBody = {
+                timeMin: requestedDatetime,
+                timeMax: endTime,
+                items: [{ id: calendarReferenceId }]
+            }
+
+            const response = await calendar.freebusy.query({ requestBody });
+            const busySlots = response.data.calendars?.[calendarReferenceId]?.busy || [];
+
+            return busySlots.length ===  0 
+        } catch (error) {
+            throw new GoogleError(undefined, {
                 block: block,
                 originalError: (error as Error).message
             });

@@ -3,7 +3,6 @@ import { AuthorizationError, BadRequestError, NotFoundError } from "../../../cor
 import Container from "../../../core/dependencies/Container";
 import GoogleService from "../GoogleService";
 import HttpService from "../../../core/services/HttpService";
-import { GoogleError } from "../google.erros";
 import { CalendarData } from "../../calendars/calendars.interface";
 
 
@@ -19,8 +18,19 @@ export default class GoogleCalendarController {
     }
 
     async checkAvailability(req: Request, res: Response): Promise<void> {
+        const block = `${this.block}.checkAvailability`;
         try {
-            res.status(200).json({ is_available: false })
+            const user = req.user;
+            
+            const requiredFields =  ["slot", "calendarReferenceId"];
+            this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+            
+            const { slot, calendarReferenceId } = req.body;
+            const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
+
+            const isAvailable = await this.googleService.calendarService.checkAvailability(client, calendarReferenceId, slot);
+
+            res.status(200).json({ is_available: isAvailable });
         } catch (error) {
             throw error
         }
@@ -40,7 +50,7 @@ export default class GoogleCalendarController {
     }
 
     async getCalendarEvents(req: Request, res: Response): Promise<void> {
-        const block = `${this.block}.getCalendarEvents`
+        const block = `${this.block}.getCalendarEvents`;
         try {
             const user = req.user;
             const calendarId = req.params.calendarId;
