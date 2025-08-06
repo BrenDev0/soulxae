@@ -104,7 +104,6 @@ export default class GoogleCalendarService {
     async checkAvailability(oauth2Client: OAuth2Client, calendarReferenceId: string, requestedDatetime: string): Promise<boolean> {
         const block = `${this.block}.checkAvailibility`;
         try {
-            console.log(requestedDatetime, "DATE::::::::::")
             const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
             const startTime = new Date(requestedDatetime)
@@ -118,11 +117,12 @@ export default class GoogleCalendarService {
             }
 
             const response = await calendar.freebusy.query({ requestBody });
+            console.log(response, "RES::::::::::::")
             const busySlots = response.data.calendars?.[calendarReferenceId]?.busy || [];
+            console.log(busySlots, "SLOTs::::::::::::::")
 
             return busySlots.length ===  0 
         } catch (error) {
-            console.log(error, "ORIGINAL   ERRROR::::::::::")
             throw new GoogleError(undefined, {
                 block: block,
                 originalError: (error as Error).message

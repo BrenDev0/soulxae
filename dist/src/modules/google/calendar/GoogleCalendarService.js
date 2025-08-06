@@ -110,7 +110,6 @@ class GoogleCalendarService {
             var _a, _b;
             const block = `${this.block}.checkAvailibility`;
             try {
-                console.log(requestedDatetime, "DATE::::::::::");
                 const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
                 const startTime = new Date(requestedDatetime);
                 const endTime = new Date(startTime.getTime() + 30 * 60 * 1000);
@@ -120,11 +119,12 @@ class GoogleCalendarService {
                     items: [{ id: calendarReferenceId }]
                 };
                 const response = yield calendar.freebusy.query({ requestBody });
+                console.log(response, "RES::::::::::::");
                 const busySlots = ((_b = (_a = response.data.calendars) === null || _a === void 0 ? void 0 : _a[calendarReferenceId]) === null || _b === void 0 ? void 0 : _b.busy) || [];
+                console.log(busySlots, "SLOTs::::::::::::::");
                 return busySlots.length === 0;
             }
             catch (error) {
-                console.log(error, "ORIGINAL   ERRROR::::::::::");
                 throw new google_erros_1.GoogleError(undefined, {
                     block: block,
                     originalError: error.message
