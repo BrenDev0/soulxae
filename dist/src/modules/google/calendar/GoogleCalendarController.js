@@ -77,13 +77,17 @@ class GoogleCalendarController {
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
                 this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
                 const calendar = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarsService", "Calendar not found", block);
+                const client = yield this.googleService.clientManager.getcredentialedClient(user.user_id);
+                const calendarDetails = yield this.googleService.calendarService.getCalendarDetails(client, calendar.calendarReferenceId);
+                const timeZone = calendarDetails.timeZone;
                 // https://developers.google.com/workspace/calendar/api/v3/reference/events/insert  reference for parameters
                 const event = Object.assign(Object.assign({}, req.body), { start: {
-                        dateTime: req.body.startTime
+                        dateTime: req.body.startTime,
+                        timeZone: timeZone
                     }, end: {
-                        dateTime: req.body.endTime
+                        dateTime: req.body.endTime,
+                        timeZone: timeZone
                     }, sendUpdates: "all" });
-                const client = yield this.googleService.clientManager.getcredentialedClient(user.user_id);
                 yield this.googleService.calendarService.addEvent(client, calendar.calendarReferenceId, event);
                 res.status(200).json({ message: "Event added" });
             }

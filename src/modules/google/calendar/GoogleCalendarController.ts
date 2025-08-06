@@ -85,22 +85,29 @@ export default class GoogleCalendarController {
             this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
             
             const calendar = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarsService", "Calendar not found", block);
-
+        
+            
+            
+            
+            
+            const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
+            
+            const calendarDetails = await this.googleService.calendarService.getCalendarDetails(client, calendar.calendarReferenceId);
+            const timeZone = calendarDetails.timeZone
             
             // https://developers.google.com/workspace/calendar/api/v3/reference/events/insert  reference for parameters
             const event = {
                 ...req.body,
                 start: {
-                    dateTime: req.body.startTime
+                    dateTime: req.body.startTime,
+                    timeZone: timeZone
                 },
                 end: {
-                    dateTime: req.body.endTime
+                    dateTime: req.body.endTime,
+                    timeZone: timeZone
                 },
                 sendUpdates: "all"
             }
-            
-            
-            const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
             await this.googleService.calendarService.addEvent(client, calendar.calendarReferenceId, event);
 

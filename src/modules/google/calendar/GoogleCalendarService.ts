@@ -1,6 +1,6 @@
 import { NotFoundError } from "../../../core/errors/errors";
 import { OAuth2Client } from 'google-auth-library';
-import { google } from 'googleapis';
+import { google, calendar_v3 } from 'googleapis';
 import { GoogleError } from "../google.erros";
 
 
@@ -19,6 +19,24 @@ export default class GoogleCalendarService {
         }
 
         return calendars.filter((calendar) => calendar.accessRole === 'owner');
+    }
+
+    async getCalendarDetails(oauth2Client: OAuth2Client, calendarReferenceId: string): Promise<calendar_v3.Schema$Calendar> {
+        const block = `${this.block}.getCalendarDetails`
+        try {
+            const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+            const calendarDetails = await calendar.calendars.get({
+                calendarId: calendarReferenceId
+            })
+
+            return calendarDetails.data
+        } catch (error) {
+            throw new GoogleError(undefined, {
+                block: block,
+                originalError: (error as Error).message
+            });
+        }
     }
 
      // events //
@@ -106,11 +124,9 @@ export default class GoogleCalendarService {
         try {
             const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
-            const calendarDetails = calendar.calendars.get({
-                calendarId: calendarReferenceId
-            })
+            const calendarDetails = await this.getCalendarDetails(oauth2Client, calendarReferenceId)
 
-            const calendarTimeZone = (await calendarDetails).data.timeZone;
+            const calendarTimeZone = calendarDetails.timeZone;
             
             const startTime = new Date(requestedDatetime)
             const endTime = new Date(startTime.getTime() + 30 * 60 * 1000);

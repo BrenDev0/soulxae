@@ -27,6 +27,24 @@ class GoogleCalendarService {
             return calendars.filter((calendar) => calendar.accessRole === 'owner');
         });
     }
+    getCalendarDetails(oauth2Client, calendarReferenceId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.getCalendarDetails`;
+            try {
+                const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
+                const calendarDetails = yield calendar.calendars.get({
+                    calendarId: calendarReferenceId
+                });
+                return calendarDetails.data;
+            }
+            catch (error) {
+                throw new google_erros_1.GoogleError(undefined, {
+                    block: block,
+                    originalError: error.message
+                });
+            }
+        });
+    }
     // events //
     listEvents(oauth2Client, calendarReferenceId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -111,10 +129,8 @@ class GoogleCalendarService {
             const block = `${this.block}.checkAvailibility`;
             try {
                 const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
-                const calendarDetails = calendar.calendars.get({
-                    calendarId: calendarReferenceId
-                });
-                const calendarTimeZone = (yield calendarDetails).data.timeZone;
+                const calendarDetails = yield this.getCalendarDetails(oauth2Client, calendarReferenceId);
+                const calendarTimeZone = calendarDetails.timeZone;
                 const startTime = new Date(requestedDatetime);
                 const endTime = new Date(startTime.getTime() + 30 * 60 * 1000);
                 const utcStartTime = new Date(startTime.getTime() + (6 * 60 * 60 * 1000));
