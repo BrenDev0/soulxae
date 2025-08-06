@@ -110,6 +110,7 @@ class GoogleCalendarService {
             var _a, _b;
             const block = `${this.block}.checkAvailibility`;
             try {
+                console.log(requestedDatetime, "DATE::::::::::");
                 const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
                 const startTime = new Date(requestedDatetime);
                 const endTime = new Date(startTime.getTime() + 30 * 60 * 1000).toISOString();
@@ -123,6 +124,7 @@ class GoogleCalendarService {
                 return busySlots.length === 0;
             }
             catch (error) {
+                console.log(error, "ORIGINAL   ERRROR::::::::::");
                 throw new google_erros_1.GoogleError(undefined, {
                     block: block,
                     originalError: error.message
