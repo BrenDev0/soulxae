@@ -132,7 +132,7 @@ class GoogleCalendarController {
             const block = `${this.block}.deleteEventRequest`;
             try {
                 const user = req.user;
-                const startTime = req.params.stateTime;
+                const startTime = req.params.startTime;
                 const attendee = req.params.attendee;
                 if (!startTime || !attendee) {
                     throw new errors_1.BadRequestError(undefined);
