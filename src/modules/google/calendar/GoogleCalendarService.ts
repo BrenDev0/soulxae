@@ -104,16 +104,26 @@ export default class GoogleCalendarService {
         const block = `${this.block}.deleteEvent`;
         try {
             const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
-
+            const datetime = new Date(startTime) 
+            
             const events = await this.listEvents(oauth2Client, calendarReferenceId);
 
-            const eventToBeDeleted = events.filter((event) => event.start?.dateTime == startTime && event.attendees?.[0].email == attendee) 
-            console.log("event to be deleted:::::::::", eventToBeDeleted)
-            console.log("EVENTS::::::::", events)
-            // const response = calendar.events.delete({
-            //     calendarId: calendarReferenceId,
-            //     eventId: eventId
-            // })
+            const eventToBeDeleted = events.filter((event) => {
+                if(!event.start?.dateTime || !event.attendees) {
+                    return false
+                }
+
+                const eventTimeLocal = event.start.dateTime.substring(0, 19); 
+                const searchTimeLocal = startTime.substring(0, 19);
+
+                const timeMatches = eventTimeLocal === searchTimeLocal;
+                const attendeeMatches = event.attendees.some(att => att.email === attendee);
+
+                return timeMatches && attendeeMatches;
+            }) 
+
+            console.log("EVENTTO BE Deleted::::::", eventToBeDeleted)
+            
 
             return;
         } catch (error) {

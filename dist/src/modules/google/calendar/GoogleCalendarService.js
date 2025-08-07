@@ -109,14 +109,20 @@ class GoogleCalendarService {
             const block = `${this.block}.deleteEvent`;
             try {
                 const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
+                const datetime = new Date(startTime);
                 const events = yield this.listEvents(oauth2Client, calendarReferenceId);
-                const eventToBeDeleted = events.filter((event) => { var _a, _b; return ((_a = event.start) === null || _a === void 0 ? void 0 : _a.dateTime) == startTime && ((_b = event.attendees) === null || _b === void 0 ? void 0 : _b[0].email) == attendee; });
-                console.log("event to be deleted:::::::::", eventToBeDeleted);
-                console.log("EVENTS::::::::", events);
-                // const response = calendar.events.delete({
-                //     calendarId: calendarReferenceId,
-                //     eventId: eventId
-                // })
+                const eventToBeDeleted = events.filter((event) => {
+                    var _a;
+                    if (!((_a = event.start) === null || _a === void 0 ? void 0 : _a.dateTime) || !event.attendees) {
+                        return false;
+                    }
+                    const eventTimeLocal = event.start.dateTime.substring(0, 19);
+                    const searchTimeLocal = startTime.substring(0, 19);
+                    const timeMatches = eventTimeLocal === searchTimeLocal;
+                    const attendeeMatches = event.attendees.some(att => att.email === attendee);
+                    return timeMatches && attendeeMatches;
+                });
+                console.log("EVENTTO BE Deleted::::::", eventToBeDeleted);
                 return;
             }
             catch (error) {
