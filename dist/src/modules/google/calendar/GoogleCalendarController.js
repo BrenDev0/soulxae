@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const errors_1 = require("../../../core/errors/errors");
 class GoogleCalendarController {
     constructor(httpService, googleService) {
         this.block = "google.controller";
@@ -131,9 +132,11 @@ class GoogleCalendarController {
             const block = `${this.block}.deleteEventRequest`;
             try {
                 const user = req.user;
-                const requiredFields = ["startTime", "attendee"];
-                this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-                const { startTime, attendee } = req.body;
+                const startTime = req.params.stateTime;
+                const attendee = req.params.attendee;
+                if (!startTime || !attendee) {
+                    throw new errors_1.BadRequestError(undefined);
+                }
                 const calendarId = req.params.calendarId;
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
                 const calendarResource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarsService", "Calendar not found", block);

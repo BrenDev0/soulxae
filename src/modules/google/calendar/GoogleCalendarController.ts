@@ -159,11 +159,12 @@ export default class GoogleCalendarController {
         const block =  `${this.block}.deleteEventRequest`;
         try {
             const user = req.user;
+            const startTime = req.params.stateTime;
+            const attendee = req.params.attendee;
             
-            const requiredFields = ["startTime", "attendee"];
-            this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
-            const { startTime, attendee } = req.body;
-            
+            if(!startTime || !attendee) {
+                throw new BadRequestError(undefined)
+            }
             const calendarId = req.params.calendarId;
             this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
 
