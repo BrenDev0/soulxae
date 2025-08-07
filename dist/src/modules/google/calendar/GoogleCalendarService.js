@@ -65,6 +65,33 @@ class GoogleCalendarService {
             }
         });
     }
+    findEvent(oauth2Client, calendarReferenceId, startTime, attendee) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.findEvent`;
+            try {
+                const datetime = new Date(startTime);
+                const events = yield this.listEvents(oauth2Client, calendarReferenceId);
+                const eventResource = events.find((event) => {
+                    var _a;
+                    if (!((_a = event.start) === null || _a === void 0 ? void 0 : _a.dateTime) || !event.attendees) {
+                        return false;
+                    }
+                    const eventTimeLocal = event.start.dateTime.substring(0, 19);
+                    const searchTimeLocal = startTime.substring(0, 19);
+                    const timeMatches = eventTimeLocal === searchTimeLocal;
+                    const attendeeMatches = event.attendees.some(att => att.email === attendee);
+                    return timeMatches && attendeeMatches;
+                });
+                return eventResource || null;
+            }
+            catch (error) {
+                throw new google_erros_1.GoogleError(undefined, {
+                    block: block,
+                    originalError: error.message
+                });
+            }
+        });
+    }
     addEvent(oauth2Client, calendarReferenceId, event) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.addEvent`;
@@ -104,25 +131,15 @@ class GoogleCalendarService {
             }
         });
     }
-    deleteEvent(oauth2Client, calendarReferenceId, startTime, attendee) {
+    deleteEvent(oauth2Client, calendarReferenceId, eventReferenceId) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.deleteEvent`;
             try {
                 const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
-                const datetime = new Date(startTime);
-                const events = yield this.listEvents(oauth2Client, calendarReferenceId);
-                const eventToBeDeleted = events.filter((event) => {
-                    var _a;
-                    if (!((_a = event.start) === null || _a === void 0 ? void 0 : _a.dateTime) || !event.attendees) {
-                        return false;
-                    }
-                    const eventTimeLocal = event.start.dateTime.substring(0, 19);
-                    const searchTimeLocal = startTime.substring(0, 19);
-                    const timeMatches = eventTimeLocal === searchTimeLocal;
-                    const attendeeMatches = event.attendees.some(att => att.email === attendee);
-                    return timeMatches && attendeeMatches;
+                const response = calendar.events.delete({
+                    calendarId: calendarReferenceId,
+                    eventId: eventReferenceId
                 });
-                console.log("EVENTTO BE Deleted::::::", eventToBeDeleted);
                 return;
             }
             catch (error) {

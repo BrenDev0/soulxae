@@ -173,8 +173,13 @@ export default class GoogleCalendarController {
 
             const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
-            await this.googleService.calendarService.deleteEvent(client, calendarResource.calendarReferenceId, startTime, attendee)
+            const eventResource = await this.googleService.calendarService.findEvent(client, calendarResource.calendarReferenceId, startTime, attendee);
+            if(!eventResource || !eventResource.id) {
+                res.status(404).json({ message: "Event not found" });
+                return
+            }
 
+            await this.googleService.calendarService.deleteEvent(client, calendarResource.calendarReferenceId, eventResource.id)
 
             res.status(200).json({ message: "Event deleted" })
         } catch (error) {

@@ -139,7 +139,12 @@ class GoogleCalendarController {
                 const calendarResource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarsService", "Calendar not found", block);
                 this.httpService.requestValidation.validateActionAuthorization(user.user_id, calendarResource.userId, block);
                 const client = yield this.googleService.clientManager.getcredentialedClient(user.user_id);
-                yield this.googleService.calendarService.deleteEvent(client, calendarResource.calendarReferenceId, startTime, attendee);
+                const eventResource = yield this.googleService.calendarService.findEvent(client, calendarResource.calendarReferenceId, startTime, attendee);
+                if (!eventResource || !eventResource.id) {
+                    res.status(404).json({ message: "Event not found" });
+                    return;
+                }
+                yield this.googleService.calendarService.deleteEvent(client, calendarResource.calendarReferenceId, eventResource.id);
                 res.status(200).json({ message: "Event deleted" });
             }
             catch (error) {

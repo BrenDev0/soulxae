@@ -61,6 +61,36 @@ export default class GoogleCalendarService {
         }
     }
 
+    async findEvent(oauth2Client: OAuth2Client, calendarReferenceId: string, startTime: string, attendee: string): Promise<calendar_v3.Schema$Event | null> {
+          const block = `${this.block}.findEvent`
+        try {
+            const datetime = new Date(startTime) 
+            
+            const events = await this.listEvents(oauth2Client, calendarReferenceId);
+
+            const eventResource = events.find((event) => {
+                if(!event.start?.dateTime || !event.attendees) {
+                    return false
+                }
+
+                const eventTimeLocal = event.start.dateTime.substring(0, 19); 
+                const searchTimeLocal = startTime.substring(0, 19);
+
+                const timeMatches = eventTimeLocal === searchTimeLocal;
+                const attendeeMatches = event.attendees.some(att => att.email === attendee);
+
+                return timeMatches && attendeeMatches;
+            }) 
+
+            return eventResource || null
+        } catch (error) {
+             throw new GoogleError(undefined, {
+                block: block,
+                originalError: (error as Error).message
+            });
+        }
+    }
+
     async addEvent(oauth2Client: OAuth2Client, calendarReferenceId: string, event: Record<string, any>) {
         const block = `${this.block}.addEvent`
         try {
@@ -100,30 +130,15 @@ export default class GoogleCalendarService {
         }
     }
 
-    async deleteEvent(oauth2Client: OAuth2Client, calendarReferenceId: string, startTime: string, attendee: string) {
+    async deleteEvent(oauth2Client: OAuth2Client, calendarReferenceId: string, eventReferenceId: string): Promise<void> {
         const block = `${this.block}.deleteEvent`;
         try {
             const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
-            const datetime = new Date(startTime) 
             
-            const events = await this.listEvents(oauth2Client, calendarReferenceId);
-
-            const eventToBeDeleted = events.filter((event) => {
-                if(!event.start?.dateTime || !event.attendees) {
-                    return false
-                }
-
-                const eventTimeLocal = event.start.dateTime.substring(0, 19); 
-                const searchTimeLocal = startTime.substring(0, 19);
-
-                const timeMatches = eventTimeLocal === searchTimeLocal;
-                const attendeeMatches = event.attendees.some(att => att.email === attendee);
-
-                return timeMatches && attendeeMatches;
-            }) 
-
-            console.log("EVENTTO BE Deleted::::::", eventToBeDeleted)
-            
+            const response = calendar.events.delete({
+                calendarId: calendarReferenceId,
+                eventId: eventReferenceId
+            })
 
             return;
         } catch (error) {
