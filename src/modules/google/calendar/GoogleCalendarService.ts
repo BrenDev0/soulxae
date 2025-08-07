@@ -54,6 +54,7 @@ export default class GoogleCalendarService {
         
             return events || [];
         } catch (error) {
+            console.log("ERROR::::::::::", error)
             throw new GoogleError(undefined, {
                 block: block,
                 originalError: (error as Error).message
@@ -100,15 +101,19 @@ export default class GoogleCalendarService {
         }
     }
 
-    async deleteEvent(oauth2Client: OAuth2Client, calendarReferenceId: string, eventId: string) {
+    async deleteEvent(oauth2Client: OAuth2Client, calendarReferenceId: string, startTime: string, attendee: string) {
         const block = `${this.block}.deleteEvent`;
         try {
             const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
-            const response = calendar.events.delete({
-                calendarId: calendarReferenceId,
-                eventId: eventId
-            })
+            const events = await this.listEvents(oauth2Client, calendarReferenceId);
+
+            console.log("events::::::::", events)
+            
+            // const response = calendar.events.delete({
+            //     calendarId: calendarReferenceId,
+            //     eventId: eventId
+            // })
 
             return;
         } catch (error) {

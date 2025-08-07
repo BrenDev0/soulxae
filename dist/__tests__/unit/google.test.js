@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require('node-fetch');
 const dotenv_1 = __importDefault(require("dotenv"));
 const pg_1 = require("pg");
 const createApp_1 = __importDefault(require("../../src/createApp"));
@@ -20,7 +21,7 @@ const Container_1 = __importDefault(require("../../src/core/dependencies/Contain
 const configureContainer_1 = require("../../src/core/dependencies/configureContainer");
 const google_calendar_routes_1 = require("../../src/modules/google/calendar/google.calendar.routes");
 dotenv_1.default.config();
-describe("USERS ROUTES", () => {
+describe("Google", () => {
     let app;
     let pool;
     const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmNmN2ZmZC1lOTRmLTRmNTktYTc2ZS05ZDcwMDAyM2ZiYTIiLCJpYXQiOjE3NDk1ODEwNTksImV4cCI6MTc4MTExNzA1OX0.S6WoYU-CatNXRb7fq5Xvs39SJ8udLBD4HB8db1-WhxQ";
@@ -46,11 +47,25 @@ describe("USERS ROUTES", () => {
         yield redisClient.quit();
         Container_1.default.clear();
     }));
-    describe("GET EVENTS", () => {
-        it("should  return calendar events", () => __awaiter(void 0, void 0, void 0, function* () {
+    // describe("GET EVENTS", () => {
+    //     it("should  return calendar events", async() => {
+    //         const res = await request(app)
+    //       .get('/google/calendars/secure/events/a9698530-99e0-4d6b-9f5d-3fddddc6b4ba')
+    //       .set('Authorization', token)
+    //       console.log(res.body, "RESPONSE::::::::::::::")
+    //     expect(res.status).toBe(200);
+    //     expect(res.body).toHaveProperty('data');
+    //     })
+    // })
+    describe("DELETE EVENTS", () => {
+        it("should  delete a calendar event", () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_1.default)(app)
-                .get('/google/calendars/secure/events/a9698530-99e0-4d6b-9f5d-3fddddc6b4ba')
-                .set('Authorization', token);
+                .delete('/google/calendars/secure/events/a9698530-99e0-4d6b-9f5d-3fddddc6b4ba')
+                .set('Authorization', token)
+                .send({
+                startTime: "2025-08-07T15:00:00",
+                attendee: "brendan.soullens@gmail.com"
+            });
             console.log(res.body, "RESPONSE::::::::::::::");
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty('data');

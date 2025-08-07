@@ -155,40 +155,32 @@ export default class GoogleCalendarController {
     //     }
     // }
 
-    // async deleteEventRequest(req: Request, res: Response): Promise<void> {
-    //     const block =  `${this.block}.deleteEventRequest`;
-    //     try {
-    //         const user = req.user;
-    //         const eventId = req.params.eventId;
+    async deleteEventRequest(req: Request, res: Response): Promise<void> {
+        const block =  `${this.block}.deleteEventRequest`;
+        try {
+            const user = req.user;
+            
+            const requiredFields = ["startTime", "attendee"];
+            this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+            const { startTime, attendee } = req.body;
+            
+            const calendarId = req.params.calendarId;
+            this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
 
-    //         this.httpService.requestValidation.validateUuid(eventId, "eventId", block);
+            const calendarResource = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarsService", "Calendar not found", block);
+            this.httpService.requestValidation.validateActionAuthorization(user.user_id, calendarResource.userId, block);
+            
 
-    //         const eventResource = await this.httpService.requestValidation.validateResource<EventData>(eventId, "EventsService", "Event not found", block);
+            const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
-    //         if(!eventResource.calendarReferenceId) {
-    //             throw new GoogleError("Calendar configuration error", {
-    //                 block: `${block}.calendarReferenceCheck`,
-    //                 rescource: eventResource  
-    //             });
-    //         }
-
-    //         if(!eventResource.calendarReferenceId) {
-    //             throw new GoogleError("Calendar configuration error", {
-    //                 block: `${block}.calendarReferenceCheck`,
-    //                 rescource: eventResource  
-    //             });
-    //         }
-
-    //         const client = await this.googleService.clientManager.getcredentialedClient();
-
-    //         await this.googleService.calendarService.deleteEvent(client, eventResource.calendarReferenceId, eventResource.eventReferenceId);
+            await this.googleService.calendarService.deleteEvent(client, calendarResource.calendarReferenceId, startTime, attendee)
 
 
-    //         res.status(200).json({ message: "Event deleted"})
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
+            res.status(200).json({ message: "Event deleted" })
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
    

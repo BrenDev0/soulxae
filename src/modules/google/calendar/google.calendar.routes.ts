@@ -63,6 +63,11 @@ export const initializeGoogleCalendarRouter = (customController?: GoogleControll
         controller.getCalendarEvents.bind(controller)
     )
 
+    secureRouter.delete("/events/:calendarId",
+
+        controller.deleteEventRequest.bind(controller)
+    )
+
     
 
     // mounts // 

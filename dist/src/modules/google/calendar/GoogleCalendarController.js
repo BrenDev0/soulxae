@@ -96,5 +96,56 @@ class GoogleCalendarController {
             }
         });
     }
+    // async updateEventRequest(req: Request, res: Response): Promise<void> {
+    //     const block = `${this.block}.updateEventRequest`
+    //     try {
+    //         const user = req.user;
+    //         const eventId = req.params.eventId;
+    //         this.httpService.requestValidation.validateUuid(eventId, "eventId", block);
+    //         const eventResource = await this.httpService.requestValidation.validateResource<EventData>(eventId, "EventsService", "Event not found", block);
+    //         if(!eventResource.calendarReferenceId) {
+    //             throw new GoogleError("Calendar configuration error", {
+    //                 block: `${block}.calendarReferenceCheck`,
+    //                 rescource: eventResource  
+    //             });
+    //         }
+    //         const eventUpdates = {
+    //             ...req.body,
+    //             start: {
+    //                 dateTime: req.body.startTime
+    //             },
+    //             end: {
+    //                 dateTime: req.body.endTime
+    //             },
+    //             sendUpdates: "all"
+    //         }
+    //         const client = await this.googleService.clientManager.getcredentialedClient(businessId);
+    //         await this.googleService.calendarService.updateEvent(client, eventResource.calendarReferenceId, eventResource.eventReferenceId, eventUpdates);
+    //         res.status(200).json({ message: "Event deleted"})
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
+    deleteEventRequest(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.deleteEventRequest`;
+            try {
+                const user = req.user;
+                const requiredFields = ["startTime", "attendee"];
+                this.httpService.requestValidation.validateRequestBody(requiredFields, req.body, block);
+                const { startTime, attendee } = req.body;
+                const calendarId = req.params.calendarId;
+                this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
+                const calendarResource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarsService", "Calendar not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, calendarResource.userId, block);
+                const client = yield this.googleService.clientManager.getcredentialedClient(user.user_id);
+                yield this.googleService.calendarService.deleteEvent(client, calendarResource.calendarReferenceId, startTime, attendee);
+                res.status(200).json({ message: "Event deleted" });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
 }
 exports.default = GoogleCalendarController;

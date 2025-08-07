@@ -58,6 +58,7 @@ class GoogleCalendarService {
                 return events || [];
             }
             catch (error) {
+                console.log("ERROR::::::::::", error);
                 throw new google_erros_1.GoogleError(undefined, {
                     block: block,
                     originalError: error.message
@@ -104,15 +105,17 @@ class GoogleCalendarService {
             }
         });
     }
-    deleteEvent(oauth2Client, calendarReferenceId, eventId) {
+    deleteEvent(oauth2Client, calendarReferenceId, startTime, attendee) {
         return __awaiter(this, void 0, void 0, function* () {
             const block = `${this.block}.deleteEvent`;
             try {
                 const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
-                const response = calendar.events.delete({
-                    calendarId: calendarReferenceId,
-                    eventId: eventId
-                });
+                const events = yield this.listEvents(oauth2Client, calendarReferenceId);
+                console.log("events::::::::", events);
+                // const response = calendar.events.delete({
+                //     calendarId: calendarReferenceId,
+                //     eventId: eventId
+                // })
                 return;
             }
             catch (error) {

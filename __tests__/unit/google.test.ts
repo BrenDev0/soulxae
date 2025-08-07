@@ -1,3 +1,5 @@
+require('node-fetch');
+
 import dotenv from 'dotenv';
 import { Pool } from 'pg';
 import { Express } from 'express';
@@ -9,7 +11,7 @@ import { configureContainer } from '../../src/core/dependencies/configureContain
 import { RedisClientType } from 'redis';
 import { initializeGoogleCalendarRouter } from '../../src/modules/google/calendar/google.calendar.routes';
 dotenv.config();
-describe("USERS ROUTES", () => {
+describe("Google", () => {
     let app: Express;
     let pool: Pool;
 
@@ -45,11 +47,27 @@ describe("USERS ROUTES", () => {
         
     })
 
-    describe("GET EVENTS", () => {
-        it("should  return calendar events", async() => {
+    // describe("GET EVENTS", () => {
+    //     it("should  return calendar events", async() => {
+    //         const res = await request(app)
+    //       .get('/google/calendars/secure/events/a9698530-99e0-4d6b-9f5d-3fddddc6b4ba')
+    //       .set('Authorization', token)
+            
+    //       console.log(res.body, "RESPONSE::::::::::::::")
+    //     expect(res.status).toBe(200);
+    //     expect(res.body).toHaveProperty('data');
+    //     })
+    // })
+
+    describe("DELETE EVENTS", () => {
+        it("should  delete a calendar event", async() => {
             const res = await request(app)
-          .get('/google/calendars/secure/events/a9698530-99e0-4d6b-9f5d-3fddddc6b4ba')
+          .delete('/google/calendars/secure/events/a9698530-99e0-4d6b-9f5d-3fddddc6b4ba')
           .set('Authorization', token)
+          .send({
+            startTime: "2025-08-07T15:00:00",
+            attendee: "brendan.soullens@gmail.com"
+          })
             
           console.log(res.body, "RESPONSE::::::::::::::")
         expect(res.status).toBe(200);

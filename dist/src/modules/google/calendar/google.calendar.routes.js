@@ -47,6 +47,7 @@ const initializeGoogleCalendarRouter = (customController) => {
     #swagger.description = 'get users calendars events'
     */
     controller.getCalendarEvents.bind(controller));
+    secureRouter.delete("/events/:calendarId", controller.deleteEventRequest.bind(controller));
     // mounts // 
     router.use("/secure", secureRouter);
     console.log("Google calendar router initialized.");
