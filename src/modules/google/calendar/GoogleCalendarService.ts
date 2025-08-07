@@ -153,11 +153,7 @@ export default class GoogleCalendarService {
         const block = `${this.block}.checkAvailibility`;
         try {
             const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
-
-            const calendarDetails = await this.getCalendarDetails(oauth2Client, calendarReferenceId)
-
-            const calendarTimeZone = calendarDetails.timeZone;
-            
+                
             const startTime = new Date(requestedDatetime)
             const endTime = new Date(startTime.getTime() + 30 * 60 * 1000);
             
@@ -167,7 +163,6 @@ export default class GoogleCalendarService {
             const requestBody = {
                 timeMin: utcStartTime.toISOString(),
                 timeMax: utcEndTime.toISOString(),
-                timeZone: calendarTimeZone,
                 items: [{ id: calendarReferenceId }]
             }
 
