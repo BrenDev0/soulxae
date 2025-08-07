@@ -159,12 +159,12 @@ export default class GoogleCalendarController {
         const block =  `${this.block}.deleteEventRequest`;
         try {
             const user = req.user;
-            const startTime = req.params.startTime;
-            const attendee = req.params.attendee;
-            
+            const { startTime, attendee } = req.query;
+           
             if(!startTime || !attendee) {
                 throw new BadRequestError(undefined)
-            }
+            };
+
             const calendarId = req.params.calendarId;
             this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
 
@@ -174,7 +174,7 @@ export default class GoogleCalendarController {
 
             const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
 
-            const eventResource = await this.googleService.calendarService.findEvent(client, calendarResource.calendarReferenceId, startTime, attendee);
+            const eventResource = await this.googleService.calendarService.findEvent(client, calendarResource.calendarReferenceId, startTime as string, attendee as string);
             if(!eventResource || !eventResource.id) {
                 res.status(404).json({ message: "Event not found" });
                 return

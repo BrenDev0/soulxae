@@ -132,11 +132,11 @@ class GoogleCalendarController {
             const block = `${this.block}.deleteEventRequest`;
             try {
                 const user = req.user;
-                const startTime = req.params.startTime;
-                const attendee = req.params.attendee;
+                const { startTime, attendee } = req.query;
                 if (!startTime || !attendee) {
                     throw new errors_1.BadRequestError(undefined);
                 }
+                ;
                 const calendarId = req.params.calendarId;
                 this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
                 const calendarResource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarsService", "Calendar not found", block);
