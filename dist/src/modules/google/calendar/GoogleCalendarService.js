@@ -169,9 +169,7 @@ class GoogleCalendarService {
                     items: [{ id: calendarReferenceId }]
                 };
                 const response = yield calendar.freebusy.query({ requestBody });
-                console.log(response.data, "RES::::::::::::");
                 const busySlots = ((_b = (_a = response.data.calendars) === null || _a === void 0 ? void 0 : _a[calendarReferenceId]) === null || _b === void 0 ? void 0 : _b.busy) || [];
-                console.log(busySlots, "SLOTs::::::::::::::");
                 return busySlots.length === 0;
             }
             catch (error) {

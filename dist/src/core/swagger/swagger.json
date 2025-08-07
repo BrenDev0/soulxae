@@ -970,14 +970,32 @@
                 }
             }
         },
-        "/availability": {
-            "get": {
+        "/availability/{calendarId}": {
+            "post": {
+                "tags": [
+                    "Google"
+                ],
                 "description": "",
+                "parameters": [
+                    {
+                        "name": "calendarId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "default": {
                         "description": ""
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/google/calendars/secure/events/{calendarId}": {
@@ -986,6 +1004,34 @@
                     "Google"
                 ],
                 "description": "get users calendars events",
+                "parameters": [
+                    {
+                        "name": "calendarId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/events/{calendarId}": {
+            "delete": {
+                "tags": [
+                    "Google"
+                ],
+                "description": "",
                 "parameters": [
                     {
                         "name": "calendarId",

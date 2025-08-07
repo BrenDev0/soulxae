@@ -172,9 +172,8 @@ export default class GoogleCalendarService {
             }
 
             const response = await calendar.freebusy.query({ requestBody });
-            console.log(response.data, "RES::::::::::::")
+           
             const busySlots = response.data.calendars?.[calendarReferenceId]?.busy || [];
-            console.log(busySlots, "SLOTs::::::::::::::")
 
             return busySlots.length ===  0 
         } catch (error) {

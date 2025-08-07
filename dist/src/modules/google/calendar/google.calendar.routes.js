@@ -38,7 +38,13 @@ const initializeGoogleCalendarRouter = (customController) => {
     }
     */
     controller.createEventRequest.bind(controller));
-    secureRouter.post("/availability/:calendarId", controller.checkAvailability.bind(controller));
+    secureRouter.post("/availability/:calendarId", 
+    /*
+   #swagger.tags = ['Google']
+   #swagger.security = [{ "bearerAuth": [] }]
+   
+   */
+    controller.checkAvailability.bind(controller));
     secureRouter.get("/events/:calendarId", 
     /*
     #swagger.tags = ['Google']
@@ -47,7 +53,13 @@ const initializeGoogleCalendarRouter = (customController) => {
     #swagger.description = 'get users calendars events'
     */
     controller.getCalendarEvents.bind(controller));
-    secureRouter.delete("/events/:calendarId", controller.deleteEventRequest.bind(controller));
+    secureRouter.delete("/events/:calendarId", 
+    /*
+   #swagger.tags = ['Google']
+   #swagger.security = [{ "bearerAuth": [] }]
+   
+   */
+    controller.deleteEventRequest.bind(controller));
     // mounts // 
     router.use("/secure", secureRouter);
     console.log("Google calendar router initialized.");

@@ -48,7 +48,11 @@ export const initializeGoogleCalendarRouter = (customController?: GoogleControll
 
  
     secureRouter.post("/availability/:calendarId",
-
+         /*
+        #swagger.tags = ['Google'] 
+        #swagger.security = [{ "bearerAuth": [] }]
+        
+        */
         controller.checkAvailability.bind(controller)
     )
 
@@ -64,7 +68,11 @@ export const initializeGoogleCalendarRouter = (customController?: GoogleControll
     )
 
     secureRouter.delete("/events/:calendarId",
-
+         /*
+        #swagger.tags = ['Google'] 
+        #swagger.security = [{ "bearerAuth": [] }]
+        
+        */
         controller.deleteEventRequest.bind(controller)
     )
 
