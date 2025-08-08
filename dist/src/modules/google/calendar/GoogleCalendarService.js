@@ -180,11 +180,13 @@ class GoogleCalendarService {
     findAvailableTimeSlots(oauth2Client_1, calendarReferenceId_1, startDate_1) {
         return __awaiter(this, arguments, void 0, function* (oauth2Client, calendarReferenceId, startDate, duration = 30, numberOfSlots = 3) {
             var _a, _b;
-            const block = `${this.block}.findAvailableTimeSlotsEfficient`;
+            const block = `${this.block}.findAvailableTimeSlots`;
             try {
                 const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
                 const availableSlots = [];
+                console.log("startDate before date  object:::::::::", startDate);
                 const startTime = new Date(startDate);
+                console.log("startDate after object:::::::::", startTime);
                 const endTime = new Date(startTime);
                 endTime.setDate(endTime.getDate() + 7); // Check next 7 days
                 // Convert to UTC for the query
