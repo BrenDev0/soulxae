@@ -76,7 +76,7 @@ export const initializeGoogleCalendarRouter = (customController?: GoogleControll
         controller.deleteEventRequest.bind(controller)
     )
 
-    secureRouter.get("/get-slots",
+    secureRouter.get("/get-slots/:calendarId",
         /*
         #swagger.tags = ['Google'] 
         #swagger.security = [{ "bearerAuth": [] }]
