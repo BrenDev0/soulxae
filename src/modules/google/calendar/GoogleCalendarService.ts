@@ -185,9 +185,9 @@ export default class GoogleCalendarService {
             const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
             const availableSlots: string[] = [];
             
-            console.log("startDate before date  object:::::::::", startDate)
+
             const startTime = new Date(startDate);
-            console.log("startDate after object:::::::::", startTime)
+        
             const endTime = new Date(startTime);
             endTime.setDate(endTime.getDate() + 7); // Check next 7 days
             
@@ -242,6 +242,7 @@ export default class GoogleCalendarService {
     private generateTimeSlots(startDate: Date, endDate: Date, durationMinutes: number = 30): string[] {
         const slots: string[] = [];
         const current = new Date(startDate);
+        const now = new Date(); // Current time to filter out past slots
         
         const startHour = 9;
         const endHour = 17;
@@ -258,10 +259,14 @@ export default class GoogleCalendarService {
                         
                         const slotEndTime = new Date(slotTime.getTime() + durationMinutes * 60 * 1000);
                         
-                        if (slotEndTime.getHours() < endHour || 
-                        (slotEndTime.getHours() === endHour && slotEndTime.getMinutes() === 0)) {
-                        slots.push(slotTime.toISOString());
-                    }
+                        // Check if slot is in the future and within business hours
+                        const isInFuture = slotTime > now;
+                        const isWithinBusinessHours = slotEndTime.getHours() < endHour || 
+                            (slotEndTime.getHours() === endHour && slotEndTime.getMinutes() === 0);
+                        
+                        if (isInFuture && isWithinBusinessHours) {
+                            slots.push(slotTime.toISOString());
+                        }
                     }
                 }
             }

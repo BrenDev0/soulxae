@@ -184,9 +184,7 @@ class GoogleCalendarService {
             try {
                 const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
                 const availableSlots = [];
-                console.log("startDate before date  object:::::::::", startDate);
                 const startTime = new Date(startDate);
-                console.log("startDate after object:::::::::", startTime);
                 const endTime = new Date(startTime);
                 endTime.setDate(endTime.getDate() + 7); // Check next 7 days
                 // Convert to UTC for the query
@@ -228,6 +226,7 @@ class GoogleCalendarService {
     generateTimeSlots(startDate, endDate, durationMinutes = 30) {
         const slots = [];
         const current = new Date(startDate);
+        const now = new Date(); // Current time to filter out past slots
         const startHour = 9;
         const endHour = 17;
         while (current <= endDate) {
@@ -238,8 +237,11 @@ class GoogleCalendarService {
                         const slotTime = new Date(current);
                         slotTime.setHours(hour, minute, 0, 0);
                         const slotEndTime = new Date(slotTime.getTime() + durationMinutes * 60 * 1000);
-                        if (slotEndTime.getHours() < endHour ||
-                            (slotEndTime.getHours() === endHour && slotEndTime.getMinutes() === 0)) {
+                        // Check if slot is in the future and within business hours
+                        const isInFuture = slotTime > now;
+                        const isWithinBusinessHours = slotEndTime.getHours() < endHour ||
+                            (slotEndTime.getHours() === endHour && slotEndTime.getMinutes() === 0);
+                        if (isInFuture && isWithinBusinessHours) {
                             slots.push(slotTime.toISOString());
                         }
                     }
