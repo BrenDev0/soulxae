@@ -230,6 +230,7 @@ export default class GoogleCalendarService {
             return availableSlots;
             
         } catch (error) {
+            console.log(error, "ERROR::::::::::")
             throw new GoogleError(undefined, {
                 block: block,
                 originalError: (error as Error).message
