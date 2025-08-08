@@ -60,6 +60,13 @@ const initializeGoogleCalendarRouter = (customController) => {
    
    */
     controller.deleteEventRequest.bind(controller));
+    secureRouter.get("/get-slots", 
+    /*
+    #swagger.tags = ['Google']
+    #swagger.security = [{ "bearerAuth": [] }]
+    
+    */
+    controller.getAvailableTimeSlots.bind(controller));
     // mounts // 
     router.use("/secure", secureRouter);
     console.log("Google calendar router initialized.");

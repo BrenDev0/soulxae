@@ -155,5 +155,24 @@ class GoogleCalendarController {
             }
         });
     }
+    getAvailableTimeSlots(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const block = `${this.block}.getAvailableTimeSlots`;
+            try {
+                const user = req.user;
+                const { startTime } = req.query;
+                const calendarId = req.params.calendarId;
+                this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
+                const calendarResource = yield this.httpService.requestValidation.validateResource(calendarId, "CalendarsService", "Calendar not found", block);
+                this.httpService.requestValidation.validateActionAuthorization(user.user_id, calendarResource.userId, block);
+                const client = yield this.googleService.clientManager.getcredentialedClient(user.user_id);
+                const data = yield this.googleService.calendarService.findAvailableTimeSlots(client, calendarResource.calendarReferenceId, startTime);
+                res.status(200).json({ data });
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
 }
 exports.default = GoogleCalendarController;

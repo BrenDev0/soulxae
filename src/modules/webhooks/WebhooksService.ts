@@ -143,7 +143,11 @@ export default class WebhooksService {
                 const sessionData: State = {
                     system_message: aiConfig.systemPrompt,
                     calendar_id: aiConfig.calendarId || null,
+                    max_tokens: aiConfig.maxTokens,
+                    temperature: aiConfig.temperature,
                     conversation_id: conversationId,
+                    user_id: userId,
+                    agent_id: agentId,
                     token: token,
                     input: text,
                     chat_history: chatHistory,
@@ -172,7 +176,7 @@ export default class WebhooksService {
 
            
             
-            const response = await axios.post(
+            await axios.post(
                 `https://${process.env.AGENT_HOST}/api/agent/interact`,
                 {
                     conversation_id: conversationId

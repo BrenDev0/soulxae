@@ -178,4 +178,96 @@ export default class GoogleCalendarService {
             });
         }
     }
+
+    async findAvailableTimeSlots(oauth2Client: OAuth2Client, calendarReferenceId: string, startDate: string, duration: number = 30, numberOfSlots: number = 3): Promise<string[]> {
+        const block = `${this.block}.findAvailableTimeSlotsEfficient`;
+        try {
+            const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+            const availableSlots: string[] = [];
+            
+        
+            const startTime = new Date(startDate);
+            const endTime = new Date(startTime);
+            endTime.setDate(endTime.getDate() + 7); // Check next 7 days
+            
+            // Convert to UTC for the query
+            const utcStartTime = new Date(startTime.getTime() + (6 * 60 * 60 * 1000));
+            const utcEndTime = new Date(endTime.getTime() + (6 * 60 * 60 * 1000));
+            
+            const requestBody = {
+                timeMin: utcStartTime.toISOString(),
+                timeMax: utcEndTime.toISOString(),
+                items: [{ id: calendarReferenceId }]
+            };
+
+            const response = await calendar.freebusy.query({ requestBody });
+            const busySlots = response.data.calendars?.[calendarReferenceId]?.busy || [];
+            
+          
+            const allSlots = this.generateTimeSlots(startTime, endTime, duration);
+            
+         
+            for (const slot of allSlots) {
+                if (availableSlots.length >= numberOfSlots) break;
+                
+                const slotStart = new Date(slot);
+                const slotEnd = new Date(slotStart.getTime() + duration * 60 * 1000);
+                
+                
+                const isAvailable = !busySlots.some(busyPeriod => {
+                    const busyStart = new Date(busyPeriod.start!);
+                    const busyEnd = new Date(busyPeriod.end!);
+                    
+                   
+                    return (slotStart < busyEnd && slotEnd > busyStart);
+                });
+                
+                if (isAvailable) {
+                    availableSlots.push(slot);
+                }
+            }
+            
+            return availableSlots;
+            
+        } catch (error) {
+            throw new GoogleError(undefined, {
+                block: block,
+                originalError: (error as Error).message
+            });
+        }
+    }
+
+    private generateTimeSlots(startDate: Date, endDate: Date, durationMinutes: number = 30): string[] {
+        const slots: string[] = [];
+        const current = new Date(startDate);
+        
+        const startHour = 9;
+        const endHour = 17;
+        
+        while (current <= endDate) {
+            // Skip weekends
+            if (current.getDay() !== 0 && current.getDay() !== 6) {
+                
+                for (let hour = startHour; hour < endHour; hour++) {
+                
+                    for (let minute = 0; minute < 60; minute += durationMinutes) {
+                        const slotTime = new Date(current);
+                        slotTime.setHours(hour, minute, 0, 0);
+                        
+                        const slotEndTime = new Date(slotTime.getTime() + durationMinutes * 60 * 1000);
+                        
+                        if (slotEndTime.getHours() < endHour || 
+                        (slotEndTime.getHours() === endHour && slotEndTime.getMinutes() === 0)) {
+                        slots.push(slotTime.toISOString());
+                    }
+                    }
+                }
+            }
+            
+            // Move to next day
+            current.setDate(current.getDate() + 1);
+        }
+        
+        return slots;
+    }
 }

@@ -76,6 +76,15 @@ export const initializeGoogleCalendarRouter = (customController?: GoogleControll
         controller.deleteEventRequest.bind(controller)
     )
 
+    secureRouter.get("/get-slots",
+        /*
+        #swagger.tags = ['Google'] 
+        #swagger.security = [{ "bearerAuth": [] }]
+        
+        */
+        controller.getAvailableTimeSlots.bind(controller)
+    )
+
     
 
     // mounts // 

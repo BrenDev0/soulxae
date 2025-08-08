@@ -1054,6 +1054,24 @@
                 ]
             }
         },
+        "/get-slots": {
+            "get": {
+                "tags": [
+                    "Google"
+                ],
+                "description": "",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/platforms/secure/create": {
             "post": {
                 "tags": [

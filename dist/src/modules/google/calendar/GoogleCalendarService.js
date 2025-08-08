@@ -177,5 +177,75 @@ class GoogleCalendarService {
             }
         });
     }
+    findAvailableTimeSlots(oauth2Client_1, calendarReferenceId_1, startDate_1) {
+        return __awaiter(this, arguments, void 0, function* (oauth2Client, calendarReferenceId, startDate, duration = 30, numberOfSlots = 3) {
+            var _a, _b;
+            const block = `${this.block}.findAvailableTimeSlotsEfficient`;
+            try {
+                const calendar = googleapis_1.google.calendar({ version: 'v3', auth: oauth2Client });
+                const availableSlots = [];
+                const startTime = new Date(startDate);
+                const endTime = new Date(startTime);
+                endTime.setDate(endTime.getDate() + 7); // Check next 7 days
+                // Convert to UTC for the query
+                const utcStartTime = new Date(startTime.getTime() + (6 * 60 * 60 * 1000));
+                const utcEndTime = new Date(endTime.getTime() + (6 * 60 * 60 * 1000));
+                const requestBody = {
+                    timeMin: utcStartTime.toISOString(),
+                    timeMax: utcEndTime.toISOString(),
+                    items: [{ id: calendarReferenceId }]
+                };
+                const response = yield calendar.freebusy.query({ requestBody });
+                const busySlots = ((_b = (_a = response.data.calendars) === null || _a === void 0 ? void 0 : _a[calendarReferenceId]) === null || _b === void 0 ? void 0 : _b.busy) || [];
+                const allSlots = this.generateTimeSlots(startTime, endTime, duration);
+                for (const slot of allSlots) {
+                    if (availableSlots.length >= numberOfSlots)
+                        break;
+                    const slotStart = new Date(slot);
+                    const slotEnd = new Date(slotStart.getTime() + duration * 60 * 1000);
+                    const isAvailable = !busySlots.some(busyPeriod => {
+                        const busyStart = new Date(busyPeriod.start);
+                        const busyEnd = new Date(busyPeriod.end);
+                        return (slotStart < busyEnd && slotEnd > busyStart);
+                    });
+                    if (isAvailable) {
+                        availableSlots.push(slot);
+                    }
+                }
+                return availableSlots;
+            }
+            catch (error) {
+                throw new google_erros_1.GoogleError(undefined, {
+                    block: block,
+                    originalError: error.message
+                });
+            }
+        });
+    }
+    generateTimeSlots(startDate, endDate, durationMinutes = 30) {
+        const slots = [];
+        const current = new Date(startDate);
+        const startHour = 9;
+        const endHour = 17;
+        while (current <= endDate) {
+            // Skip weekends
+            if (current.getDay() !== 0 && current.getDay() !== 6) {
+                for (let hour = startHour; hour < endHour; hour++) {
+                    for (let minute = 0; minute < 60; minute += durationMinutes) {
+                        const slotTime = new Date(current);
+                        slotTime.setHours(hour, minute, 0, 0);
+                        const slotEndTime = new Date(slotTime.getTime() + durationMinutes * 60 * 1000);
+                        if (slotEndTime.getHours() < endHour ||
+                            (slotEndTime.getHours() === endHour && slotEndTime.getMinutes() === 0)) {
+                            slots.push(slotTime.toISOString());
+                        }
+                    }
+                }
+            }
+            // Move to next day
+            current.setDate(current.getDate() + 1);
+        }
+        return slots;
+    }
 }
 exports.default = GoogleCalendarService;

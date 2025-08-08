@@ -187,6 +187,28 @@ export default class GoogleCalendarController {
             throw error;
         }
     }
+
+    async getAvailableTimeSlots(req: Request, res: Response): Promise<void> {
+        const block = `${this.block}.getAvailableTimeSlots`
+        try {
+            const user = req.user;
+            const { startTime } = req.query
+            
+            const calendarId = req.params.calendarId;
+            this.httpService.requestValidation.validateUuid(calendarId, "calendarId", block);
+
+            const calendarResource = await this.httpService.requestValidation.validateResource<CalendarData>(calendarId, "CalendarsService", "Calendar not found", block);
+            this.httpService.requestValidation.validateActionAuthorization(user.user_id, calendarResource.userId, block);
+
+            const client = await this.googleService.clientManager.getcredentialedClient(user.user_id);
+
+            const data = await this.googleService.calendarService.findAvailableTimeSlots(client, calendarResource.calendarReferenceId, startTime as string);
+
+            res.status(200).json({ data })
+        } catch (error) {
+            throw error 
+        }
+    }
 }
 
    

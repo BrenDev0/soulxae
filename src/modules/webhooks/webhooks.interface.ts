@@ -8,7 +8,11 @@ export interface AppointmentState{
 
 export interface State {
     system_message: string;
+    max_tokens: number;
+    temperature: number;
     calendar_id: string | null;
+    user_id: string;
+    agent_id: string;
     input: string;
     conversation_id: string;
     token: string;
