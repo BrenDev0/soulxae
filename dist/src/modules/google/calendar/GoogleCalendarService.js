@@ -215,7 +215,6 @@ class GoogleCalendarService {
                 return availableSlots;
             }
             catch (error) {
-                console.log(error, "ERROR::::::::::");
                 throw new google_erros_1.GoogleError(undefined, {
                     block: block,
                     originalError: error.message
